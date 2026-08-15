@@ -1,0 +1,93 @@
+{
+  "version": "1.0",
+  "generado": "2026-08-15T16:00:00-05:00",
+  "nota_datos": "Predios y productores FICTICIOS construidos para demostración. Las coordenadas corresponden a zonas productoras reales de cada cultivo; las personas y los montos no existen.",
+  "predios": [
+    {
+      "id": "huila-cafe",
+      "productor": "María Ligia Osorio",
+      "tipo_productor": "pequeño",
+      "vereda": "El Carmen",
+      "municipio": "Pitalito",
+      "departamento": "Huila",
+      "coordenadas": { "lat": 1.8534, "lon": -76.0521 },
+      "cultivo": "Café",
+      "variedad": "Castillo",
+      "area_declarada_ha": 2.4,
+      "area_detectada_ha": 2.4,
+      "monto_solicitado_cop": 9000000,
+      "destino": "Renovación de cafetal y compra de insumos",
+      "activos_declarados_smmlv": 41,
+      "anos_en_el_predio": 11,
+      "credito_previo": false,
+      "imagen_satelital": "assets/satelite/huila-cafe.jpg"
+    },
+    {
+      "id": "tolima-arroz",
+      "productor": "Hernán Darío Betancourt",
+      "tipo_productor": "pequeño",
+      "vereda": "La Palmita",
+      "municipio": "El Espinal",
+      "departamento": "Tolima",
+      "coordenadas": { "lat": 4.1489, "lon": -74.8836 },
+      "cultivo": "Arroz",
+      "variedad": "Fedearroz 67",
+      "area_declarada_ha": 6.1,
+      "area_detectada_ha": 5.9,
+      "monto_solicitado_cop": 22000000,
+      "destino": "Capital de trabajo para siembra semestre B",
+      "activos_declarados_smmlv": 198,
+      "anos_en_el_predio": 8,
+      "credito_previo": true,
+      "imagen_satelital": "assets/satelite/tolima-arroz.jpg"
+    },
+    {
+      "id": "boyaca-papa",
+      "productor": "Blanca Cecilia Rojas",
+      "tipo_productor": "pequeño",
+      "vereda": "Puente de Boyacá",
+      "municipio": "Ventaquemada",
+      "departamento": "Boyacá",
+      "coordenadas": { "lat": 5.3672, "lon": -73.5218 },
+      "cultivo": "Papa",
+      "variedad": "Pastusa Suprema",
+      "area_declarada_ha": 1.8,
+      "area_detectada_ha": 1.58,
+      "monto_solicitado_cop": 7500000,
+      "destino": "Semilla certificada y fertilizantes",
+      "activos_declarados_smmlv": 33,
+      "anos_en_el_predio": 6,
+      "credito_previo": false,
+      "imagen_satelital": "assets/satelite/boyaca-papa.jpg"
+    },
+    {
+      "id": "meta-cacao",
+      "productor": "Jorge Eliécer Ramírez",
+      "tipo_productor": "pequeño",
+      "vereda": "Los Naranjos",
+      "municipio": "Granada",
+      "departamento": "Meta",
+      "coordenadas": { "lat": 3.5421, "lon": -73.7059 },
+      "cultivo": "Cacao",
+      "variedad": "CCN-51",
+      "area_declarada_ha": 4.0,
+      "area_detectada_ha": 0.0,
+      "monto_solicitado_cop": 18000000,
+      "destino": "Mantenimiento de cacaotal establecido",
+      "activos_declarados_smmlv": 112,
+      "anos_en_el_predio": 4,
+      "credito_previo": false,
+      "imagen_satelital": "assets/satelite/meta-cacao.jpg"
+    }
+  ],
+  "eventos_climaticos": [
+    { "nombre": "La Niña 2022", "desde": "2022-01", "hasta": "2022-12", "tipo": "exceso_lluvia" },
+    { "nombre": "El Niño 2023-24", "desde": "2023-06", "hasta": "2024-05", "tipo": "sequia" }
+  ],
+  "fuentes": {
+    "imagenes": "Copernicus Sentinel-2 L2A — licencia abierta, uso comercial permitido",
+    "clima": "IDEAM — series históricas y alertas",
+    "aptitud_suelo": "UPRA — aptitud por cultivo",
+    "marco_credito": "Manual de Servicios FINAGRO v.26.21 (16-04-2026)"
+  }
+}
