@@ -40,6 +40,7 @@ claude
 
 ### 3. Lee estos dos archivos antes de nada
 
+- `docs/DESIGN-SYSTEM.md` ← **los colores, tipografía y componentes exactos. El prompt de la tarea 1 está ahí completo.**
 - `data/CONTRATO-DATOS.md` ← **el más importante para ti.** Define exactamente qué datos vas a
   recibir de Torres y con qué nombres. Constrúyelo contra ese esquema aunque los datos todavía
   no existan.
