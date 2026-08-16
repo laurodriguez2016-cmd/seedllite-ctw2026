@@ -743,7 +743,7 @@ versiones publicadas del mismo Manual y en el decreto de salarios, que sí es fu
    "14 ciclos de cosecha completos entre 2017 y 2025, NDVI pico promedio 0,89".
 2. **Tono de memorando interno de banco.** Sobrio, técnico, sin adjetivos.
 3. **El rechazo se explica con precisión.** Para `meta-cacao`: **el polígono declarado no
-   corresponde a un cacaotal en manejo**, no "vegetación escasa" — el NDVI es el más alto de
+   corresponde a un cacaotal en manejo**, no "vegetación escasa" — la mediana de NDVI es la más alta de
    los cuatro predios. Lo que falta no es verde, es actividad: 0,5 ha de 4,0 declaradas.
 4. **Las alertas se dicen aunque se apruebe.**
 5. **Constancia expresa de la verificación ambiental**, incluso cuando sea favorable.

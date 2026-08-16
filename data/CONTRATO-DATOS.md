@@ -160,7 +160,7 @@ Se calculan **solo sobre meses medidos**. La distinción que importa:
   "nota_ia": "Salidas reales del modelo. El prompt está en scripts/generar_dictamen.py.",
   "dictamenes": {
     "huila-cafe": {
-      "puntaje": 780,                        // integer 0-1000
+      "puntaje": 870,                        // integer 0-1000 — el de huila-cafe
       "banda_riesgo": "bajo",                // "bajo" | "medio" | "alto" | "rechazo"
       "decision": "aprobar",                 // "aprobar" | "aprobar_con_ajuste" | "rechazar"
       "monto_sugerido_cop": 9000000,

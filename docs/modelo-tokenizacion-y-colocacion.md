@@ -414,7 +414,7 @@ sobrevive a la respuesta desfavorable.
 El FAG es dinero público. Una cobertura del 80% sobre un crédito de $18.000.000 destinado a
 "mantenimiento de cacaotal establecido" en un polígono declarado de 4,0 hectáreas donde la
 medición encuentra **0,5 hectáreas** con actividad agrícola, es una garantía estatal sobre un
-crédito mal originado. El resto son 3,5 hectáreas de dosel de bosque, con el NDVI más alto de los
+crédito mal originado. El resto son 3,5 hectáreas de dosel de bosque, con la mediana de NDVI más alta de los
 nueve predios, 0,88 de pico promedio, y una amplitud de apenas 0,092 en los últimos 24 meses:
 cobertura vegetal permanente, no un cultivo en manejo.
 
@@ -463,7 +463,7 @@ forma más común de perder seis meses.
 - Áreas medidas con rejilla 4x4 por `scripts/medir_area.py`, no escritas a mano.
 - Nueve dictámenes reales de `claude-opus-5` en `data/dictamenes.json`. Evaluar $117.000.000 en
   solicitudes costó **US$1,58** de inferencia, cerca de US$0,18 por dictamen.
-- Un rechazo bien fundado sobre el predio con el NDVI más alto de los nueve, y un caso declarado
+- Un rechazo bien fundado sobre el predio con la mediana de NDVI más alta de los nueve, y un caso declarado
   sin concepto en vez de rechazado por falta de cobertura del dato.
 - Un demo que abre con doble clic, sin servidor y sin dependencias.
 

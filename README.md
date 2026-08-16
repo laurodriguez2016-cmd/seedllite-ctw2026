@@ -63,8 +63,12 @@ flowchart LR
 Un predio abandonado **no tiene NDVI bajo**. Se llena de rastrojo y el verde sigue ahí. Lo que
 desaparece es el **patrón**: deja de subir y bajar con el calendario del cultivo.
 
-El predio que este sistema **rechaza** tiene el NDVI más verde de todos los que evalúa. Un
-modelo que mire cuánto verde hay lo aprueba sin dudarlo.
+El predio que este sistema **rechaza** es el más verde de los nueve **en promedio**: mediana de
+NDVI **0,836**, la más alta de la cartera. El predio de arroz que **aprueba** alcanza un pico más
+alto —0,89 contra 0,88— pero su mediana es **0,539**, porque cae a suelo desnudo entre cosechas.
+
+Ahí está todo el producto en dos cifras. Un modelo que mire cuánto verde hay aprueba el bosque y
+duda del arrozal.
 
 ---
 

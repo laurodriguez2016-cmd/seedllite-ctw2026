@@ -152,6 +152,19 @@ else
   aviso "todavia no hay dictamenes generados — se salta"
 fi
 
+titulo "4-ter · Las cifras de los documentos cuadran con los datos"
+# ---------------------------------------------------------------------------
+# Los documentos y los datos se escriben juntos y se separan solos. Esto vigila
+# las afirmaciones que ya se equivocaron una vez.
+if [ -f scripts/auditar_cifras.py ]; then
+  if python3 scripts/auditar_cifras.py > /tmp/seedllite_cifras.txt 2>&1; then
+    ok "las cifras de los documentos cuadran con los datos"
+  else
+    mal "hay cifras en documentos que no cuadran con data/"
+    sed 's/^/      /' /tmp/seedllite_cifras.txt | head -10
+  fi
+fi
+
 titulo "5 · Ningún secreto commiteado"
 # ---------------------------------------------------------------------------
 FUGAS=$(git grep -nIE 'sk-or-v1-[A-Za-z0-9]|sk-ant-[A-Za-z0-9]|CDSE_CLIENT_SECRET *= *[A-Za-z0-9]' \
