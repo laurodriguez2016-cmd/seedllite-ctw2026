@@ -78,7 +78,9 @@ La serie temporal satelital. **El corazón del producto.**
       ],
       "ciclos_detectados": 9,
       "ndvi_pico_promedio": 0.78,
-      "percentil_vereda": 71
+      "rendimiento_estimado_t_ha": 1.9,
+      "rendimiento_municipal_eva_t_ha": 1.6,
+      "fuente_referencia": "EVA 2024 — Pitalito, Huila — Café"
     }
   },
   "eventos_climaticos": [
@@ -179,4 +181,18 @@ esquemas, un solo predio, valores de juguete. **APP nunca espera a MOTOR.**
 
 ---
 
-*Versión 1.0 · 15-ago-2026 · Congelado a las 16:00*
+### Cambio v1.1 — 15-ago-2026, 17:30
+
+`percentil_vereda` se elimina y se reemplaza por `rendimiento_estimado_t_ha`,
+`rendimiento_municipal_eva_t_ha` y `fuente_referencia`.
+
+**Motivo:** el percentil veredal era inverificable — no existe estadística de producción por
+vereda en Colombia. EVA (Evaluaciones Agropecuarias Municipales, datos abiertos) sí reporta
+rendimiento por municipio y cultivo. Justificación completa en
+[`docs/criterios-de-credito.md`](../docs/criterios-de-credito.md), sección 6.
+
+**Es el único cambio al contrato. No habrá más.**
+
+---
+
+*Versión 1.1 · 15-ago-2026*

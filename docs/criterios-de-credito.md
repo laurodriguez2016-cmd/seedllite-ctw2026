@@ -187,18 +187,115 @@ ambientalmente viable**.
 | Predio **colindante** (< 500 m) con área protegida | ⚠️ **Alerta**, no rechazo. Se advierte al comité |
 | Sin restricción | ✓ Se deja constancia expresa de la verificación |
 
-> 🔍 **Laura: dos precisiones que necesito de ti.**
-> **(a)** La reserva Ley 2ª admite ocupación campesina histórica y hay tensión jurisprudencial
-> sobre el punto — ¿lo tratamos como rechazo duro, o como alerta con requerimiento de
-> acreditar sustracción? *(Mi inclinación: alerta, no rechazo — un rechazo duro sería
-> injusto con el campesino que lleva 40 años ahí, y ese matiz nos hace ver bien.)*
-> **(b)** ¿Falta alguna capa? Estoy pensando en resguardos indígenas y consejos comunitarios
-> de comunidades negras — ahí no hay prohibición de crédito, pero sí particularidades de
-> garantía por la inembargabilidad del territorio colectivo. **Ese punto puede ser oro para
-> el pitch** y es tu terreno, no el mío.
+> ✅ **Decidido (Laura, 15-ago-2026):** la reserva Ley 2ª genera **alerta con requerimiento de
+> acreditar la sustracción**, no rechazo automático. Un rechazo duro castigaría al campesino
+> con ocupación histórica, que es precisamente el usuario que queremos incluir.
 
 **En el código va solo la verificación de PNN y páramo.** El resto vive en el documento y en
 el README — decisión de alcance, no de criterio.
+
+---
+
+## 4-bis · 🚩 Control anti-despojo — la pregunta que abre el mejor argumento del proyecto
+
+**Planteada por Laura:** ¿cómo evitamos que quien despojó a un campesino use SEEDLLITE para
+sacar crédito sobre la tierra robada?
+
+Son **dos riesgos opuestos**, y solo uno se resuelve con registro.
+
+### Riesgo A · Que el despojador pida el crédito
+
+Se resuelve con **verificación registral**, no satelital:
+
+| Registro | Norma | Qué significa un cruce positivo |
+|---|---|---|
+| **RTDAF** — Registro de Tierras Despojadas y Abandonadas Forzosamente | Ley 1448 de 2011 · Decreto 4829 de 2011 | El predio está en proceso de restitución |
+| **RUPTA** — Registro Único de Predios y Territorios Abandonados | Ley 387 de 1997 · Decreto 2007 de 2001 | El predio tiene medida de protección por desplazamiento |
+
+**Regla SEEDLLITE:** predio inscrito en RTDAF o con medida de protección en RUPTA →
+🔴 **rechazo automático**, con remisión expresa a la Unidad de Restitución de Tierras.
+
+El fundamento es sólido: la Ley 1448 establece **cinco presunciones de despojo** sobre los
+predios inscritos en el registro, y **altera las reglas clásicas del derecho civil** presumiendo
+la ilicitud de las compras de tierras en zonas de violencia y desplazamiento. Un banco que
+desembolse sobre un predio inscrito está financiando sobre un título presuntamente viciado.
+
+> **Esto también es argumento comercial:** hoy el intermediario tampoco tiene forma automática
+> de verificar esto. Es el mismo patrón del filtro ambiental — le quitamos al banco un riesgo
+> que hoy asume a ciegas.
+
+### Riesgo B · Que la víctima real no pueda probar que trabajó esa tierra ⭐
+
+**Aquí es donde el satélite hace algo que ningún registro puede.**
+
+En un proceso de restitución la carga probatoria se invierte a favor de la víctima, pero la
+víctima todavía tiene que **acreditar su relación con el predio**. Y un campesino desplazado en
+2002 no tiene recibos, ni contratos, ni fotos.
+
+**Pero la tierra sí guarda el registro.** Una serie satelital de ese predio muestra:
+
+- Ciclos de cosecha regulares durante años → **alguien lo estaba trabajando**
+- Una **interrupción abrupta** en una fecha identificable → **dejaron de trabajarlo**
+- Si esa fecha coincide con un evento de desplazamiento documentado en ese municipio →
+  **corroboración objetiva del abandono forzado**
+
+Es prueba producida por un tercero (una agencia espacial), con fecha cierta, imposible de
+fabricar y anterior al litigio.
+
+> ⚠️ **Límite técnico honesto:** Sentinel-2 existe **desde 2015**. El grueso del despojo
+> colombiano ocurrió antes. Para casos de restitución hay que usar **Landsat, que llega a 1972**
+> pero a **30 m** de resolución — sirve para predios de más de ~1 ha, no para minifundio.
+> Sin esa aclaración el argumento no se sostiene ante un jurado técnico.
+
+### 🎯 Qué hacemos con esto en el hackathon
+
+**No se construye.** No hay tiempo y no es el flujo del demo.
+
+Pero cuesta **una línea de JSON** agregar a los dictámenes una evidencia más:
+
+```
+{ "tipo": "favorable",
+  "texto": "Verificación RTDAF/RUPTA: el predio no figura en el Registro de Tierras
+            Despojadas ni tiene medida de protección vigente" }
+```
+
+Con eso el control anti-despojo **aparece en pantalla** sin costar desarrollo, y en el README
+va la línea de expansión completa: *"la misma serie que evalúa crédito puede corroborar una
+solicitud de restitución de tierras."*
+
+---
+
+## 4-ter · Territorios colectivos: exclusión razonada
+
+**Decisión de Laura: no se incluyen.** Correcta — pero conviene precisar el motivo, porque el
+que parece obvio no es el que aplica.
+
+**No es la jurisdicción especial indígena.** El artículo 246 de la Constitución habilita a las
+autoridades indígenas a ejercer **funciones jurisdiccionales** dentro de su ámbito territorial.
+La Corte Constitucional, en la **Sentencia C-463 de 2014** (que reitera la T-617 de 2010), fijó
+los factores de competencia: **personal, territorial, objetivo e institucional**. Un contrato de
+crédito entre una persona indígena y un banco comercial **no cae automáticamente** bajo la JEI:
+habría que analizar los cuatro factores, y los factores objetivo e institucional muy
+probablemente lo llevarían a la jurisdicción ordinaria.
+
+**El obstáculo real es patrimonial, no jurisdiccional.** Los resguardos son, por mandato
+constitucional, **inalienables, imprescriptibles e inembargables** (art. 63 C.P.). Eso significa
+que el territorio **no puede constituirse en garantía** ni perseguirse en ejecución. El crédito a
+comunidades étnicas existe, pero opera por canales y esquemas de garantía distintos a los del
+crédito individual con FAG.
+
+🔍 **Verificar antes de afirmarlo en el pitch:** el alcance exacto del art. 63 C.P. sobre
+resguardos lo tengo de conocimiento general, **no lo confirmé contra fuente primaria en esta
+búsqueda.** Confírmalo tú antes de que salga en cualquier documento público.
+
+**Cómo lo decimos en el README:**
+
+> *SEEDLLITE v1 evalúa predios de tenencia individual. Los territorios colectivos —resguardos
+> indígenas y consejos comunitarios— quedan excluidos del alcance: su régimen de
+> inalienabilidad e inembargabilidad (art. 63 C.P.) exige un esquema de garantía distinto que
+> este modelo no aborda. Es una exclusión consciente, no un olvido.*
+
+Declarar una exclusión razonada puntúa. Un modelo que pretende servir para todo no lo cree nadie.
 
 ---
 
@@ -260,8 +357,51 @@ sale el techo del monto.
 > Deja de ser una comparación inventada y pasa a ser una comparación contra estadística
 > oficial. **Es un cambio pequeño en la interfaz y grande en credibilidad.**
 >
-> 🔍 **Decisión para el equipo:** ¿cambiamos `percentil_vereda` por `rendimiento_vs_municipio_eva`?
-> Cuesta ~20 minutos de Torres y vale mucho ante el jurado. **Mi voto: sí.**
+> ✅ **APROBADO (Laura, 15-ago-2026):** se cambia `percentil_vereda` por
+> `rendimiento_vs_municipio_eva`. Justificación completa abajo.
+
+### Por qué se cambia — las cuatro razones
+
+**1 · Lo anterior era inverificable.** Para afirmar "percentil 71 de su vereda" tendríamos que
+tener una base con el rendimiento de todos los predios de esa vereda. **No existe, ni nuestra ni
+de nadie.** Era una cifra que sonaba bien y no se podía sustentar. La primera pregunta de un
+jurado —*"¿comparado contra qué exactamente?"*— nos dejaba sin respuesta.
+
+**2 · La vereda no es unidad estadística; el municipio sí.** No hay estadística oficial de
+producción agropecuaria por vereda en Colombia. **EVA reporta por municipio y por cultivo**, es
+operación estadística oficial, y está publicada como datos abiertos. Se puede descargar,
+auditar y citar.
+
+**3 · Lo exige el SARC.** El criterio 5 obliga a evaluar **variables sectoriales**. Un
+rendimiento municipal oficial **es** una variable sectorial en el sentido de la norma. Un
+percentil veredal inventado no lo es. Con el cambio, el eje C queda anclado a norma igual que
+los otros tres.
+
+**4 · Cambia lo que se puede decir en el video.** De esto:
+
+> ❌ *"NDVI pico promedio 0,78 — percentil 71 de su vereda"* → ¿de dónde salió ese 71?
+
+A esto:
+
+> ✅ *"Rendimiento estimado 1,9 t/ha frente a 1,6 t/ha del promedio municipal de Pitalito
+> reportado en EVA"* → verificable en `datos.gov.co`
+
+**El costo honesto del cambio:** el municipio es una comparación **más gruesa** que la vereda.
+Un predio bueno dentro de un municipio malo se ve mejor de lo que es. Lo asumimos por dos
+razones: es conservador en la dirección correcta para un prestamista, y **una cifra gruesa
+verificable vale más que una cifra fina inventada.**
+
+### Cambio en el contrato de datos
+
+En `series_ndvi.json` el campo `percentil_vereda` se reemplaza por:
+
+```jsonc
+"rendimiento_estimado_t_ha": 1.9,      // derivado de la serie NDVI
+"rendimiento_municipal_eva_t_ha": 1.6, // EVA, municipio y cultivo
+"fuente_referencia": "EVA 2024 — Pitalito, Huila — Café"
+```
+
+⚠️ **Torres: este es el único cambio al contrato congelado. Avísale a Piedrahita.**
 
 `SUPUESTO:` los costos de referencia por hectárea que usa el demo (café $3,5M, arroz $3,7M,
 papa $4,5M) siguen siendo estimación del equipo. **No se citan como dato en el video.** Si
