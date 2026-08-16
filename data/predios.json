@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "generado": "2026-08-15T16:00:00-05:00",
-  "nota_datos": "Predios y productores FICTICIOS construidos para demostración. Las coordenadas corresponden a zonas productoras reales de cada cultivo; las personas y los montos no existen.",
+  "nota_datos": "Predios y productores FICTICIOS construidos para demostración. Las coordenadas corresponden a zonas productoras reales de cada cultivo; las personas y los montos no existen. Las imagenes satelitales son una secuencia temporal de al menos dos cortes por predio.",
   "predios": [
     {
       "id": "huila-cafe",
@@ -10,7 +10,10 @@
       "vereda": "El Carmen",
       "municipio": "Pitalito",
       "departamento": "Huila",
-      "coordenadas": { "lat": 1.8534, "lon": -76.0521 },
+      "coordenadas": {
+        "lat": 1.8534,
+        "lon": -76.0521
+      },
       "cultivo": "Café",
       "variedad": "Castillo",
       "area_declarada_ha": 2.4,
@@ -20,7 +23,16 @@
       "activos_declarados_smmlv": 41,
       "anos_en_el_predio": 11,
       "credito_previo": false,
-      "imagen_satelital": "assets/satelite/huila-cafe.jpg"
+      "imagenes_satelitales": [
+        {
+          "anio": 2017,
+          "ruta": "assets/satelite/huila-cafe-2017.jpg"
+        },
+        {
+          "anio": 2025,
+          "ruta": "assets/satelite/huila-cafe-2025.jpg"
+        }
+      ]
     },
     {
       "id": "tolima-arroz",
@@ -29,7 +41,10 @@
       "vereda": "La Palmita",
       "municipio": "El Espinal",
       "departamento": "Tolima",
-      "coordenadas": { "lat": 4.1489, "lon": -74.8836 },
+      "coordenadas": {
+        "lat": 4.1489,
+        "lon": -74.8836
+      },
       "cultivo": "Arroz",
       "variedad": "Fedearroz 67",
       "area_declarada_ha": 6.1,
@@ -39,7 +54,16 @@
       "activos_declarados_smmlv": 198,
       "anos_en_el_predio": 8,
       "credito_previo": true,
-      "imagen_satelital": "assets/satelite/tolima-arroz.jpg"
+      "imagenes_satelitales": [
+        {
+          "anio": 2017,
+          "ruta": "assets/satelite/tolima-arroz-2017.jpg"
+        },
+        {
+          "anio": 2025,
+          "ruta": "assets/satelite/tolima-arroz-2025.jpg"
+        }
+      ]
     },
     {
       "id": "boyaca-papa",
@@ -48,7 +72,10 @@
       "vereda": "Puente de Boyacá",
       "municipio": "Ventaquemada",
       "departamento": "Boyacá",
-      "coordenadas": { "lat": 5.3672, "lon": -73.5218 },
+      "coordenadas": {
+        "lat": 5.3672,
+        "lon": -73.5218
+      },
       "cultivo": "Papa",
       "variedad": "Pastusa Suprema",
       "area_declarada_ha": 1.8,
@@ -58,7 +85,16 @@
       "activos_declarados_smmlv": 33,
       "anos_en_el_predio": 6,
       "credito_previo": false,
-      "imagen_satelital": "assets/satelite/boyaca-papa.jpg"
+      "imagenes_satelitales": [
+        {
+          "anio": 2017,
+          "ruta": "assets/satelite/boyaca-papa-2017.jpg"
+        },
+        {
+          "anio": 2025,
+          "ruta": "assets/satelite/boyaca-papa-2025.jpg"
+        }
+      ]
     },
     {
       "id": "meta-cacao",
@@ -67,7 +103,10 @@
       "vereda": "Los Naranjos",
       "municipio": "Granada",
       "departamento": "Meta",
-      "coordenadas": { "lat": 3.5421, "lon": -73.7059 },
+      "coordenadas": {
+        "lat": 3.5421,
+        "lon": -73.7059
+      },
       "cultivo": "Cacao",
       "variedad": "CCN-51",
       "area_declarada_ha": 4.0,
@@ -77,12 +116,31 @@
       "activos_declarados_smmlv": 112,
       "anos_en_el_predio": 4,
       "credito_previo": false,
-      "imagen_satelital": "assets/satelite/meta-cacao.jpg"
+      "imagenes_satelitales": [
+        {
+          "anio": 2020,
+          "ruta": "assets/satelite/meta-cacao-2020.jpg"
+        },
+        {
+          "anio": 2025,
+          "ruta": "assets/satelite/meta-cacao-2025.jpg"
+        }
+      ]
     }
   ],
   "eventos_climaticos": [
-    { "nombre": "La Niña 2022", "desde": "2022-01", "hasta": "2022-12", "tipo": "exceso_lluvia" },
-    { "nombre": "El Niño 2023-24", "desde": "2023-06", "hasta": "2024-05", "tipo": "sequia" }
+    {
+      "nombre": "La Niña 2022",
+      "desde": "2022-01",
+      "hasta": "2022-12",
+      "tipo": "exceso_lluvia"
+    },
+    {
+      "nombre": "El Niño 2023-24",
+      "desde": "2023-06",
+      "hasta": "2024-05",
+      "tipo": "sequia"
+    }
   ],
   "fuentes": {
     "imagenes": "Copernicus Sentinel-2 L2A — licencia abierta, uso comercial permitido",

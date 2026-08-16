@@ -36,7 +36,10 @@ claude
 ### Lee antes de nada
 - `data/CONTRATO-DATOS.md` ← **tu contrato con Piedrahita.** Los esquemas exactos que debes producir. **No los cambies sin avisar.**
 - `data/predios.json` ← ya está hecho, es tu punto de partida
-- `docs/criterios-de-credito.md` ← lo está escribiendo Laura. **Es el insumo de tu prompt.** Si no está listo, arranca por la tarea 1.
+- `docs/criterios-de-credito.md` ← **LISTO Y CONGELADO.** Es el insumo de tu prompt. Los 4 ejes
+  estan mapeados contra el SARC. Leelo completo antes de la tarea 4.
+- `docs/dictamen-modelo.md` ← **LISTO.** Es la vara: el prompt tiene que producir algo de esa
+  calidad. Trae las 7 propiedades a reproducir y los 5 errores prohibidos.
 
 ---
 
@@ -124,7 +127,10 @@ Además:
 - Campo "nubosidad" de 0 a 1: Colombia es nublada. El Chocó y el piedemonte
   tienen mucha; sube en temporada de lluvias. Algunos meses por encima de 0.6.
 - Calcula y escribe en el JSON: ciclos_detectados, ndvi_pico_promedio,
-  percentil_vereda.
+  rendimiento_estimado_t_ha, rendimiento_municipal_eva_t_ha y fuente_referencia.
+  (El campo percentil_vereda YA NO EXISTE — se eliminó en el contrato v1.1
+  porque no hay estadistica oficial por vereda en Colombia. Ver
+  docs/criterios-de-credito.md seccion 6.)
 - Comenta el código en español explicando la fenología de cada cultivo.
 
 En el JSON, el campo nota_datos debe decir con todas las letras que son series
