@@ -55,6 +55,71 @@
       "area_cosechada_ha": 724.0,
       "series_disponibles": 12,
       "cita": "EVA 2018 — GRANADA, META — CACAO"
+    },
+    "boyaca-papa-nubes": {
+      "municipio": "VENTAQUEMADA",
+      "departamento": "BOYACA",
+      "cultivo": "PAPA",
+      "ciclo_de_cultivo": "TRANSITORIO",
+      "anio_referencia": "2018",
+      "rendimiento_municipal_t_ha": 30.0,
+      "rendimiento_promedio_historico_t_ha": 17.57,
+      "area_sembrada_ha": 1700.0,
+      "area_cosechada_ha": 1700.0,
+      "series_disponibles": 40,
+      "cita": "EVA 2018 — VENTAQUEMADA, BOYACA — PAPA"
+    },
+    "meta-cacao-productivo": {
+      "municipio": "GRANADA",
+      "departamento": "META",
+      "cultivo": "CACAO",
+      "ciclo_de_cultivo": "PERMANENTE",
+      "anio_referencia": "2018",
+      "rendimiento_municipal_t_ha": 0.6,
+      "rendimiento_promedio_historico_t_ha": 0.62,
+      "area_sembrada_ha": 1077.0,
+      "area_cosechada_ha": 724.0,
+      "series_disponibles": 12,
+      "cita": "EVA 2018 — GRANADA, META — CACAO"
+    },
+    "meta-cacao-sin-manejo": {
+      "municipio": "GRANADA",
+      "departamento": "META",
+      "cultivo": "CACAO",
+      "ciclo_de_cultivo": "PERMANENTE",
+      "anio_referencia": "2018",
+      "rendimiento_municipal_t_ha": 0.6,
+      "rendimiento_promedio_historico_t_ha": 0.62,
+      "area_sembrada_ha": 1077.0,
+      "area_cosechada_ha": 724.0,
+      "series_disponibles": 12,
+      "cita": "EVA 2018 — GRANADA, META — CACAO"
+    },
+    "boyaca-papa-media": {
+      "municipio": "VENTAQUEMADA",
+      "departamento": "BOYACA",
+      "cultivo": "PAPA",
+      "ciclo_de_cultivo": "TRANSITORIO",
+      "anio_referencia": "2018",
+      "rendimiento_municipal_t_ha": 30.0,
+      "rendimiento_promedio_historico_t_ha": 17.57,
+      "area_sembrada_ha": 1700.0,
+      "area_cosechada_ha": 1700.0,
+      "series_disponibles": 40,
+      "cita": "EVA 2018 — VENTAQUEMADA, BOYACA — PAPA"
+    },
+    "meta-cacao-vigor-bajo": {
+      "municipio": "GRANADA",
+      "departamento": "META",
+      "cultivo": "CACAO",
+      "ciclo_de_cultivo": "PERMANENTE",
+      "anio_referencia": "2018",
+      "rendimiento_municipal_t_ha": 0.6,
+      "rendimiento_promedio_historico_t_ha": 0.62,
+      "area_sembrada_ha": 1077.0,
+      "area_cosechada_ha": 724.0,
+      "series_disponibles": 12,
+      "cita": "EVA 2018 — GRANADA, META — CACAO"
     }
   }
 }

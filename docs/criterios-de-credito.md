@@ -27,7 +27,7 @@ fecha no mayor a 90 días** respecto del formulario de vinculación. Un campesin
 contabilidad formal no puede producirlo. **Ese solo requisito excluye a cientos de miles de
 personas** de un sistema que tiene capital disponible y garantía estatal de hasta el 80%.
 
-**SEEDLLITE sustituye ese balance por evidencia satelital de 10 años.**
+**SEEDLLITE sustituye ese balance por evidencia satelital de 9 años.**
 
 ---
 
@@ -100,7 +100,14 @@ porque hay que ser abogado para encontrarlo.
 
 ## 3. Los cuatro ejes — versión 2
 
-Cada eje se califica de 0 a 100. El puntaje final es la suma ponderada × 10, sobre **0 a 1000**.
+Cada eje se califica de 0 a 100 y **aporta al total en proporción a su peso**. El puntaje
+final es la suma de esos aportes × 10, sobre **0 a 1000**.
+
+> ⚠️ **Ojo con la distinción, porque ya produjo un error.** El campo `puntaje` de cada eje en
+> `data/dictamenes.json` **no es la nota de 0 a 100: es el aporte, que va de 0 al peso del eje.**
+> Un eje evaluado en 90% con peso 40 aporta **36**, no 90. La primera corrida del modelo emitió
+> 78 sobre un peso de 40 y la barra de la pantalla 4 se habría dibujado al 195% de su riel.
+> `incoherencias()` en `generar_dictamen.py` ahora lo rechaza y reintenta.
 
 | Eje | Peso | Responde al criterio SARC | Antes |
 |---|---|---|---|
@@ -128,7 +135,7 @@ resuelto lo que hoy no puede resolver — la capacidad de pago de alguien sin es
 
 | Variable | Qué prueba |
 |---|---|
-| **Ciclos de cosecha completados** en 10 años | No basta sembrar: hay que llegar a cosecha. Es el flujo de caja real |
+| **Ciclos de cosecha completados** en 9 años | No basta sembrar: hay que llegar a cosecha. Es el flujo de caja real |
 | **Continuidad del patrón cíclico** | Un predio abandonado pierde la forma de diente de sierra aunque conserve verde |
 | Rendimiento estimado vs. rendimiento municipal del cultivo | **Fuente: EVA — Evaluaciones Agropecuarias Municipales** |
 | Consistencia interanual | Volatilidad alta = flujo impredecible |
@@ -137,7 +144,69 @@ resuelto lo que hoy no puede resolver — la capacidad de pago de alguien sin es
 > predio abandonado se llena de rastrojo y mantiene NDVI medio. Lo que desaparece es el ciclo.
 > Un modelo que mire solo el nivel de verde aprueba un crédito sobre un predio abandonado.
 
-**Rechazo automático:** sin ciclo de cosecha detectable en los últimos **24 meses**.
+#### 🔄 CAMBIO 15-ago-2026, 23:00 — la regla se vuelve consciente del cultivo
+
+> **Laura: esto toca tu documento y necesita tu visto bueno.** Se cambia porque, corrida contra
+> la serie real de Copernicus, la regla anterior **rechazaba a `huila-cafe`**, que es el caso
+> insignia de aprobación. No es un ajuste cosmético: la regla estaba mal, y estaba mal por una
+> razón agronómica que vale la pena que quede escrita.
+
+El café dio **0 ciclos detectables en los últimos 24 meses**. No porque haya dejado de producir,
+sino porque **el café es perenne y no dibuja cosechas en NDVI**: la planta permanece, el follaje
+no desaparece entre cosechas, y la recolección manual no deja huella espectral. Aplicarle la
+regla del arroz es un error de categoría.
+
+**Ausencia de ciclo significa cosas opuestas según el cultivo:**
+
+| Tipo | Cultivos | Qué significa que no haya ciclo | Cuál es la señal real |
+|---|---|---|---|
+| **Transitorio** | Arroz, papa, maíz, hortalizas | **No se está produciendo.** El suelo queda desnudo entre siembras: si no hay diente de sierra, no hubo siembra | El ciclo mismo |
+| **Perenne** | Café, cacao, caña, frutales | **Nada.** Es el comportamiento normal del cultivo | El **vigor sostenido** y la conservación del ritmo de manejo |
+
+**Rechazo automático — transitorio:** sin ciclo de cosecha detectable en los últimos
+**24 meses** (`ciclos_ultimos_24m == 0`).
+
+#### La causal no opera con cobertura insuficiente
+
+**Ninguna causal del EJE A se activa si la ventana de 24 meses tiene menos de 12 meses
+con observación óptica utilizable** (`cobertura_24m_medidos < 12`). En ese caso el
+dictamen declara la limitación y remite a visita técnica.
+
+Esto no es una excepción de conveniencia, es la corrección de un fallo real que se
+encontró midiendo. En el trópico andino la nubosidad borra entre 19 y 33 de los 108
+meses, y no se reparte pareja: hay parcelas con la mitad de los últimos dos años sin
+una sola observación. Sobre una ventana así, la interpolación aplana la serie, los
+cruces de umbral desaparecen y el detector devuelve cero ciclos — **exactamente el
+mismo resultado que produce un predio abandonado.**
+
+> **Un predio nublado y un predio abandonado no se pueden distinguir, y el sistema no
+> puede fingir que sí.** Rechazar un crédito porque estuvo nublado sobre la parcela es
+> el peor error que este producto puede cometer: es invisible, se ve técnico, y le
+> cae encima al productor que menos capacidad tiene de apelarlo. Cuando el dato no
+> alcanza, la respuesta correcta no es "no" — es "no sé, vaya y mire".
+
+**Rechazo automático — perenne:** requiere que se cumplan **las dos** condiciones, porque
+ninguna sola distingue un cafetal en manejo de uno abandonado:
+
+1. `perdida_amplitud_pct >= 40` — el predio perdió el ritmo de su propio manejo (poda,
+   renovación, recolección) frente a su historia previa. **No se compara contra otros predios,
+   se compara contra sí mismo**, que es lo único honesto cuando cada parcela tiene su altitud,
+   su variedad y su sombrío.
+2. `rendimiento_estimado_t_ha < rendimiento_municipal_eva_t_ha` — y además rinde por debajo de
+   su municipio según la cifra oficial de EVA.
+
+Exigir las dos evita el falso positivo obvio: un cafetal en **renovación por zoca** pierde
+amplitud a propósito durante dos años y sigue siendo un buen sujeto de crédito. Si rinde sobre
+el promedio municipal, no se rechaza — se aprueba y se anota la alerta.
+
+> **Por qué esto mejora el dictamen y no lo debilita.** El párrafo de capacidad de pago deja de
+> decir "9 ciclos de cosecha" para un cultivo que no cosecha en ciclos visibles, y pasa a decir
+> lo que de verdad se midió: vigor sostenido y ritmo de manejo conservado. Es **más correcto**,
+> y es el tipo de distinción que un evaluador del sector agropecuario reconoce de inmediato.
+
+**Consecuencia para los datos:** `predios.json` gana el campo `tipo_cultivo`
+(`"transitorio"` | `"perenne"`), porque la regla no se puede aplicar sin él y derivarlo del
+nombre del cultivo dentro del prompt sería pedirle al modelo que adivine algo que es un hecho.
 
 ---
 
@@ -350,7 +419,9 @@ Declarar una exclusión razonada puntúa. Un modelo que pretende servir para tod
 
 Operan **con independencia del puntaje**. Basta una.
 
-1. Sin ciclo de cosecha detectable en los últimos **24 meses**
+1. **Cultivo transitorio** sin ciclo de cosecha detectable en los últimos **24 meses**.
+   En **cultivo perenne** la causal exige las dos condiciones del EJE A: pérdida de amplitud
+   ≥ 40% **y** rendimiento por debajo del municipal de EVA
 2. Área detectada menor al **50%** del área declarada
 3. Cultivo detectado no corresponde al declarado
 4. **Predio dentro de PNN o páramo delimitado** (Ley 1930 de 2018)
@@ -563,19 +634,32 @@ nadie.
 
 ## 9. Aplicación a los cuatro predios del demo
 
+> **Actualizado 15-ago-2026, 23:20.** Esta tabla se escribió contra la serie calibrada y contra
+> áreas detectadas que estaban escritas a mano. Ahora las cuatro áreas se **miden**
+> (`scripts/medir_area.py`) y los cuatro puntajes son **salida real de `claude-opus-5`**,
+> commiteada en `data/dictamenes.json`. Dos casos cambiaron de sentido: `boyaca-papa` no tenía
+> el área 12% menor que se le atribuía —mide 100%— y `meta-cacao` no se rechaza por falta de
+> ciclos sino por área.
+
 | Predio | Puntaje | Banda | Decisión | Solicitado | Sugerido | Por qué |
 |---|---|---|---|---|---|---|
-| `huila-cafe` | **780** | Bajo | Aprobar | $9.000.000 | **$9.000.000** | Techo agronómico |
-| `tolima-arroz` | **640** | Medio | Aprobar | $22.000.000 | **$21.800.000** | Ajuste leve por área |
-| `boyaca-papa` | **590** | Medio | Aprobar con ajuste | $7.500.000 | **$6.600.000** | Área detectada 12% menor |
-| `meta-cacao` | **310** | Rechazo | **Rechazar** | $18.000.000 | **$0** | Causal 1: sin ciclo en 24 meses |
+| `huila-cafe` | **870** | Bajo | Aprobar con ajuste | $9.000.000 | **$8.437.500** | Área verificada 2,25 de 2,4 ha (94%) |
+| `tolima-arroz` | **850** | Bajo | Aprobar | $22.000.000 | **$22.000.000** | Área coincide al 100%; 14 ciclos en 9 años |
+| `boyaca-papa` | **750** | Bajo | Aprobar con ajuste | $7.500.000 | **$6.750.000** | Pierde 39% de amplitud y rinde 15% bajo el municipal |
+| `meta-cacao` | **240** | Rechazo | **Rechazar** | $18.000.000 | **$0** | Causal 2: 0,5 ha con actividad de 4,0 declaradas (12%) |
+
+> **Por qué el rechazo cambió de causal, y por qué el nuevo es más fuerte.** La causal 1 exigía
+> "sin ciclo en 24 meses", y sobre un perenne esa ausencia no significa nada: el café insignia
+> daba exactamente el mismo cero. La causal 2 se apoya en una medición sobre nueve años, donde
+> la nubosidad se promedia en vez de confundir, y es visible a simple vista en la imagen
+> satelital. Un rechazo que el comité puede ver, no solo leer.
 
 | Predio | Línea FINAGRO | FAG | Plazo | Condición |
 |---|---|---|---|---|
 | `huila-cafe` | **Inversión** · pequeño productor | 80% | 36 m | Dos tramos; el segundo condicionado a verificación satelital de siembra |
 | `tolima-arroz` | **Capital de Trabajo** · pequeño productor | 80% | 12 m | Desembolso único con monitoreo satelital mensual |
 | `boyaca-papa` | **Capital de Trabajo** · pequeño productor | 80% | 12 m | Monto ajustado al área verificada. Dos tramos |
-| `meta-cacao` | — | — | — | Reevaluable si acredita reactivación y se verifica un ciclo completo |
+| `meta-cacao` | — | — | — | Reevaluable únicamente si el productor delimita de nuevo el polígono efectivamente sembrado |
 
 ### ✅ Denominación de las líneas — verificada 15-ago-2026, 20:05
 
@@ -595,21 +679,47 @@ por resolución cada año.
 llama simplemente **Inversión**; el destino específico (renovación de cafetal) va como destino
 del crédito conforme a la Resolución 08 de 2023 CNCA, no como nombre de línea.
 
-> ⚠️ **Pendiente de verificar contra el Manual v.26.21:** una fuente indica un tope de
-> **20 SMMLV** en Capital de Trabajo para pequeño productor y 50 SMMLV para mediano. Si ese
-> tope está vigente, hay que contrastarlo con el monto de `tolima-arroz` ($21.280.000). **Laura:
-> esto sí conviene confirmarlo, porque si el tope aplica y lo excedemos, un jurado con
-> experiencia en el sector lo nota.**
+### ✅ El tope de 20 SMMLV — verificado 15-ago-2026, 23:45. **No nos afecta.**
+
+Quedaba abierto si el tope de **20 SMMLV** en Capital de Trabajo para pequeño productor (50 para
+mediano) chocaba con el monto de `tolima-arroz`. Se verificó y la respuesta es que no, por dos
+razones independientes:
+
+**Primera: la aritmética.** El SMMLV de 2026 es **$1.750.905** ([Decreto 1469 de
+2025](https://www.alcaldiabogota.gov.co/sisjur/normas/Norma1.jsp?i=192181&dt=S)), así que
+20 SMMLV son **$35.018.100**. Ningún predio del demo se acerca:
+
+| Predio | Solicita | En SMMLV | Tope 70% de activos |
+|---|---|---|---|
+| `huila-cafe` | $9.000.000 | 5,1 | $50.250.973 |
+| `tolima-arroz` | $22.000.000 | **12,6** | $242.675.433 |
+| `boyaca-papa` | $7.500.000 | 4,3 | $40.445.905 |
+| `meta-cacao` | $18.000.000 | 10,3 | $137.270.951 |
+
+**Segunda: el tope es de una sublínea distinta.** En el Manual de Servicios el límite de 20/50
+SMMLV aparece asociado a **Capital de Trabajo — Unidad Productiva Campesina**, que es una
+sublínea con destinación propia, no al Capital de Trabajo general. Aun si aplicara al general,
+la primera razón ya lo resuelve.
+
+> 🔧 **Y el chequeo destapó un error nuestro.** `generar_dictamen.py` tenía
+> `SMMLV_2026 = 1_623_500` marcado como supuesto sin verificar — un **7,3% por debajo** del
+> valor real. De esa constante sale el tope de crédito del pequeño productor que va en el
+> expediente que lee el modelo. Ya está corregida.
+
+**Lo que queda pendiente y no es bloqueante:** contrastar contra la versión vigente del Manual
+(v.26.21). El PDF de FINAGRO no es extraíble por texto; la verificación de arriba se apoya en
+versiones publicadas del mismo Manual y en el decreto de salarios, que sí es fuente primaria.
 
 ---
 
 ## 10. Lo que el dictamen debe decir siempre
 
 1. **Cada afirmación con su dato.** Prohibido "el productor parece confiable". Obligatorio
-   "9 ciclos de cosecha completos entre 2016 y 2025, NDVI pico promedio 0,78".
+   "14 ciclos de cosecha completos entre 2017 y 2025, NDVI pico promedio 0,89".
 2. **Tono de memorando interno de banco.** Sobrio, técnico, sin adjetivos.
-3. **El rechazo se explica con precisión.** Para `meta-cacao`: **colapso del patrón cíclico**,
-   no "vegetación escasa" — el NDVI no es bajo.
+3. **El rechazo se explica con precisión.** Para `meta-cacao`: **el polígono declarado no
+   corresponde a un cacaotal en manejo**, no "vegetación escasa" — el NDVI es el más alto de
+   los cuatro predios. Lo que falta no es verde, es actividad: 0,5 ha de 4,0 declaradas.
 4. **Las alertas se dicen aunque se apruebe.**
 5. **Constancia expresa de la verificación ambiental**, incluso cuando sea favorable.
 6. **El descargo va siempre:**

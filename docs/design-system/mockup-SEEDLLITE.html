@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/industry-3e8ac213-5d3d-4fa1-a580-d84dc2ba3f73/styles.css">
+  <script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
+  <style>
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes blink { 50% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+    a { color: var(--color-accent); }
+    a:hover { color: var(--color-accent-700); }
+  </style>
+</helmet>
+
+<sc-if value="{{ loaded }}" hint-placeholder-val="{{ true }}">
+  <div style="min-height:100vh; display:flex; flex-direction:column; background:var(--color-bg); color:var(--color-text); font-family:var(--font-body);">
+
+    <div class="nav" style="border-bottom:1px solid var(--color-divider); position:sticky; top:0; background:var(--color-bg); z-index:10; flex-wrap:wrap; row-gap:6px;">
+      <a href="#mapa" class="nav-brand" style="margin-right:0; text-decoration:none; color:var(--color-text); letter-spacing:0.02em;">SEEDLLITE</a>
+      <div style="font-size:12px; color:var(--color-text); opacity:0.6; max-width:360px; line-height:1.3;">Evaluación de riesgo crediticio agropecuario por análisis satelital</div>
+      <div style="flex:1; min-width:8px;"></div>
+      <a href="#mapa" style="{{ navMapaStyle }} font-size:14px;">Mapa</a>
+      <a href="#cartera" style="{{ navCarteraStyle }} font-size:14px;">Cartera</a>
+    </div>
+
+    <div style="flex:1; width:100%; max-width:1180px; margin:0 auto; padding:32px 24px 56px; box-sizing:border-box;">
+
+      <sc-if value="{{ showMapa }}" hint-placeholder-val="{{ true }}">
+        <h6 style="color:var(--color-accent); margin:0 0 6px;">PASO 1 · SELECCIÓN DE PREDIO</h6>
+        <h2 style="margin:0 0 8px;">Predios en evaluación</h2>
+        <p style="max-width:640px; opacity:0.72; margin:0 0 28px; font-size:15px;">Cuatro solicitudes de crédito agropecuario, cada una respaldada por diez años de imágenes Sentinel-2 sobre el predio declarado.</p>
+        <div style="display:grid; grid-template-columns:minmax(280px,420px) 1fr; gap:28px; align-items:start;">
+          <div class="blueprint" style="padding:18px;">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <h6 style="opacity:0.55; margin:0 0 10px;">PLANO DE UBICACIÓN</h6>
+            <svg viewBox="0 0 460 540" style="width:100%; height:auto; display:block;">
+              <rect x="0" y="0" width="460" height="540" fill="var(--color-bg)"></rect>
+              <path d="{{ mapaPath }}" fill="var(--color-accent-100)" stroke="var(--color-accent-700)" stroke-width="1.2" stroke-linejoin="round"></path>
+              <sc-for list="{{ mapaPuntos }}" as="pt" hint-placeholder-count="4">
+                <a href="#ficha/{{ pt.id }}">
+                  <circle cx="{{ pt.x }}" cy="{{ pt.y }}" r="11" fill="{{ pt.color.bg }}"></circle>
+                  <circle cx="{{ pt.x }}" cy="{{ pt.y }}" r="5" fill="{{ pt.color.dot }}" stroke="var(--color-bg)" stroke-width="1.5"></circle>
+                  <text x="{{ pt.x }}" y="{{ pt.labelY }}" font-size="11" fill="var(--color-text)" text-anchor="middle" font-family="var(--font-heading)" font-weight="600">{{ pt.departamento }}</text>
+                </a>
+              </sc-for>
+            </svg>
+            <div style="display:flex; flex-wrap:wrap; gap:10px 18px; margin-top:12px;">
+              <sc-for list="{{ leyendaCultivos }}" as="lc" hint-placeholder-count="4">
+                <span style="display:inline-flex; align-items:center; gap:6px; font-size:11px; opacity:.75;">
+                  <span style="width:9px; height:9px; border-radius:50%; background:{{ lc.dot }}; display:inline-block;"></span>{{ lc.nombre }}
+                </span>
+              </sc-for>
+            </div>
+            <p style="font-size:11px; opacity:0.5; margin:10px 0 0;">Mapa base: Natural Earth (dominio público) · proyección Mercator ajustada a los cuatro predios.</p>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px;">
+            <sc-for list="{{ mapaPredios }}" as="p" hint-placeholder-count="4">
+              <a href="#ficha/{{ p.id }}" class="card blueprint elev-sm" style="text-decoration:none; color:inherit; padding:18px; gap:6px; border-left:3px solid {{ p.cultivoColor.dot }};">
+                <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                <div class="card-kicker" style="color:{{ p.cultivoColor.text }};">{{ p.cultivo }}</div>
+                <div class="card-title">{{ p.productor }}</div>
+                <div class="card-meta">{{ p.municipioDepto }}</div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; opacity:0.75; margin-top:6px; font-variant-numeric:tabular-nums;">
+                  <span>{{ p.areaDeclaradaTxt }}</span>
+                  <span>{{ p.montoSolicitadoTxt }}</span>
+                </div>
+              </a>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showFicha }}" hint-placeholder-val="{{ false }}">
+        <a href="#mapa" style="font-size:13px; text-decoration:none;">← Mapa</a>
+        <h6 style="color:var(--color-accent); margin:16px 0 6px;">FICHA DEL PREDIO</h6>
+        <h2 style="margin:0 0 4px;">{{ predio.productor }}</h2>
+        <p style="opacity:0.7; margin:0 0 24px; font-size:14px;">{{ predio.vereda }}, {{ predio.municipio }} ({{ predio.departamento }}) · {{ predio.cultivo }} · {{ predio.variedad }}</p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1px; background:var(--color-divider); border:1px solid var(--color-divider); margin-bottom:8px;">
+          <div style="background:var(--color-bg); padding:16px;">
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; opacity:.6;">Área declarada</div>
+            <div style="font-family:var(--font-heading); font-size:22px; font-variant-numeric:tabular-nums;">{{ areaDeclaradaTxt }}</div>
+          </div>
+          <div style="background:var(--color-bg); padding:16px;">
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; opacity:.6;">Área detectada</div>
+            <div style="font-family:var(--font-heading); font-size:22px; font-variant-numeric:tabular-nums;">{{ areaDetectadaTxt }}</div>
+          </div>
+          <div style="background:var(--color-bg); padding:16px;">
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; opacity:.6;">Monto solicitado</div>
+            <div style="font-family:var(--font-heading); font-size:22px; font-variant-numeric:tabular-nums;">{{ montoSolicitadoTxt }}</div>
+          </div>
+          <div style="background:var(--color-bg); padding:16px;">
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; opacity:.6;">Clasificación</div>
+            <div style="font-family:var(--font-heading); font-size:16px;">{{ tipoProductorTxt }}</div>
+          </div>
+        </div>
+        <p style="font-size:13px; opacity:.65; margin:0 0 28px;">Destino: {{ predio.destino }}</p>
+
+        <div class="blueprint" style="padding:20px;">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:10px;">
+            <h4 style="margin:0;">Serie NDVI · 2016–2025</h4>
+            <div style="display:flex; gap:14px; font-size:11px; opacity:.65; flex-wrap:wrap;">
+              <span><i style="display:inline-block; width:10px; height:10px; background:var(--color-accent-300); margin-right:5px; vertical-align:-1px;"></i>El Niño (sequía)</span>
+              <span><i style="display:inline-block; width:10px; height:10px; background:var(--color-neutral-400); margin-right:5px; vertical-align:-1px;"></i>La Niña (exceso de lluvia)</span>
+            </div>
+          </div>
+          <svg viewBox="0 0 {{ chart.W }} {{ chart.H }}" style="width:100%; height:300px; display:block; margin-top:10px;" preserveAspectRatio="none">
+            <sc-for list="{{ chart.bands }}" as="b" hint-placeholder-count="2">
+              <rect x="{{ b.x }}" y="{{ chart.plotTop }}" width="{{ b.width }}" height="{{ chart.plotHeight }}" fill="{{ b.fill }}" opacity="0.4"></rect>
+              <text x="{{ b.labelX }}" y="{{ chart.bandLabelY }}" font-size="10" fill="var(--color-text)" opacity="0.55" text-anchor="middle">{{ b.label }}</text>
+            </sc-for>
+            <sc-for list="{{ chart.gridY }}" as="g" hint-placeholder-count="6">
+              <line x1="{{ chart.plotLeft }}" x2="{{ chart.plotRight }}" y1="{{ g.y }}" y2="{{ g.y }}" stroke="var(--color-divider)" stroke-width="1"></line>
+              <text x="4" y="{{ g.y }}" font-size="10" fill="var(--color-text)" opacity="0.5">{{ g.label }}</text>
+            </sc-for>
+            <path d="{{ chart.path }}" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linejoin="round"></path>
+            <sc-for list="{{ chart.points }}" as="pt" hint-placeholder-count="24">
+              <circle cx="{{ pt.cx }}" cy="{{ pt.cy }}" r="2.1" fill="var(--color-accent)" opacity="{{ pt.opacity }}"></circle>
+            </sc-for>
+            <sc-for list="{{ chart.yearLabels }}" as="yl" hint-placeholder-count="10">
+              <text x="{{ yl.x }}" y="{{ chart.yearLabelY }}" font-size="10" fill="var(--color-text)" opacity="0.55" text-anchor="middle">{{ yl.label }}</text>
+            </sc-for>
+          </svg>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; border-top:1px solid var(--color-divider); margin-top:12px; padding-top:16px;">
+            <div>
+              <div style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; opacity:.6;">Ciclos detectados</div>
+              <div style="font-family:var(--font-heading); font-size:32px; font-variant-numeric:tabular-nums;">{{ ciclosDetectadosTxt }}</div>
+            </div>
+            <div>
+              <div style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; opacity:.6;">NDVI pico promedio</div>
+              <div style="font-family:var(--font-heading); font-size:32px; font-variant-numeric:tabular-nums;">{{ ndviPicoTxt }}</div>
+            </div>
+            <div>
+              <div style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; opacity:.6;">Rendimiento estimado</div>
+              <div style="font-family:var(--font-heading); font-size:22px; font-variant-numeric:tabular-nums;">{{ rendimientoTxt }}</div>
+              <div style="font-size:11px; opacity:.6; margin-top:2px;">vs. {{ rendimientoMunicipalTxt }} municipal · {{ fuenteReferencia }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:28px; display:flex; justify-content:flex-end;">
+          <a href="#analisis/{{ predio.id }}" class="btn btn-primary" style="text-decoration:none;">Evaluar con SEEDLLITE →</a>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showAnalisis }}" hint-placeholder-val="{{ false }}">
+        <a href="#ficha/{{ predio.id }}" style="font-size:13px; text-decoration:none;">← {{ predio.productor }}</a>
+        <h6 style="color:var(--color-accent); margin:16px 0 6px;">PASO 3 · ANÁLISIS CON IA</h6>
+        <h2 style="margin:0 0 28px;">Evaluando {{ predio.productor }}</h2>
+        <div style="display:grid; grid-template-columns:minmax(260px,340px) 1fr; gap:36px; align-items:start;">
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <sc-for list="{{ pasos }}" as="paso" hint-placeholder-count="6">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <sc-if value="{{ paso.esPendiente }}" hint-placeholder-val="{{ false }}">
+                  <span style="width:20px; height:20px; border-radius:50%; border:1.5px solid var(--color-divider); flex:none; display:block;"></span>
+                </sc-if>
+                <sc-if value="{{ paso.esActivo }}" hint-placeholder-val="{{ false }}">
+                  <svg width="20" height="20" style="flex:none;" viewBox="0 0 20 20">
+                    <circle cx="10" cy="10" r="8" stroke="var(--color-divider)" stroke-width="2" fill="none"></circle>
+                    <circle cx="10" cy="10" r="8" stroke="var(--color-accent)" stroke-width="2" fill="none" stroke-dasharray="16 40" style="animation:spin 0.9s linear infinite; transform-origin:10px 10px;"></circle>
+                  </svg>
+                </sc-if>
+                <sc-if value="{{ paso.esHecho }}" hint-placeholder-val="{{ false }}">
+                  <svg width="20" height="20" style="flex:none;" viewBox="0 0 20 20">
+                    <circle cx="10" cy="10" r="9" fill="var(--color-accent)"></circle>
+                    <polyline points="6,10.5 9,13.5 14,7" fill="none" stroke="var(--color-bg)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                  </svg>
+                </sc-if>
+                <span style="{{ paso.textStyle }}">{{ paso.texto }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div class="blueprint" style="padding:26px; min-height:240px;">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <h6 style="opacity:.55; margin:0 0 16px;">RESULTADO</h6>
+            <sc-if value="{{ mostrarResultado }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; align-items:baseline; gap:10px; margin-bottom:10px;">
+                <span style="font-family:var(--font-heading); font-weight:700; font-size:56px; line-height:1; font-variant-numeric:tabular-nums; color:{{ bandaColor.text }};">{{ puntajeStr }}</span>
+                <span style="opacity:.5; font-size:16px;">/ 1000</span>
+              </div>
+              <span class="tag" style="background:{{ bandaColor.bg }}; color:{{ bandaColor.text }};">RIESGO {{ dictamen.bandaRiesgo }}</span>
+              <p style="margin:16px 0 0; font-size:16px; line-height:1.5; min-height:52px;">{{ analisisTexto }}<span style="animation:blink 1s steps(1) infinite;">▌</span></p>
+              <sc-if value="{{ analisisListo }}" hint-placeholder-val="{{ false }}">
+                <a href="#dictamen/{{ predio.id }}" class="btn btn-primary" style="text-decoration:none; margin-top:18px; display:inline-flex;">Ver dictamen completo →</a>
+              </sc-if>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showDictamen }}" hint-placeholder-val="{{ false }}">
+        <a href="#ficha/{{ predio.id }}" style="font-size:13px; text-decoration:none;">← {{ predio.productor }}</a>
+        <h6 style="color:var(--color-accent); margin:16px 0 6px;">PASO 4 · DICTAMEN DE CRÉDITO</h6>
+        <div style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:20px; margin-bottom:6px;">
+          <div style="display:flex; align-items:baseline; gap:10px;">
+            <span style="font-family:var(--font-heading); font-weight:700; font-size:72px; line-height:1; font-variant-numeric:tabular-nums; color:{{ bandaColor.text }};">{{ puntajeStr }}</span>
+            <span style="opacity:.5; font-size:18px;">/ 1000</span>
+          </div>
+          <span class="tag" style="background:{{ bandaColor.bg }}; color:{{ bandaColor.text }}; font-size:12px; padding:5px 12px;">RIESGO {{ dictamen.bandaRiesgo }}</span>
+        </div>
+        <h3 style="text-transform:uppercase; letter-spacing:.03em; margin:0 0 30px; color:{{ bandaColor.text }};">{{ decisionTxt }}</h3>
+
+        <div style="display:grid; grid-template-columns:1fr 300px; gap:32px; align-items:start;">
+          <div>
+            <h6 style="opacity:.55; margin:0 0 6px;">CLASIFICACIÓN</h6>
+            <p style="font-size:15px; line-height:1.6; margin:0 0 20px;">{{ dictamen.memorando.clasificacion }}</p>
+            <h6 style="opacity:.55; margin:0 0 6px;">VERIFICACIÓN DEL ACTIVO PRODUCTIVO</h6>
+            <p style="font-size:15px; line-height:1.6; margin:0 0 20px;">{{ dictamen.memorando.activoProductivo }}</p>
+            <h6 style="opacity:.55; margin:0 0 6px;">CAPACIDAD DE PAGO</h6>
+            <p style="font-size:15px; line-height:1.6; margin:0 0 20px;">{{ dictamen.memorando.capacidadPago }}</p>
+            <h6 style="opacity:.55; margin:0 0 6px;">RIESGO SECTORIAL Y CLIMÁTICO</h6>
+            <p style="font-size:15px; line-height:1.6; margin:0 0 20px;">{{ dictamen.memorando.riesgoClimatico }}</p>
+            <h6 style="opacity:.55; margin:0 0 6px;">VERIFICACIONES DE EXCLUSIÓN</h6>
+            <p style="font-size:15px; line-height:1.6; margin:0 0 28px;">{{ dictamen.memorando.verificaciones }}</p>
+
+            <h6 style="opacity:.55; margin:0 0 12px;">EVIDENCIA</h6>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <sc-for list="{{ evidencia }}" as="ev" hint-placeholder-count="4">
+                <div style="display:flex; gap:10px; align-items:flex-start;">
+                  <sc-if value="{{ ev.esFavorable }}" hint-placeholder-val="{{ false }}">
+                    <svg width="16" height="16" viewBox="0 0 16 16" style="flex:none; margin-top:2px;">
+                      <circle cx="8" cy="8" r="7" fill="none" stroke="oklch(0.45 0.11 150)" stroke-width="1.4"></circle>
+                      <polyline points="4.5,8.2 7,10.7 11.5,5.5" fill="none" stroke="oklch(0.45 0.11 150)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                    </svg>
+                  </sc-if>
+                  <sc-if value="{{ ev.esAlerta }}" hint-placeholder-val="{{ false }}">
+                    <svg width="16" height="16" viewBox="0 0 16 16" style="flex:none; margin-top:2px;">
+                      <polygon points="8,1.5 15,14.5 1,14.5" fill="none" stroke="oklch(0.5 0.13 85)" stroke-width="1.4" stroke-linejoin="round"></polygon>
+                      <line x1="8" y1="6.5" x2="8" y2="10" stroke="oklch(0.5 0.13 85)" stroke-width="1.4" stroke-linecap="round"></line>
+                      <circle cx="8" cy="12.2" r="0.9" fill="oklch(0.5 0.13 85)"></circle>
+                    </svg>
+                  </sc-if>
+                  <sc-if value="{{ ev.esCritico }}" hint-placeholder-val="{{ false }}">
+                    <span style="width:16px; height:16px; display:flex; align-items:center; justify-content:center; flex:none; margin-top:2px;">
+                      <span style="width:9px; height:9px; border-radius:50%; background:oklch(0.5 0.15 25); display:block;"></span>
+                    </span>
+                  </sc-if>
+                  <span style="font-size:14px; line-height:1.55;">{{ ev.texto }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div>
+            <div class="blueprint" style="padding:18px; margin-bottom:20px;">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              <h6 style="opacity:.55; margin:0 0 14px;">EJES DE EVALUACIÓN</h6>
+              <sc-for list="{{ ejes }}" as="eje" hint-placeholder-count="4">
+                <div style="margin-bottom:14px;">
+                  <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px; gap:8px;">
+                    <span style="opacity:.75;">{{ eje.nombre }} · {{ eje.peso }}%</span>
+                    <span style="font-variant-numeric:tabular-nums; flex:none;">{{ eje.puntaje }}/{{ eje.peso }}</span>
+                  </div>
+                  <div style="height:8px; background:var(--color-surface);">
+                    <div style="height:8px; width:{{ eje.pct }}%; background:var(--color-accent);"></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div class="blueprint" style="padding:18px;">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              <h6 style="opacity:.55; margin:0 0 12px;">RECOMENDACIÓN OPERATIVA</h6>
+              <p style="font-size:13px; line-height:1.6; margin:0 0 14px;">{{ dictamen.memorando.recomendacion }}</p>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:12px;">
+                <div><div style="opacity:.55;">Monto sugerido</div><div style="font-family:var(--font-heading); font-size:17px; font-variant-numeric:tabular-nums;">{{ montoSugeridoTxt }}</div></div>
+                <div><div style="opacity:.55;">Línea FINAGRO</div><div style="font-size:13px;">{{ dictamen.lineaFinagro }}</div></div>
+                <div><div style="opacity:.55;">Cobertura FAG</div><div style="font-variant-numeric:tabular-nums;">{{ coberturaFagTxt }}</div></div>
+                <div><div style="opacity:.55;">Plazo</div><div style="font-variant-numeric:tabular-nums;">{{ plazoMesesTxt }}</div></div>
+              </div>
+              <p style="font-size:12px; opacity:.7; margin:14px 0 0;">{{ dictamen.desembolso }}</p>
+            </div>
+          </div>
+        </div>
+
+        <p style="font-size:12px; opacity:.55; margin-top:44px; max-width:780px; line-height:1.6;">SEEDLLITE emite una recomendación dirigida a un intermediario financiero vigilado. No constituye oferta de crédito, promesa de desembolso ni asesoría financiera al productor. La decisión de otorgamiento corresponde exclusivamente al intermediario, conforme a su reglamento de crédito, al SARC y al Manual de Servicios de FINAGRO. Predios y productores ficticios, construidos para demostración.</p>
+      </sc-if>
+
+      <sc-if value="{{ showCartera }}" hint-placeholder-val="{{ false }}">
+        <h6 style="color:var(--color-accent); margin:0 0 6px;">CARTERA</h6>
+        <h2 style="margin:0 0 20px;">Los cuatro expedientes</h2>
+        <div style="overflow-x:auto;">
+          <table class="table">
+            <thead>
+              <tr><th>Predio</th><th>Cultivo</th><th>Monto solicitado</th><th>Puntaje</th><th>Banda</th><th>Decisión</th><th></th></tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ carteraFilas }}" as="row" hint-placeholder-count="4">
+                <tr>
+                  <td>{{ row.productor }}<div style="font-size:11px; opacity:.6;">{{ row.municipio }}, {{ row.departamento }}</div></td>
+                  <td>{{ row.cultivo }}</td>
+                  <td style="font-variant-numeric:tabular-nums;">{{ row.montoSolicitadoTxt }}</td>
+                  <td style="font-variant-numeric:tabular-nums;">{{ row.puntajeTxt }}</td>
+                  <td><span class="tag" style="background:{{ row.bandaColor.bg }}; color:{{ row.bandaColor.text }};">{{ row.bandaRiesgo }}</span></td>
+                  <td>{{ row.decisionTxt }}</td>
+                  <td><a href="#dictamen/{{ row.id }}" style="text-decoration:none; font-size:13px;">Ver dictamen →</a></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showNotFound }}" hint-placeholder-val="{{ false }}">
+        <p style="opacity:.7;">Predio no encontrado. <a href="#mapa">Volver al mapa.</a></p>
+      </sc-if>
+
+    </div>
+
+    <div style="border-top:1px solid var(--color-divider); padding:18px 24px; font-size:11px; opacity:.55; text-align:center;">Datos de demostración. Imágenes Copernicus Sentinel-2, licencia abierta.</div>
+  </div>
+</sc-if>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+function formatCOP(n) {
+  if (n === 0) return '$0';
+  return '$' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+function formatNDVI(n) { return n.toFixed(2).replace('.', ','); }
+
+function mulberry32(seed) {
+  return function () {
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function hashStr(s) { let h = 0; for (let i = 0; i < s.length; i++) { h = (h << 5) - h + s.charCodeAt(i); h |= 0; } return h; }
+
+const CULTIVO_HUE = { 'Café': 38, 'Arroz': 150, 'Papa': 95, 'Cacao': 18 };
+function getCultivoColor(cultivo) {
+  const h = CULTIVO_HUE[cultivo] != null ? CULTIVO_HUE[cultivo] : 230;
+  return { dot: 'oklch(0.52 0.14 ' + h + ')', bg: 'oklch(0.9 0.06 ' + h + ')', text: 'oklch(0.4 0.13 ' + h + ')' };
+}
+
+const EVENTOS_CLIMATICOS = [
+  { nombre: 'La Niña 2022', desde: '2022-01', hasta: '2022-12', tipo: 'exceso_lluvia' },
+  { nombre: 'El Niño 2023-24', desde: '2023-06', hasta: '2024-05', tipo: 'sequia' },
+];
+
+const CULTIVO_PARAMS = {
+  'huila-cafe': { tipo: 'perenne', base: 0.55, pico: 0.82, faseMes: 2, dipElNino: 0.18 },
+  'tolima-arroz': { tipo: 'transitorio', base: 0.18, pico: 0.86, dipElNino: 0.22 },
+  'boyaca-papa': { tipo: 'transitorio', base: 0.20, pico: 0.74, dipElNino: 0.16 },
+  'meta-cacao': { tipo: 'perenne', base: 0.58, pico: 0.74, faseMes: 1, dipElNino: 0, abandonoDesde: '2024-01', mesetaAbandono: 0.60 },
+};
+
+function generarSerie(id) {
+  const p = CULTIVO_PARAMS[id];
+  const rand = mulberry32(hashStr(id));
+  const puntos = [];
+  for (let i = 0; i < 120; i++) {
+    const year = 2016 + Math.floor(i / 12);
+    const month = (i % 12) + 1;
+    const fecha = year + '-' + String(month).padStart(2, '0');
+    let ndvi;
+    if (p.tipo === 'transitorio') {
+      const pos = i % 6;
+      ndvi = pos < 5 ? p.base + (p.pico - p.base) * (pos / 4) : p.base + (p.pico - p.base) * 0.12;
+    } else {
+      const monthIdx = month - 1;
+      const mid = (p.base + p.pico) / 2, amp = (p.pico - p.base) / 2;
+      ndvi = mid + amp * Math.cos(2 * Math.PI * ((monthIdx - (p.faseMes || 0)) / 12));
+      if (p.abandonoDesde && fecha >= p.abandonoDesde) ndvi = p.mesetaAbandono + (rand() - 0.5) * 0.03;
+    }
+    const abandonado = p.abandonoDesde && fecha >= p.abandonoDesde;
+    if (fecha >= '2023-06' && fecha <= '2024-05' && !abandonado) ndvi = ndvi * (1 - p.dipElNino);
+    let nubeBase = 0.05 + rand() * 0.30;
+    if (fecha >= '2022-01' && fecha <= '2022-12') {
+      if (!abandonado) ndvi += 0.03;
+      nubeBase = 0.35 + rand() * 0.45;
+    }
+    ndvi += (rand() - 0.5) * 0.02;
+    ndvi = Math.max(0.05, Math.min(0.95, ndvi));
+    const nubosidad = Math.min(0.95, nubeBase + (rand() < 0.08 ? rand() * 0.3 : 0));
+    puntos.push({ fecha, ndvi: Math.round(ndvi * 100) / 100, nubosidad: Math.round(nubosidad * 100) / 100 });
+  }
+  return puntos;
+}
+
+const PREDIOS = [
+  {
+    id: 'huila-cafe', productor: 'María Ligia Osorio', tipoProductor: 'pequeño',
+    vereda: 'El Carmen', municipio: 'Pitalito', departamento: 'Huila',
+    coordenadas: { lat: 1.8534, lon: -76.0521 },
+    cultivo: 'Café', variedad: 'Castillo',
+    areaDeclarada: 2.4, areaDetectada: 2.4, montoSolicitado: 9000000,
+    destino: 'Renovación de cafetal y compra de insumos',
+    activosSmmlv: 41, anosEnPredio: 11, creditoPrevio: false,
+    serieMeta: { ciclosDetectados: 9, ndviPicoPromedio: 0.78, rendimientoEstimado: 1.42, rendimientoMunicipalEva: 1.14, fuenteReferencia: 'EVA 2018 — Pitalito, Huila — Café' },
+  },
+  {
+    id: 'tolima-arroz', productor: 'Hernán Darío Betancourt', tipoProductor: 'pequeño',
+    vereda: 'La Palmita', municipio: 'El Espinal', departamento: 'Tolima',
+    coordenadas: { lat: 4.1489, lon: -74.8836 },
+    cultivo: 'Arroz', variedad: 'Fedearroz 67',
+    areaDeclarada: 6.1, areaDetectada: 5.9, montoSolicitado: 22000000,
+    destino: 'Capital de trabajo para siembra semestre B',
+    activosSmmlv: 198, anosEnPredio: 8, creditoPrevio: true,
+    serieMeta: { ciclosDetectados: 17, ndviPicoPromedio: 0.83, rendimientoEstimado: 8.02, rendimientoMunicipalEva: 7.69, fuenteReferencia: 'EVA 2018 — El Espinal, Tolima — Arroz' },
+  },
+  {
+    id: 'boyaca-papa', productor: 'Blanca Cecilia Rojas', tipoProductor: 'pequeño',
+    vereda: 'Puente de Boyacá', municipio: 'Ventaquemada', departamento: 'Boyacá',
+    coordenadas: { lat: 5.3672, lon: -73.5218 },
+    cultivo: 'Papa', variedad: 'Pastusa Suprema',
+    areaDeclarada: 1.8, areaDetectada: 1.58, montoSolicitado: 7500000,
+    destino: 'Semilla certificada y fertilizantes',
+    activosSmmlv: 33, anosEnPredio: 6, creditoPrevio: false,
+    serieMeta: { ciclosDetectados: 16, ndviPicoPromedio: 0.71, rendimientoEstimado: 27.4, rendimientoMunicipalEva: 30.0, fuenteReferencia: 'EVA 2018 — Ventaquemada, Boyacá — Papa' },
+  },
+  {
+    id: 'meta-cacao', productor: 'Jorge Eliécer Ramírez', tipoProductor: 'pequeño',
+    vereda: 'Los Naranjos', municipio: 'Granada', departamento: 'Meta',
+    coordenadas: { lat: 3.5421, lon: -73.7059 },
+    cultivo: 'Cacao', variedad: 'CCN-51',
+    areaDeclarada: 4.0, areaDetectada: 0.0, montoSolicitado: 18000000,
+    destino: 'Mantenimiento de cacaotal establecido',
+    activosSmmlv: 112, anosEnPredio: 4, creditoPrevio: false,
+    serieMeta: { ciclosDetectados: 0, ndviPicoPromedio: null, rendimientoEstimado: null, rendimientoMunicipalEva: 0.60, fuenteReferencia: 'EVA 2018 — Granada, Meta — Cacao' },
+  },
+];
+
+const DICTAMENES = {
+  'huila-cafe': {
+    puntaje: 780, bandaRiesgo: 'bajo', decision: 'aprobar',
+    montoSugerido: 9000000, lineaFinagro: 'Inversión — pequeño productor', coberturaFag: 80, plazoMeses: 36,
+    desembolso: 'Dos tramos; el segundo condicionado a verificación satelital de la siembra efectiva.',
+    fraseCorta: '9 ciclos de cosecha completos en 10 años sostienen una recomendación de aprobación por $9.000.000.',
+    ejes: [
+      { nombre: 'Capacidad de pago proyectada', peso: 40, puntaje: 34 },
+      { nombre: 'Verificación del activo productivo', peso: 20, puntaje: 18 },
+      { nombre: 'Riesgo sectorial y climático', peso: 25, puntaje: 17 },
+      { nombre: 'Coherencia del destino del crédito', peso: 15, puntaje: 9 },
+    ],
+    evidencia: [
+      { tipo: 'favorable', texto: '9 ciclos de cosecha completos detectados entre 2016 y 2025' },
+      { tipo: 'favorable', texto: 'Rendimiento estimado 1,42 t/ha frente a 1,14 t/ha del promedio municipal de Pitalito (EVA 2018)' },
+      { tipo: 'alerta', texto: 'Caída de vigor de 18% durante El Niño 2023-24 — el mayor descenso de la serie de 10 años, con recuperación completa' },
+      { tipo: 'favorable', texto: 'Verificación RTDAF/RUPTA: el predio no figura en el Registro de Tierras Despojadas ni tiene medida de protección vigente' },
+      { tipo: 'favorable', texto: 'Sin restricción ambiental: fuera de Parque Nacional Natural, páramo delimitado y reserva forestal Ley 2ª' },
+    ],
+    memorando: {
+      clasificacion: 'La solicitante se clasifica como pequeño productor: 41 SMMLV en activos, dentro del límite de 284 SMMLV. La operación es elegible para recursos FINAGRO y para cobertura del Fondo Agropecuario de Garantías.',
+      activoProductivo: 'El predio existe y presenta actividad agrícola continua. No se trata de un predio fantasma. El área detectada por análisis satelital —2,4 ha— coincide con el área declarada, sin inconsistencias frente a la información catastral disponible.',
+      capacidadPago: 'Se detectan 9 ciclos de cosecha completos en 10 años, con rendimiento estimado de 1,42 t/ha frente a 1,14 t/ha del promedio municipal de Pitalito reportado en EVA 2018. Es la constancia del patrón productivo —y no su nivel puntual— la que sustenta la proyección de flujo. La solicitante acredita capacidad y solvencia para responder por la obligación.',
+      riesgoClimatico: 'Durante la ventana de El Niño 2023-24 la serie registra una caída de vigor del 18% —el mayor descenso de los diez años analizados— con recuperación completa en los dos ciclos siguientes. Es la única alerta del expediente, y se pondera a la baja porque el predio no perdió el ciclo productivo: lo sostuvo con menor vigor.',
+      verificaciones: 'El predio no figura en el RTDAF ni registra medida de protección vigente en RUPTA. No presenta restricción ambiental: no se ubica en Parque Nacional Natural, páramo delimitado ni reserva forestal de Ley 2ª de 1959.',
+      recomendacion: 'Aprobar por $9.000.000 —el monto solicitado completo—. El área declarada coincide con la verificada y el monto es proporcional al costo documentado del cultivo. Línea de inversión para pequeño productor, con cobertura FAG del 80% y plazo de 36 meses. Desembolso en dos tramos, el segundo condicionado a verificación satelital de la siembra efectiva.',
+    },
+  },
+  'tolima-arroz': {
+    puntaje: 640, bandaRiesgo: 'medio', decision: 'aprobar',
+    montoSugerido: 21280000, lineaFinagro: 'Capital de Trabajo — pequeño productor', coberturaFag: 80, plazoMeses: 12,
+    desembolso: 'Desembolso único, sujeto a monitoreo satelital mensual durante el ciclo financiado.',
+    fraseCorta: '17 ciclos de cosecha en 10 años, con la mayor exposición climática de los cuatro expedientes: se recomienda aprobar $21.280.000.',
+    ejes: [
+      { nombre: 'Capacidad de pago proyectada', peso: 40, puntaje: 30 },
+      { nombre: 'Verificación del activo productivo', peso: 20, puntaje: 17 },
+      { nombre: 'Riesgo sectorial y climático', peso: 25, puntaje: 10 },
+      { nombre: 'Coherencia del destino del crédito', peso: 15, puntaje: 7 },
+    ],
+    evidencia: [
+      { tipo: 'favorable', texto: '17 ciclos de cosecha completos detectados entre 2016 y 2025, sobre un régimen de dos siembras anuales' },
+      { tipo: 'favorable', texto: 'Rendimiento estimado 8,02 t/ha frente a 7,69 t/ha del promedio municipal de El Espinal (EVA 2018)' },
+      { tipo: 'alerta', texto: 'Caída de vigor de 22% durante El Niño 2023-24 — la mayor de los cuatro expedientes evaluados' },
+      { tipo: 'alerta', texto: 'Un ciclo perdido por exceso de lluvia durante La Niña 2022' },
+      { tipo: 'favorable', texto: 'Verificación RTDAF/RUPTA: el predio no figura en el Registro de Tierras Despojadas ni tiene medida de protección vigente' },
+    ],
+    memorando: {
+      clasificacion: 'El solicitante se clasifica como pequeño productor: 198 SMMLV en activos, dentro del límite de 284 SMMLV. Registra un crédito previo con la entidad, sin incumplimientos que consten en este expediente.',
+      activoProductivo: 'El predio presenta actividad agrícola continua sobre un lote arrocero mecanizable. El área detectada por análisis satelital —5,9 ha— es 96,7% del área declarada de 6,1 ha; la diferencia no compromete la verificación y se ajusta el monto en la misma proporción.',
+      capacidadPago: 'Se detectan 17 ciclos de cosecha completos en 10 años, sobre un régimen de dos siembras anuales. El rendimiento estimado del predio es de 8,02 t/ha, frente a 7,69 t/ha del promedio municipal de El Espinal reportado en EVA 2018 y 6,26 t/ha de la zona Centro según FINAGRO/DANE-Fedearroz 2019. La continuidad del régimen semestral sustenta un flujo de caja recurrente.',
+      riesgoClimatico: 'El cultivo transitorio de dos ciclos anuales queda expuesto a cada ventana climática del calendario agrícola. Durante La Niña 2022 se perdió un ciclo por exceso de lluvia en el semestre B, y durante El Niño 2023-24 la serie registra una caída de vigor del 22% frente al promedio municipal, con recuperación en el ciclo siguiente. Es la mayor exposición climática de los cuatro expedientes evaluados.',
+      verificaciones: 'El predio no figura en el RTDAF ni registra medida de protección vigente en RUPTA. No presenta restricción ambiental: no se ubica en Parque Nacional Natural, páramo delimitado ni reserva forestal de Ley 2ª de 1959.',
+      recomendacion: 'Aprobar por $21.280.000, resultado de ajustar el monto solicitado ($22.000.000) a la proporción del área verificada (5,9 ÷ 6,1 ha). Línea de Capital de Trabajo para pequeño productor, con cobertura FAG del 80% y plazo de 12 meses. Desembolso único, sujeto a monitoreo satelital mensual, dada la exposición climática registrada.',
+    },
+  },
+  'boyaca-papa': {
+    puntaje: 590, bandaRiesgo: 'medio', decision: 'aprobar_con_ajuste',
+    montoSugerido: 6583000, lineaFinagro: 'Capital de Trabajo — pequeño productor', coberturaFag: 80, plazoMeses: 12,
+    desembolso: 'Dos tramos, el segundo sujeto a verificación de siembra en el área ajustada.',
+    fraseCorta: 'Área verificada 12% menor a la declarada: se recomienda aprobar con ajuste, $6.583.000.',
+    ejes: [
+      { nombre: 'Capacidad de pago proyectada', peso: 40, puntaje: 26 },
+      { nombre: 'Verificación del activo productivo', peso: 20, puntaje: 12 },
+      { nombre: 'Riesgo sectorial y climático', peso: 25, puntaje: 14 },
+      { nombre: 'Coherencia del destino del crédito', peso: 15, puntaje: 7 },
+    ],
+    evidencia: [
+      { tipo: 'favorable', texto: '16 ciclos de cosecha completos detectados entre 2016 y 2025' },
+      { tipo: 'alerta', texto: 'Área detectada 1,58 ha frente a 1,8 ha declaradas (87,8%) — no alcanza el umbral de rechazo automático, pero ajusta el monto' },
+      { tipo: 'favorable', texto: 'Rendimiento estimado 27,4 t/ha frente a 30,0 t/ha del promedio municipal de Ventaquemada (EVA 2018)' },
+      { tipo: 'favorable', texto: 'Verificación RTDAF/RUPTA: el predio no figura en el Registro de Tierras Despojadas ni tiene medida de protección vigente' },
+      { tipo: 'favorable', texto: 'Sin restricción ambiental: fuera de Parque Nacional Natural, páramo delimitado y reserva forestal Ley 2ª' },
+    ],
+    memorando: {
+      clasificacion: 'La solicitante se clasifica como pequeño productor: 33 SMMLV en activos, dentro del límite de 284 SMMLV. No registra crédito previo con la entidad.',
+      activoProductivo: 'El área detectada por análisis satelital —1,58 ha— es 87,8% del área declarada de 1,8 ha. La diferencia no alcanza el umbral de rechazo automático (50%) pero exige ajustar el monto a la superficie efectivamente verificada.',
+      capacidadPago: 'Se detectan 16 ciclos de cosecha completos en 10 años, sobre un régimen de dos siembras anuales de ciclo corto. El rendimiento estimado del predio es de 27,4 t/ha, frente a 30,0 t/ha del promedio municipal de Ventaquemada reportado en EVA 2018. El diferencial es consistente con la menor área efectivamente cultivada, no con una caída de productividad por hectárea.',
+      riesgoClimatico: 'Durante El Niño 2023-24 la serie registra una caída de vigor del 16% frente al promedio municipal, con recuperación en el ciclo siguiente. No se identifican ciclos perdidos por exceso de lluvia durante La Niña 2022.',
+      verificaciones: 'El predio no figura en el RTDAF ni registra medida de protección vigente en RUPTA. No presenta restricción ambiental: no se ubica en Parque Nacional Natural, páramo delimitado ni reserva forestal de Ley 2ª de 1959.',
+      recomendacion: 'Aprobar con ajuste de monto: $6.583.000, resultado de ajustar el monto solicitado ($7.500.000) a la proporción del área verificada (1,58 ÷ 1,8 ha). Línea de Capital de Trabajo para pequeño productor, con cobertura FAG del 80% y plazo de 12 meses, en dos tramos.',
+    },
+  },
+  'meta-cacao': {
+    puntaje: 310, bandaRiesgo: 'rechazo', decision: 'rechazar',
+    montoSugerido: 0, lineaFinagro: '—', coberturaFag: null, plazoMeses: null,
+    desembolso: 'Reevaluable si el solicitante acredita reactivación del cultivo y se verifica un ciclo completo.',
+    fraseCorta: 'Sin ciclo de cosecha detectable en 24 meses: se recomienda rechazar la solicitud.',
+    ejes: [
+      { nombre: 'Capacidad de pago proyectada', peso: 40, puntaje: 5 },
+      { nombre: 'Verificación del activo productivo', peso: 20, puntaje: 4 },
+      { nombre: 'Riesgo sectorial y climático', peso: 25, puntaje: 12 },
+      { nombre: 'Coherencia del destino del crédito', peso: 15, puntaje: 10 },
+    ],
+    evidencia: [
+      { tipo: 'critico', texto: 'Sin ciclo de cosecha detectable en los últimos 24 meses — causal de rechazo automático' },
+      { tipo: 'critico', texto: 'Área efectivamente cultivada detectada: 0% del área declarada (4,0 ha) — segunda causal de rechazo automático' },
+      { tipo: 'alerta', texto: 'El NDVI no es bajo: la cobertura de rastrojo mantiene el vigor medio, pero el patrón cíclico de siembra y cosecha desapareció desde 2024' },
+      { tipo: 'favorable', texto: 'Verificación RTDAF/RUPTA: el predio no figura en el Registro de Tierras Despojadas ni tiene medida de protección vigente' },
+      { tipo: 'favorable', texto: 'Sin restricción ambiental: fuera de Parque Nacional Natural, páramo delimitado y reserva forestal Ley 2ª' },
+    ],
+    memorando: {
+      clasificacion: 'El solicitante se clasifica como pequeño productor: 112 SMMLV en activos, dentro del límite de 284 SMMLV. No registra crédito previo con la entidad.',
+      activoProductivo: 'El análisis satelital no detecta área efectivamente cultivada sobre el polígono declarado de 4,0 ha. La secuencia de imágenes 2020-2025 muestra hileras de cacao ordenadas en el corte inicial y cobertura de rastrojo en el corte reciente, consistente con abandono del predio, no con destrucción del cultivo.',
+      capacidadPago: 'No se detecta ciclo de cosecha completo en los últimos 24 meses. La serie muestra 4 ciclos completos entre 2016 y 2023, seguidos de un aplanamiento del patrón cíclico desde comienzos de 2024. El NDVI del predio no es bajo —hay cobertura vegetal de rastrojo y maleza—, pero desaparece la periodicidad de siembra y cosecha que sustenta un flujo de caja proyectable. Es la forma de la serie, no su nivel, lo que determina esta conclusión.',
+      riesgoClimatico: 'El aplanamiento del patrón cíclico antecede a El Niño 2023-24 y no coincide con su ventana temporal, por lo que no se atribuye a un evento climático puntual: es consistente con abandono de la actividad productiva.',
+      verificaciones: 'El predio no figura en el RTDAF ni registra medida de protección vigente en RUPTA. No presenta restricción ambiental: no se ubica en Parque Nacional Natural, páramo delimitado ni reserva forestal de Ley 2ª de 1959.',
+      recomendacion: 'Rechazar. Causal: sin ciclo de cosecha detectable en los últimos 24 meses, y área efectivamente cultivada detectada por debajo del 50% del área declarada. Reevaluable si el solicitante acredita reactivación del cultivo y el análisis satelital verifica un ciclo completo.',
+    },
+  },
+};
+
+class Component extends DCLogic {
+  state = { view: 'mapa', predioId: null, analisisPaso: -1, analisisTexto: '', analisisTipando: false, analisisListo: false, colombiaPath: '', geoPuntos: null };
+
+  componentDidMount() {
+    this.parseHash();
+    this._onHash = () => this.parseHash();
+    window.addEventListener('hashchange', this._onHash);
+    this.loadMapaColombia();
+  }
+  async loadMapaColombia() {
+    try {
+      const res = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json');
+      const topology = await res.json();
+      const countries = window.topojson.feature(topology, topology.objects.countries).features;
+      const colombia = countries.find((f) => String(f.id) === '170');
+      if (!colombia) return;
+      const W = 460, H = 540;
+      const projection = window.d3.geoMercator().fitExtent([[26, 26], [W - 26, H - 26]], colombia);
+      const pathGen = window.d3.geoPath(projection);
+      const colombiaPath = pathGen(colombia);
+      const geoPuntos = PREDIOS.map((p) => {
+        const xy = projection([p.coordenadas.lon, p.coordenadas.lat]);
+        return { id: p.id, x: xy[0].toFixed(1), y: xy[1].toFixed(1), labelY: (xy[1] + 20).toFixed(1), departamento: p.departamento, color: getCultivoColor(p.cultivo) };
+      });
+      this.setState({ colombiaPath, geoPuntos });
+    } catch (e) { /* mantiene el respaldo esquemático */ }
+  }
+  componentWillUnmount() {
+    window.removeEventListener('hashchange', this._onHash);
+    clearTimeout(this._timer);
+    clearInterval(this._typeTimer);
+  }
+  parseHash() {
+    const h = (window.location.hash || '#mapa').replace('#', '');
+    const [view, id] = h.split('/');
+    const valid = ['mapa', 'ficha', 'analisis', 'dictamen', 'cartera'];
+    const v = valid.includes(view) ? view : 'mapa';
+    this.setState({ view: v, predioId: id || null });
+    if (v === 'analisis' && id) this.startAnalysis(id);
+  }
+  getPasos() {
+    return [
+      'Leyendo 847 imágenes Sentinel-2 (2016–2025)',
+      'Detectando ciclos de cosecha',
+      'Comparando rendimiento con EVA municipal',
+      'Evaluando riesgo climático — El Niño / La Niña',
+      'Verificando RTDAF, RUPTA y capas ambientales',
+      'Generando dictamen',
+    ];
+  }
+  startAnalysis(id) {
+    clearTimeout(this._timer);
+    clearInterval(this._typeTimer);
+    const session = id + '|' + Date.now();
+    this._session = session;
+    this.setState({ analisisPaso: 0, analisisTexto: '', analisisTipando: false, analisisListo: false });
+    const total = this.getPasos().length;
+    const stepDelay = 1150;
+    const scheduleStep = (n) => {
+      this._timer = setTimeout(() => {
+        if (this._session !== session) return;
+        if (n < total) { this.setState({ analisisPaso: n }); scheduleStep(n + 1); }
+        else { this.beginTyping(id, session); }
+      }, stepDelay);
+    };
+    scheduleStep(1);
+  }
+  beginTyping(id, session) {
+    if (this._session !== session) return;
+    const dict = DICTAMENES[id];
+    if (!dict) { this.setState({ analisisListo: true }); return; }
+    const text = dict.fraseCorta;
+    this.setState({ analisisTipando: true });
+    let i = 0;
+    this._typeTimer = setInterval(() => {
+      if (this._session !== session) { clearInterval(this._typeTimer); return; }
+      i++;
+      this.setState({ analisisTexto: text.slice(0, i) });
+      if (i >= text.length) {
+        clearInterval(this._typeTimer);
+        this.setState({ analisisTipando: false, analisisListo: true });
+      }
+    }, 18);
+  }
+  getBandaColor(banda) {
+    return {
+      bajo: { text: 'oklch(0.42 0.11 150)', bg: 'oklch(0.94 0.035 150)' },
+      medio: { text: 'oklch(0.45 0.12 85)', bg: 'oklch(0.94 0.045 85)' },
+      alto: { text: 'oklch(0.45 0.13 45)', bg: 'oklch(0.94 0.05 45)' },
+      rechazo: { text: 'oklch(0.45 0.14 25)', bg: 'oklch(0.94 0.05 25)' },
+    }[banda];
+  }
+  buildMapaPuntos() {
+    const latMin = 0.8, latMax = 6.4, lonMin = -77.2, lonMax = -72.6;
+    const W = 460, H = 540, m = 46;
+    return PREDIOS.map((p) => {
+      const x = m + ((p.coordenadas.lon - lonMin) / (lonMax - lonMin)) * (W - 2 * m);
+      const y = (H - m) - ((p.coordenadas.lat - latMin) / (latMax - latMin)) * (H - 2 * m);
+      return { id: p.id, x: x.toFixed(1), y: y.toFixed(1), labelY: (y + 18).toFixed(1), departamento: p.departamento, color: getCultivoColor(p.cultivo) };
+    });
+  }
+  buildChart(puntos, eventos) {
+    const W = 860, H = 300, ml = 42, mr = 10, mt = 26, mb = 26;
+    const iw = W - ml - mr, ih = H - mt - mb;
+    const n = puntos.length;
+    const xAt = (i) => ml + (i / (n - 1)) * iw;
+    const yAt = (v) => mt + (1 - v) * ih;
+    const path = puntos.map((p, i) => (i === 0 ? 'M' : 'L') + xAt(i).toFixed(1) + ',' + yAt(p.ndvi).toFixed(1)).join(' ');
+    const points = puntos.map((p, i) => ({ cx: xAt(i).toFixed(1), cy: yAt(p.ndvi).toFixed(1), opacity: p.nubosidad > 0.6 ? 0.28 : 1 }));
+    const monthsBetween = (fecha) => { const [y, m2] = fecha.split('-').map(Number); return (y - 2016) * 12 + (m2 - 1); };
+    const bands = eventos.map((ev) => {
+      const i0 = monthsBetween(ev.desde), i1 = monthsBetween(ev.hasta);
+      const x1 = xAt(Math.max(0, i0 - 0.5)), x2 = xAt(Math.min(n - 1, i1 + 0.5));
+      return { x: x1.toFixed(1), width: (x2 - x1).toFixed(1), labelX: ((x1 + x2) / 2).toFixed(1), label: ev.nombre, fill: ev.tipo === 'sequia' ? 'var(--color-accent-300)' : 'var(--color-neutral-400)' };
+    });
+    const gridY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map((v) => ({ y: yAt(v).toFixed(1), label: v.toFixed(1).replace('.', ',') }));
+    const yearLabels = [];
+    for (let i = 0; i < n; i += 12) yearLabels.push({ x: xAt(i).toFixed(1), label: String(2016 + i / 12) });
+    return { W, H, path, points, bands, gridY, yearLabels, plotLeft: ml, plotRight: W - mr, plotTop: mt, plotHeight: ih, yearLabelY: H - 8, bandLabelY: 15 };
+  }
+  renderVals() {
+    const view = this.state.view;
+    const predio = PREDIOS.find((p) => p.id === this.state.predioId) || null;
+
+    const mapaPredios = PREDIOS.map((p) => ({
+      id: p.id, productor: p.productor, cultivo: p.cultivo,
+      municipioDepto: p.municipio + ', ' + p.departamento,
+      areaDeclaradaTxt: p.areaDeclarada.toFixed(1).replace('.', ',') + ' ha',
+      montoSolicitadoTxt: formatCOP(p.montoSolicitado),
+      cultivoColor: getCultivoColor(p.cultivo),
+    }));
+    const mapaPuntos = this.state.geoPuntos || this.buildMapaPuntos();
+    const mapaPath = this.state.colombiaPath;
+    const leyendaCultivos = PREDIOS.map((p) => ({ nombre: p.cultivo, dot: getCultivoColor(p.cultivo).dot }));
+
+    let fichaVals = {};
+    let chart = null;
+    if (predio) {
+      const serie = generarSerie(predio.id);
+      chart = this.buildChart(serie, EVENTOS_CLIMATICOS);
+      const sm = predio.serieMeta;
+      fichaVals = {
+        areaDeclaradaTxt: predio.areaDeclarada.toFixed(1).replace('.', ',') + ' ha',
+        areaDetectadaTxt: predio.areaDetectada.toFixed(1).replace('.', ',') + ' ha',
+        montoSolicitadoTxt: formatCOP(predio.montoSolicitado),
+        tipoProductorTxt: predio.tipoProductor + ' productor · ' + predio.activosSmmlv + ' SMMLV',
+        ciclosDetectadosTxt: String(sm.ciclosDetectados),
+        ndviPicoTxt: sm.ndviPicoPromedio != null ? formatNDVI(sm.ndviPicoPromedio) : '—',
+        rendimientoTxt: sm.rendimientoEstimado != null ? sm.rendimientoEstimado.toFixed(2).replace('.', ',') + ' t/ha' : 'sin cosecha cuantificable',
+        rendimientoMunicipalTxt: sm.rendimientoMunicipalEva.toFixed(2).replace('.', ',') + ' t/ha',
+        fuenteReferencia: sm.fuenteReferencia,
+      };
+    }
+
+    const pasosBase = this.getPasos();
+    const pasos = pasosBase.map((texto, i) => {
+      const hecho = this.state.analisisPaso > i || this.state.analisisTipando || this.state.analisisListo;
+      const activo = !hecho && this.state.analisisPaso === i;
+      return {
+        texto, esHecho: hecho, esActivo: activo, esPendiente: !hecho && !activo,
+        textStyle: 'font-size:15px; opacity:' + (hecho ? 0.72 : activo ? 1 : 0.4) + '; font-weight:' + (activo ? 600 : 400) + ';',
+      };
+    });
+    const mostrarResultado = this.state.analisisTipando || this.state.analisisListo;
+
+    let dictamenVals = {};
+    if (predio && DICTAMENES[predio.id]) {
+      const d = DICTAMENES[predio.id];
+      const bandaColor = this.getBandaColor(d.bandaRiesgo);
+      const decisionTxt = { aprobar: 'APROBAR', aprobar_con_ajuste: 'APROBAR CON AJUSTE', rechazar: 'RECHAZAR' }[d.decision];
+      const ejes = d.ejes.map((e) => ({ nombre: e.nombre, peso: e.peso, puntaje: e.puntaje, pct: Math.round((e.puntaje / e.peso) * 100) }));
+      const evidencia = d.evidencia.map((e) => ({ texto: e.texto, esFavorable: e.tipo === 'favorable', esAlerta: e.tipo === 'alerta', esCritico: e.tipo === 'critico' }));
+      dictamenVals = {
+        dictamen: d, puntajeStr: String(d.puntaje), bandaColor, decisionTxt, ejes, evidencia,
+        montoSugeridoTxt: formatCOP(d.montoSugerido),
+        coberturaFagTxt: d.coberturaFag != null ? d.coberturaFag + '%' : '—',
+        plazoMesesTxt: d.plazoMeses != null ? d.plazoMeses + ' meses' : '—',
+      };
+    }
+
+    const carteraFilas = PREDIOS.map((p) => {
+      const d = DICTAMENES[p.id];
+      return {
+        id: p.id, productor: p.productor, municipio: p.municipio, departamento: p.departamento, cultivo: p.cultivo,
+        montoSolicitadoTxt: formatCOP(p.montoSolicitado), puntajeTxt: String(d.puntaje), bandaRiesgo: d.bandaRiesgo,
+        bandaColor: this.getBandaColor(d.bandaRiesgo),
+        decisionTxt: { aprobar: 'Aprobar', aprobar_con_ajuste: 'Aprobar con ajuste', rechazar: 'Rechazar' }[d.decision],
+      };
+    });
+
+    const tienePredio = !!predio;
+    return {
+      loaded: true,
+      navMapaStyle: view === 'mapa' ? 'color:var(--color-accent); text-decoration:none; font-weight:600;' : 'color:inherit; text-decoration:none;',
+      navCarteraStyle: view === 'cartera' ? 'color:var(--color-accent); text-decoration:none; font-weight:600;' : 'color:inherit; text-decoration:none;',
+      showMapa: view === 'mapa',
+      showFicha: view === 'ficha' && tienePredio,
+      showAnalisis: view === 'analisis' && tienePredio,
+      showDictamen: view === 'dictamen' && tienePredio,
+      showCartera: view === 'cartera',
+      showNotFound: (view === 'ficha' || view === 'analisis' || view === 'dictamen') && !tienePredio,
+      mapaPredios, mapaPuntos, mapaPath, leyendaCultivos, predio,
+      ...fichaVals, chart, pasos, mostrarResultado,
+      analisisTexto: this.state.analisisTexto,
+      analisisListo: this.state.analisisListo,
+      ...dictamenVals, carteraFilas,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

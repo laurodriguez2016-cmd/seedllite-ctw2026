@@ -1,0 +1,12 @@
+Barrido REAL sobre ventaquemada — 169 puntos, 1.8 ha cada uno
+  ... 25/169 revisados, 0 hallazgos
+  ... 50/169 revisados, 0 hallazgos
+  ... 75/169 revisados, 0 hallazgos
+  ✓ (5.3572, -73.4618)  65/108 meses · ciclos 7 → 0 en 24m · amp 0.361 → 0.232 (−35.7%) · pico 0.71
+  ✓ (5.3672, -73.5518)  48/108 meses · ciclos 6 → 0 en 24m · amp 0.338 → 0.114 (−66.3%) · pico 0.76
+  ... 100/169 revisados, 2 hallazgos
+  ... 125/169 revisados, 2 hallazgos
+  ... 150/169 revisados, 2 hallazgos
+
+=== 2 PARCELAS CON FIRMA DE ABANDONO en ventaquemada ===
+mejor: (5.3672, -73.5518) — pierde 66.3% de su ritmo conservando pico 0.76

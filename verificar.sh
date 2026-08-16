@@ -102,6 +102,23 @@ PY
 fi
 
 # ---------------------------------------------------------------------------
+titulo "4-bis · Las reglas de crédito se cumplen"
+# ---------------------------------------------------------------------------
+# validar_contrato.py comprueba la FORMA de los datos; esto comprueba el
+# CRITERIO: que las reglas de docs/criterios-de-credito.md se cumplan en las
+# salidas del modelo. Un JSON perfectamente valido puede rechazar a un perenne
+# por falta de ciclos, o sugerir mas plata de la solicitada.
+if [ -f scripts/probar_reglas.py ] && [ -f data/dictamenes.json ]; then
+  if python3 scripts/probar_reglas.py > /tmp/seedllite_reglas.txt 2>&1; then
+    ok "$(grep -o '[0-9]* comprobaciones pasadas' /tmp/seedllite_reglas.txt | head -1) · todas las reglas de credito se cumplen"
+  else
+    mal "hay reglas de credito incumplidas"
+    grep -A1 '✗' /tmp/seedllite_reglas.txt | head -12 | sed 's/^/      /'
+  fi
+else
+  aviso "todavia no hay dictamenes generados — se salta"
+fi
+
 titulo "5 · Ningún secreto commiteado"
 # ---------------------------------------------------------------------------
 FUGAS=$(git grep -nIE 'sk-or-v1-[A-Za-z0-9]|sk-ant-[A-Za-z0-9]|CDSE_CLIENT_SECRET *= *[A-Za-z0-9]' \
