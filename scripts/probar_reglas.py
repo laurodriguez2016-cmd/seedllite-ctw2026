@@ -41,16 +41,27 @@ COBERTURA_MINIMA_24M = 12            # criterios-de-credito.md §3, EJE A
 VERDE, ROJO, GRIS, FIN = "\033[32m", "\033[31m", "\033[90m", "\033[0m"
 
 _fallos = []
+_avisos = []
 _pasadas = 0
 
 
-def revisar(condicion, regla, detalle):
-    """Registra una comprobación. `regla` dice dónde está escrita la norma."""
+def revisar(condicion, regla, detalle, bloquea=True):
+    """
+    Registra una comprobación. `regla` dice dónde está escrita la norma.
+
+    `bloquea=False` la degrada a aviso. Se usa para una sola cosa: cuando la
+    regla cambió DESPUÉS de generar los dictámenes y el dato está pendiente de
+    regenerar. Eso no es código roto y no debe bloquear una integración, pero
+    tampoco puede desaparecer en silencio: quien corre esto a las seis de la
+    mañana tiene que saber si el rojo es suyo o es un pendiente conocido.
+    """
     global _pasadas
     if condicion:
         _pasadas += 1
-    else:
+    elif bloquea:
         _fallos.append((regla, detalle))
+    else:
+        _avisos.append((regla, detalle))
 
 
 def cargar():
@@ -276,8 +287,67 @@ def regla_area_medida_no_inventada(pid, predio, serie, d):
             % (pid, med["celdas_agricolas"], agricolas))
 
 
+
+
+def regla_rechazo_por_area_con_intervalo(pid, predio, serie, d):
+    """
+    criterios-de-credito.md §3 EJE B — la causal de area exige que el LIMITE
+    SUPERIOR del intervalo de confianza tambien quede bajo el 50%.
+
+    Esta prueba existe porque la regla original solo miraba la estimacion
+    puntual, y con eso `meta-cacao-vigor-bajo` quedaba rechazado con 43,8% de
+    area cuando su intervalo llega hasta 66,8%. No se puede afirmar que ese
+    predio este por debajo del umbral, asi que el rechazo no procede.
+
+    Negar un credito es grave y quien lo recibe rara vez tiene como apelarlo. La
+    regla no exige certeza absoluta: exige que la duda razonable no favorezca la
+    negacion.
+    """
+    inc = serie.get("incertidumbre") or {}
+    ic = inc.get("area_ic95")
+    if not ic:
+        return
+    if d["decision"] != "rechazar":
+        return
+
+    texto = " ".join([d["memorando"], d["recomendacion"]] +
+                     [e["texto"] for e in d["evidencia"]]).lower()
+    culpa_al_area = "área" in texto and ("50%" in texto or "área declarada" in texto)
+    if not culpa_al_area:
+        return
+
+    # Aviso y no fallo: la regla se endurecio despues de generar los dictamenes.
+    # El dato se corrige regenerando ese predio, no tocando codigo.
+    revisar(ic[1] < 0.50,
+            "EJE B · el rechazo por area exige que el intervalo tambien quede bajo el umbral",
+            "%s se rechaza por area pero su intervalo al 95%% llega a %.1f%%, por encima "
+            "del umbral del 50%%. PENDIENTE: correr `generar_dictamen.py %s`"
+            % (pid, ic[1] * 100, pid),
+            bloquea=False)
+
+
+def regla_incertidumbre_calculada(pid, predio, serie, d):
+    """
+    Cada predio tiene que traer su bloque de incertidumbre. Sin el, las cifras
+    del dictamen se presentan como exactas cuando son estimaciones sobre una
+    muestra incompleta, y el analisis estadistico del dictamen seria palabreria
+    sobre numeros que el modelo nunca vio.
+    """
+    inc = serie.get("incertidumbre")
+    revisar(inc is not None,
+            "Metodo · cada predio trae su incertidumbre calculada",
+            "%s no tiene bloque `incertidumbre` en la serie" % pid)
+    if not inc:
+        return
+    revisar(inc.get("prob_falso_negativo") is not None,
+            "Metodo · se calcula la probabilidad de falso negativo",
+            "%s no trae prob_falso_negativo" % pid)
+
+
 REGLAS = [
     regla_perenne_no_exige_ciclos,
+    regla_rechazo_por_area_con_intervalo,
+    regla_incertidumbre_calculada,
     regla_cobertura_insuficiente,
     regla_monto_no_supera_solicitado,
     regla_topes_legales,
@@ -309,6 +379,14 @@ def main():
               % (estado, pid, dictamenes[pid]["decision"], dictamenes[pid]["banda_riesgo"]))
 
     print("\n%s%d comprobaciones pasadas%s" % (VERDE, _pasadas, FIN))
+
+    if _avisos:
+        print("\n%s%d PENDIENTE(S) — no bloquean, pero hay que resolverlos%s\n"
+              % (GRIS, len(_avisos), FIN))
+        for regla, detalle in _avisos:
+            print("  %s!%s %s" % (GRIS, FIN, regla))
+            print("    %s%s%s" % (GRIS, detalle, FIN))
+
     if not _fallos:
         print("%sTODAS LAS REGLAS DE CRÉDITO SE CUMPLEN%s" % (VERDE, FIN))
         return 0

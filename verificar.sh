@@ -138,6 +138,12 @@ titulo "4-bis · Las reglas de crédito se cumplen"
 if [ -f scripts/probar_reglas.py ] && [ -f data/dictamenes.json ]; then
   if python3 scripts/probar_reglas.py > /tmp/seedllite_reglas.txt 2>&1; then
     ok "$(grep -o '[0-9]* comprobaciones pasadas' /tmp/seedllite_reglas.txt | head -1) · todas las reglas de credito se cumplen"
+    # Los pendientes no bloquean pero tienen que verse: son reglas que cambiaron
+    # despues de generar los datos y esperan una regeneracion.
+    if grep -q 'PENDIENTE(S)' /tmp/seedllite_reglas.txt; then
+      aviso "$(grep -o '[0-9]* PENDIENTE(S)' /tmp/seedllite_reglas.txt | head -1) por regenerar"
+      grep -A1 '^  !' /tmp/seedllite_reglas.txt | sed 's/^/      /' | head -6
+    fi
   else
     mal "hay reglas de credito incumplidas"
     grep -A1 '✗' /tmp/seedllite_reglas.txt | head -12 | sed 's/^/      /'
