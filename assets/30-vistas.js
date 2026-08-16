@@ -240,26 +240,6 @@
             "</div>" +
           "</div>" +
 
-          /* Las capturas Copernicus, en secuencia temporal. Son SVG con la foto
-             real embebida más el polígono declarado y la rejilla de medición
-             dibujados encima, así que se usan como cualquier imagen y funcionan
-             bajo file://. En meta-cacao se ve a simple vista por qué se
-             rechaza: el polígono cae sobre dosel de bosque. */
-          (imagenes.length
-            ? '<div class="tarjeta" style="margin-bottom:var(--e3)">' +
-                '<div class="tarjeta-cab">' +
-                  '<span class="etiqueta">Copernicus Sentinel-2 · el predio en el tiempo</span>' +
-                "</div>" +
-                '<div class="tarjeta-cuerpo">' +
-                  '<div class="satelite">' + imagenes + "</div>" +
-                  '<p class="etiqueta" style="margin:var(--e2) 0 0">' +
-                    "Polígono declarado y rejilla de medición sobre la imagen. " +
-                    "Contiene datos Copernicus Sentinel modificados." +
-                  "</p>" +
-                "</div>" +
-              "</div>"
-            : "") +
-
           '<button class="boton boton-primario" style="width:100%;padding:11px" ' +
             'data-ir="#analisis/' + esc(p.id) + '">Evaluar con SEEDLLITE</button>' +
         "</div>" +
@@ -300,6 +280,26 @@
                 esc(serie.fuente_referencia) + "</p>" +
             "</div>" +
           "</div>" +
+
+          /* Las capturas Copernicus, en secuencia temporal. Son SVG con la foto
+             real embebida más el polígono declarado y la rejilla de medición
+             dibujados encima, así que se usan como cualquier imagen y funcionan
+             bajo file://. En meta-cacao se ve a simple vista por qué se
+             rechaza: el polígono cae sobre dosel de bosque. */
+          (imagenes.length
+            ? '<div class="tarjeta" style="margin-bottom:var(--e3)">' +
+                '<div class="tarjeta-cab">' +
+                  '<span class="etiqueta">Copernicus Sentinel-2 · el predio en el tiempo</span>' +
+                "</div>" +
+                '<div class="tarjeta-cuerpo">' +
+                  '<div class="satelite">' + imagenes + "</div>" +
+                  '<p class="etiqueta" style="margin:var(--e2) 0 0">' +
+                    "Polígono declarado y rejilla de medición sobre la imagen. " +
+                    "Contiene datos Copernicus Sentinel modificados." +
+                  "</p>" +
+                "</div>" +
+              "</div>"
+            : "") +
 
           '<div class="aviso" style="margin-top:var(--e3)">' +
             esc(datos.series.nota_datos) +
