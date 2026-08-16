@@ -365,7 +365,30 @@
     "</div>";
   }
 
-  function pasosAnalisis(serie, datos) {
+  function proporcionArea(predio) {
+    return esNumero(predio && predio.area_detectada_ha) &&
+      esNumero(predio && predio.area_declarada_ha) && predio.area_declarada_ha > 0
+      ? predio.area_detectada_ha / predio.area_declarada_ha * 100
+      : null;
+  }
+
+  function tesisAnalisis(predio) {
+    var proporcion = proporcionArea(predio);
+    if (esNumero(proporcion) && proporcion < 50) {
+      return "Un NDVI alto no prueba que todo el polígono esté cultivado. " +
+        "SEEDLLITE identifica <strong>" + decimal(predio.area_detectada_ha, 2) +
+        " ha de actividad agrícola</strong> dentro de " + decimal(predio.area_declarada_ha, 2) +
+        " ha declaradas: " + porcentaje(proporcion, 1) + " del área.";
+    }
+    if (texto(predio && predio.tipo_cultivo).toLowerCase() === "transitorio") {
+      return "En un cultivo transitorio, la forma sí debe mostrar pulsos de siembra y cosecha. " +
+        "SEEDLLITE contrasta <strong>ciclos, amplitud y área activa</strong>, no solo qué tan verde se ve el lote.";
+    }
+    return "En un cultivo perenne, cero ciclos recientes no significa abandono. " +
+      "SEEDLLITE interpreta conjuntamente <strong>área activa, vigor y estabilidad</strong> para no penalizar la naturaleza del cultivo.";
+  }
+
+  function pasosAnalisis(serie, datos, predio) {
     var puntos = arreglo(serie && serie.puntos);
     var total = esNumero(serie && serie.cobertura_meses_totales)
       ? serie.cobertura_meses_totales : puntos.length;
@@ -383,16 +406,18 @@
         ? "Comparando " + decimal(serie.rendimiento_estimado_t_ha, 2) + " t/ha estimadas contra " +
           decimal(serie.rendimiento_municipal_eva_t_ha, 2) + " t/ha del municipio (EVA)…"
         : "Comparando el rendimiento estimado contra la referencia municipal EVA…",
-      esNumero(serie && serie.perdida_amplitud_pct)
-        ? "Midiendo una pérdida de amplitud de " + porcentaje(serie.perdida_amplitud_pct, 1) + " en los últimos 24 meses…"
-        : "Midiendo la amplitud reciente contra el patrón histórico…",
+      esNumero(predio && predio.area_detectada_ha) && esNumero(predio && predio.area_declarada_ha)
+        ? "Verificando " + decimal(predio.area_detectada_ha, 2) + " ha con actividad agrícola frente a " +
+          decimal(predio.area_declarada_ha, 2) + " ha declaradas…"
+        : "Verificando el área agrícola activa dentro del polígono declarado…",
       "Reproduciendo el memorando generado por " + modeloVisible(datos) + "…"
     ];
   }
 
-  function metricasAnalisis(serie) {
+  function metricasAnalisis(serie, predio) {
     var medidos = serie && serie.cobertura_meses_medidos;
     var total = serie && serie.cobertura_meses_totales;
+    var proporcion = proporcionArea(predio);
     return '<div class="metricas-analisis">' +
       '<div><span class="etiqueta">Ciclos · total / 24 m</span><strong class="cifra">' +
         entero(serie && serie.ciclos_detectados) + " / " + entero(serie && serie.ciclos_ultimos_24m) + "</strong></div>" +
@@ -402,6 +427,11 @@
         entero(medidos) + " / " + entero(total) + " meses</strong></div>" +
       '<div><span class="etiqueta">Caída en El Niño</span><strong class="cifra">' +
         porcentaje(serie && serie.caida_enso_pct, 1) + "</strong></div>" +
+      '<div class="metrica-ancha"><span class="etiqueta">Área activa / declarada</span><strong class="cifra">' +
+        (esNumero(proporcion)
+          ? decimal(predio.area_detectada_ha, 2) + " / " + decimal(predio.area_declarada_ha, 2) +
+            " ha · " + porcentaje(proporcion, 1)
+          : "Sin dato") + "</strong></div>" +
       '<div class="metrica-ancha"><span class="etiqueta">Rendimiento · predio / municipio EVA</span><strong class="cifra">' +
         (esNumero(serie && serie.rendimiento_estimado_t_ha)
           ? decimal(serie.rendimiento_estimado_t_ha, 2) + " t/ha" : "Sin dato") + " / " +
@@ -417,7 +447,7 @@
     var serie = serieDe(datos, predio.id);
     var dictamen = S.estado.dictamen(predio.id);
     var placeholder = Boolean(datos && datos.dictamenes && datos.dictamenes.es_placeholder);
-    var pasos = pasosAnalisis(serie, datos);
+    var pasos = pasosAnalisis(serie, datos, predio);
 
     host.innerHTML =
       '<div class="migas"><a href="#ficha/' + esc(predio.id) + '">← Ficha</a>' +
@@ -433,10 +463,10 @@
         '<section class="tarjeta analisis-evidencia">' +
           '<div class="tarjeta-cab"><h2>La señal que importa</h2>' + rotuloOrigen(serie, datos) + "</div>" +
           '<div class="tarjeta-cuerpo">' +
-            '<div class="tesis-forma"><span class="tesis-indice">01</span><p>Un predio abandonado puede seguir verde por el rastrojo. Lo que desaparece es el <strong>patrón</strong>: la serie pierde amplitud y ciclos.</p></div>' +
+            '<div class="tesis-forma"><span class="tesis-indice">01</span><p>' + tesisAnalisis(predio) + "</p></div>" +
             '<h3 class="titulo-comparacion">Amplitud histórica frente a los últimos 24 meses</h3>' +
             comparacionAmplitud(serie) +
-            metricasAnalisis(serie) +
+            metricasAnalisis(serie, predio) +
             '<p class="nota-metodo">Los meses interpolados por nubosidad se muestran en la gráfica, pero quedan fuera de estos agregados.</p>' +
           "</div>" +
         "</section>" +
@@ -589,7 +619,8 @@
     var solicitado = predio.monto_solicitado_cop;
     var sugerido = dictamen.monto_sugerido_cop;
     var recorte = esNumero(solicitado) && esNumero(sugerido) ? Math.max(0, solicitado - sugerido) : null;
-    var tieneRecorte = esNumero(recorte) && recorte > 0;
+    var rechazado = dictamen.decision === "rechazar";
+    var tieneRecorte = !rechazado && esNumero(recorte) && recorte > 0;
     var banda = texto(dictamen.banda_riesgo, "sin-banda").toLowerCase();
     var decision = TEXTO_DECISION[dictamen.decision] || texto(dictamen.decision, "Sin decisión");
     var fag = dictamen.cobertura_fag_pct;
@@ -633,11 +664,16 @@
               '<div class="montos-comparacion">' +
                 '<div><span>Solicitado</span><strong class="cifra">' + cop(solicitado) + "</strong></div>" +
                 '<span class="montos-flecha" aria-hidden="true">→</span>' +
-                '<div class="monto-sugerido"><span>Sugerido</span><strong class="cifra">' + cop(sugerido) + "</strong></div>" +
+                '<div class="monto-sugerido ' + (rechazado ? "monto-rechazado" : "") +
+                  '"><span>Sugerido</span><strong class="cifra">' +
+                  (rechazado ? "Sin desembolso" : cop(sugerido)) + "</strong></div>" +
               "</div>" +
+              (rechazado ? '<div class="recorte-monto recorte-rechazo"><span class="etiqueta">Causal de rechazo</span>' +
+                '<strong>Área agrícola insuficiente</strong><p><b>Razón:</b> ' +
+                esc(razonAjuste(dictamen)) + "</p></div>" :
               (tieneRecorte ? '<div class="recorte-monto"><span class="etiqueta">Ajuste satelital</span>' +
                 '<strong class="cifra">−' + cop(recorte) + '</strong><p><b>Razón:</b> ' +
-                esc(razonAjuste(dictamen)) + "</p></div>" : "") +
+                esc(razonAjuste(dictamen)) + "</p></div>" : "")) +
               '<table class="datos datos-financiacion">' +
                 fila("Línea FINAGRO", esc(texto(dictamen.linea_finagro, "No aplica"))) +
                 fila("Cobertura FAG", fagDetalle) +
