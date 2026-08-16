@@ -1437,3 +1437,70 @@ h1, h2, h3, .marca { font-family: var(--display); letter-spacing: 0.01em; }
   .est-fila { grid-template-columns: 1fr; gap: var(--e2); }
   .est-margenes { grid-template-columns: 1fr; }
 }
+
+/* ==========================================================================
+   RADICAR SOLICITUD (#nuevo) — la pantalla de entrada de casos
+   ========================================================================== */
+.nc { display: grid; grid-template-columns: 1fr 1fr; gap: var(--e3); align-items: start; }
+.nc-col { min-width: 0; }
+.nc-campos { display: flex; flex-direction: column; gap: var(--e3); }
+.nc-dos { display: grid; grid-template-columns: 1fr 1fr; gap: var(--e3); }
+.nc-campo { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.nc-campo > span { font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--texto-2); }
+.nc-campo > span i { color: var(--critico); font-style: normal; }
+.nc-campo small { font-size: 11px; color: var(--texto-3); line-height: 1.5; }
+.nc-campo input, .nc-campo select, .nc-campo textarea {
+  font: inherit; font-size: 14px; color: var(--texto);
+  background: var(--superficie); border: 1px solid var(--borde-fuerte);
+  border-radius: 0; padding: 9px 10px; width: 100%; }
+.nc-campo input:focus-visible, .nc-campo select:focus-visible,
+.nc-campo textarea:focus-visible { outline: 2px solid var(--acento); outline-offset: 1px; }
+.nc-campo textarea { resize: vertical; }
+.nc-archivo input { padding: 7px 0; border: 0; }
+
+.nc-pestanas { display: flex; gap: 0; border-bottom: 1px solid var(--borde); margin-bottom: var(--e3); }
+.nc-pes { font: inherit; font-size: 12px; background: none; border: 0; cursor: pointer;
+  padding: 9px 13px; color: var(--texto-2); border-bottom: 2px solid transparent; }
+.nc-pes.activa { color: var(--texto); border-bottom-color: var(--acento); font-weight: 500; }
+.nc-panel.oculto { display: none; }
+.nc-ayuda { font-size: 12.5px; line-height: 1.6; color: var(--texto-2); margin: 0 0 var(--e3); }
+
+.nc-mapa { border: 1px solid var(--borde); }
+.nc-svg { display: block; width: 100%; height: auto; cursor: crosshair; }
+
+.nc-ubic { margin-top: var(--e3); padding-top: var(--e3); border-top: 1px solid var(--borde); }
+.nc-sin { font-size: 12px; color: var(--texto-3); }
+.nc-coord b { font-family: var(--mono); font-size: 15px; font-variant-numeric: tabular-nums; }
+.nc-origen { display: block; font-size: 11px; color: var(--texto-2); margin-top: 3px; }
+
+.nc-bien, .nc-mal { font-size: 12.5px; line-height: 1.6; padding: var(--e2) var(--e3);
+  margin: var(--e2) 0 0; border-left: 0; }
+.nc-bien { background: var(--favorable-bg); color: var(--texto); }
+.nc-mal  { background: var(--alerta-bg); color: var(--texto); }
+.nc-linderos { margin-top: var(--e2); font-size: 12px; color: var(--texto-2); }
+.nc-linderos ul { margin: var(--e2) 0; padding-left: var(--e3); }
+.nc-linderos li { margin-bottom: 3px; }
+
+.nc-pie { grid-column: 1 / -1; display: flex; align-items: center; gap: var(--e4);
+  flex-wrap: wrap; padding-top: var(--e3); }
+.nc-nota { font-size: 11px; color: var(--texto-3); max-width: 52ch; margin: 0; line-height: 1.5; }
+#nc-enviar:disabled { opacity: .45; cursor: not-allowed; }
+
+#nc-salida { grid-column: 1 / -1; }
+.nc-ok { border: 1px solid var(--acento); padding: var(--e4); margin-top: var(--e3); }
+.nc-ok h3 { margin: 0 0 var(--e2); font-size: 18px; }
+.nc-ok p { font-size: 13px; line-height: 1.6; color: var(--texto-2); margin: 0 0 var(--e3); }
+.nc-paso { display: flex; align-items: center; gap: var(--e2); font-size: 12px;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--texto-2);
+  margin: var(--e3) 0 var(--e2); }
+.nc-paso span { display: grid; place-items: center; width: 20px; height: 20px;
+  background: var(--acento); color: #fff; font-size: 11px; }
+.nc-json, .nc-cmd { font-family: var(--mono); font-size: 11.5px; line-height: 1.6;
+  background: var(--superficie-2); border: 1px solid var(--borde);
+  padding: var(--e3); overflow-x: auto; margin: 0; white-space: pre; }
+.nc-tiempo { font-size: 12px; color: var(--texto-3); margin: var(--e3) 0 0; }
+
+@media (max-width: 900px) {
+  .nc, .nc-dos { grid-template-columns: 1fr; }
+}
