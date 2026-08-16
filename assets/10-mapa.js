@@ -78,6 +78,46 @@
    * @param {string} seleccionado  id del predio activo
    * @param {Function} alSeleccionar  callback(id)
    */
+  /* Duración del trazado del contorno. Los pines no caen hasta que termina:
+     el retardo de cada uno arranca aquí. */
+  var TRAZO_MS = 1300;
+
+  function movimientoReducido() {
+    return !!(global.matchMedia &&
+              global.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
+
+  /**
+   * Dibuja la silueta del país como un trazo a lápiz.
+   *
+   * Misma técnica que la serie NDVI: el borde se pinta como una línea
+   * discontinua cuyo guion mide exactamente lo que mide todo el contorno, y se
+   * desplaza ese guion desde fuera hasta su sitio, de modo que la silueta
+   * aparece trazándose. El relleno entra al final, cuando el trazo ya cerró.
+   *
+   * El SVG ya está en el documento cuando se llama: getTotalLength() necesita
+   * geometría calculada.
+   */
+  function dibujarContorno(pais) {
+    if (movimientoReducido() || typeof pais.getTotalLength !== "function") { return; }
+
+    var largo;
+    try { largo = pais.getTotalLength(); } catch (e) { return; }
+    if (!largo) { return; }
+
+    pais.style.strokeDasharray = largo + " " + largo;
+    pais.style.strokeDashoffset = largo;
+    pais.style.fillOpacity = "0";
+
+    global.requestAnimationFrame(function () {
+      pais.style.transition =
+        "stroke-dashoffset " + TRAZO_MS + "ms ease-in-out, " +
+        "fill-opacity 600ms ease-out " + Math.round(TRAZO_MS * 0.7) + "ms";
+      pais.style.strokeDashoffset = "0";
+      pais.style.fillOpacity = "";
+    });
+  }
+
   function render(svg, predios, dictamenes, seleccionado, alSeleccionar) {
     svg.setAttribute("viewBox", "0 0 " + ANCHO + " " + ALTO);
     svg.setAttribute("class", "mapa");
@@ -90,7 +130,9 @@
       return (i === 0 ? "M" : "L") + xy[0].toFixed(1) + " " + xy[1].toFixed(1);
     }).join(" ") + " Z";
 
-    svg.appendChild(svgEl("path", { d: d, "class": "pais" }));
+    var pais = svgEl("path", { d: d, "class": "pais" });
+    svg.appendChild(pais);
+    dibujarContorno(pais);
 
     predios.forEach(function (predio, indice) {
       var xy = proyectar(predio.coordenadas.lon, predio.coordenadas.lat);
@@ -105,12 +147,12 @@
         "aria-label": predio.municipio + ", " + predio.departamento + " — " + predio.cultivo
       });
 
-      /* Los pines caen sobre el mapa, uno detrás de otro. El contorno del país
-         entra primero (0,25 s) para que aterricen sobre algo ya dibujado; el
-         escalonado de 0,11 s hace que se lean como cuatro solicitudes que van
-         llegando, no como una lámina que aparece de golpe. Es la primera imagen
-         del video. */
-      g.style.animationDelay = (0.25 + indice * 0.11).toFixed(2) + "s";
+      /* Los pines esperan a que el trazo del país quede en firme y entonces
+         caen del cielo, uno detrás de otro. El escalonado de 0,14 s hace que
+         se lean como cuatro solicitudes que van llegando, no como una lámina
+         que aparece de golpe. Es la primera imagen del video. */
+      g.style.animationDelay =
+        (TRAZO_MS / 1000 + 0.1 + indice * 0.14).toFixed(2) + "s";
 
       g.appendChild(svgEl("circle", { cx: xy[0], cy: xy[1], r: 6, fill: color }));
 

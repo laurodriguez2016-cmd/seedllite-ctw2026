@@ -597,28 +597,47 @@ p  { margin: 0 0 var(--e2); }
 
 /* --- pantalla 1: los pines caen sobre el mapa ---------------------------- */
 
-/* El país entra primero para que los pines aterricen sobre algo dibujado. */
+/* El contorno del país se traza a lápiz antes de que caigan los pines. El
+   dibujo lo gobierna 10-mapa.js, que necesita medir la longitud real del
+   borde; aquí solo se afina el trazo mientras se dibuja. */
 .mapa .pais {
-  animation: pais-entra 0.45s ease-out both;
+  stroke-linecap: round;
 }
 
-@keyframes pais-entra {
+/* La caída.
+   La primera versión escalaba el pin desde pequeño con el origen abajo y usaba
+   una curva de desaceleración — o sea, frenaba al llegar. Las dos cosas juntas
+   se leían como si el pin BROTARA DEL SUELO, que es justo lo contrario.
+   La gravedad acelera: la curva de la caída es de entrada (lento → rápido), el
+   recorrido es largo para que se vea la dirección, y al tocar el mapa rebota
+   dos veces, cada vez menos. El retardo de cada pin lo pone 10-mapa.js. */
+.mapa .pin {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: pin-cae 0.95s both, pin-aparece 0.16s ease-out both;
+}
+
+@keyframes pin-aparece {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-/* La caída: desde arriba, pequeño, y con un rebote corto al asentarse. El
-   retardo de cada pin lo pone 10-mapa.js según su posición en la lista. */
-.mapa .pin {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  animation: pin-cae 0.62s cubic-bezier(0.22, 0.9, 0.28, 1.28) both;
-}
-
 @keyframes pin-cae {
-  0%   { opacity: 0; transform: translateY(-52px) scale(0.65); }
-  55%  { opacity: 1; }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  /* caída acelerada */
+  0%   { transform: translateY(-190px);
+         animation-timing-function: cubic-bezier(0.55, 0.06, 0.68, 0.19); }
+  /* impacto */
+  50%  { transform: translateY(0);
+         animation-timing-function: ease-out; }
+  /* primer rebote */
+  68%  { transform: translateY(-26px);
+         animation-timing-function: cubic-bezier(0.55, 0.06, 0.68, 0.19); }
+  84%  { transform: translateY(0);
+         animation-timing-function: ease-out; }
+  /* segundo rebote, ya corto */
+  93%  { transform: translateY(-8px);
+         animation-timing-function: cubic-bezier(0.55, 0.06, 0.68, 0.19); }
+  100% { transform: translateY(0); }
 }
 
 /* --- pantalla 3: los pasos entran encadenados ---------------------------- */

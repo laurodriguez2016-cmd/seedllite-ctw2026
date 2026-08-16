@@ -27,6 +27,64 @@
 
   var GLIFO = { favorable: "✓", alerta: "⚠", critico: "🔴" };
 
+  /* --- cifras que suben desde cero ---------------------------------------
+
+     Una medición que aparece ya puesta no se lee como una medición: se lee
+     como una etiqueta. Al verla subir hasta su valor, el usuario entiende que
+     algo se calculó. Se marcan al pintar con `cifraViva(valor, formato)` y una
+     sola pasada de `animarCifras(host)` las anima después.
+
+     El texto inicial es ya el valor final formateado: si el JavaScript de la
+     animación no llegara a correr, la cifra correcta igual queda en pantalla.
+     ---------------------------------------------------------------------- */
+
+  function numero(v, dec) {
+    return new Intl.NumberFormat("es-CO", {
+      minimumFractionDigits: dec || 0,
+      maximumFractionDigits: dec || 0
+    }).format(v);
+  }
+
+  var FORMATO = {
+    ent:  function (v) { return numero(Math.round(v)); },
+    dec2: function (v) { return numero(v, 2); },
+    pct:  function (v) { return numero(v, 1) + "%"; },
+    /* firmado: para desvíos, donde el signo es la información */
+    pctf: function (v) { return (v > 0 ? "+" : "") + numero(v, 1) + "%"; },
+    tha:  function (v) { return numero(v, 2) + " t/ha"; },
+    ha:   function (v) { return numero(v, 2) + " ha"; }
+  };
+
+  function cifraViva(valor, formato) {
+    var f = FORMATO[formato] || FORMATO.ent;
+    var v = Number(valor);
+    if (!isFinite(v)) { return esc(valor); }
+    return '<span class="cifra-viva" data-v="' + v + '" data-f="' +
+             (FORMATO[formato] ? formato : "ent") + '">' + f(v) + "</span>";
+  }
+
+  function animarCifras(host, ms) {
+    var dur = ms || 900;
+    var nodos = host.querySelectorAll(".cifra-viva");
+
+    for (var k = 0; k < nodos.length; k++) {
+      (function (el) {
+        var destino = parseFloat(el.getAttribute("data-v"));
+        var f = FORMATO[el.getAttribute("data-f")] || FORMATO.ent;
+        if (!isFinite(destino)) { return; }
+
+        var t0 = new Date().getTime();
+        (function tic() {
+          var a = Math.min(1, (new Date().getTime() - t0) / dur);
+          /* desaceleración: arranca rápido y se asienta en el valor */
+          el.textContent = f(destino * (1 - Math.pow(1 - a, 3)));
+          if (a < 1) { setTimeout(tic, 32); return; }
+          el.textContent = f(destino);
+        })();
+      })(nodos[k]);
+    }
+  }
+
   var TEXTO_DECISION = {
     aprobar: "Aprobar",
     aprobar_con_ajuste: "Aprobar con ajuste",
@@ -136,11 +194,11 @@
             '<div class="tarjeta-cab"><span class="etiqueta">Verificación satelital del área</span></div>' +
             '<div class="tarjeta-cuerpo">' +
               '<table class="datos">' +
-                fila("Área declarada", p.area_declarada_ha + " ha") +
-                fila("Área con cultivo activo", p.area_detectada_ha + " ha") +
+                fila("Área declarada", cifraViva(p.area_declarada_ha, "ha")) +
+                fila("Área con cultivo activo", cifraViva(p.area_detectada_ha, "ha")) +
                 fila("Desvío", '<span style="color:' +
                   (Math.abs(desvio) > 5 ? "var(--critico)" : "var(--favorable)") + '">' +
-                  (desvio > 0 ? "+" : "") + desvio.toFixed(1) + "%</span>") +
+                  cifraViva(desvio, "pctf") + "</span>") +
               "</table>" +
             "</div>" +
           "</div>" +
@@ -169,15 +227,17 @@
                    década" cuando el dato real va de 2017 a 2025 — nueve años. */
                 fila("Ciclos completos (" + String(serie.desde).slice(0, 4) +
                      "–" + String(serie.hasta).slice(0, 4) + ")",
-                     serie.ciclos_detectados) +
+                     cifraViva(serie.ciclos_detectados, "ent")) +
                 fila("Ciclos en los últimos 24 meses",
                   '<span style="color:' + (serie.ciclos_ultimos_24m === 0 ? "var(--critico)" : "var(--favorable)") +
-                  '">' + serie.ciclos_ultimos_24m + "</span>") +
-                fila("NDVI pico promedio", serie.ndvi_pico_promedio.toFixed(2)) +
-                fila("Rendimiento estimado", serie.rendimiento_estimado_t_ha + " t/ha") +
-                fila("Rendimiento municipal (EVA)", serie.rendimiento_municipal_eva_t_ha + " t/ha") +
-                fila("Caída durante El Niño 2023-24", serie.caida_enso_pct + "%") +
-                fila("Caída promedio regional", datos.series.caida_enso_regional_pct + "%") +
+                  '">' + cifraViva(serie.ciclos_ultimos_24m, "ent") + "</span>") +
+                fila("NDVI pico promedio", cifraViva(serie.ndvi_pico_promedio, "dec2")) +
+                fila("Rendimiento estimado", cifraViva(serie.rendimiento_estimado_t_ha, "tha")) +
+                fila("Rendimiento municipal (EVA)",
+                     cifraViva(serie.rendimiento_municipal_eva_t_ha, "tha")) +
+                fila("Caída durante El Niño 2023-24", cifraViva(serie.caida_enso_pct, "pct")) +
+                fila("Caída promedio regional",
+                     cifraViva(datos.series.caida_enso_regional_pct, "pct")) +
               "</table>" +
               '<p class="etiqueta" style="margin-top:var(--e2)">Fuente: ' +
                 esc(serie.fuente_referencia) + "</p>" +
@@ -193,6 +253,12 @@
     var hostG = host.querySelector("#host-grafica");
     hostG.appendChild(S.grafica.ndvi({ serie: serie, eventos: datos.series.eventos_climaticos }));
     hostG.appendChild(S.grafica.leyenda());
+
+    /* Con el SVG ya insertado: la serie se traza de izquierda a derecha, como
+       el tiempo que representa, y los indicadores suben desde cero. La ficha
+       deja de ser una lámina y pasa a leerse como una medición en curso. */
+    S.grafica.animarTrazo(hostG, 1500);
+    animarCifras(host, 900);
   }
 
   function fila(k, v) {

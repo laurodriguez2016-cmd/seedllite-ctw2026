@@ -145,6 +145,48 @@
     return div;
   }
 
+  /**
+   * Traza la serie como si se estuviera dibujando, de izquierda a derecha.
+   *
+   * La técnica es la clásica de SVG: se pinta el trazo como una línea
+   * discontinua cuyo guion mide exactamente lo que mide la ruta, y se desplaza
+   * ese guion desde fuera hasta su sitio. El resultado es que la curva aparece
+   * avanzando en el tiempo, que es justo lo que la serie representa.
+   *
+   * Debe llamarse con el SVG YA insertado en el documento: getTotalLength()
+   * necesita que el elemento tenga geometría calculada.
+   *
+   * @param {Element} host  contenedor donde ya se insertó la gráfica
+   * @param {number}  ms    duración del trazado
+   */
+  function animarTrazo(host, ms) {
+    if (!host) { return; }
+    var linea = host.querySelector(".serie-linea");
+    if (!linea || typeof linea.getTotalLength !== "function") { return; }
+
+    var dur = ms || 1500;
+    var largo;
+    try { largo = linea.getTotalLength(); } catch (e) { return; }
+    if (!largo) { return; }
+
+    linea.style.strokeDasharray = largo + " " + largo;
+    linea.style.strokeDashoffset = largo;
+    linea.getBoundingClientRect();                 /* fuerza el reflujo */
+    linea.style.transition = "stroke-dashoffset " + dur + "ms linear";
+    linea.style.strokeDashoffset = "0";
+
+    /* El área bajo la curva y los puntos de nube entran detrás del trazo, para
+       que no se adelanten a la línea que los explica. */
+    var rezagados = host.querySelectorAll(".serie-area, .punto, .punto-nube");
+    for (var i = 0; i < rezagados.length; i++) {
+      rezagados[i].style.opacity = "0";
+      rezagados[i].style.transition = "opacity " + dur + "ms ease-in";
+    }
+    requestAnimationFrame(function () {
+      for (var k = 0; k < rezagados.length; k++) { rezagados[k].style.opacity = ""; }
+    });
+  }
+
   global.SEEDLLITE = global.SEEDLLITE || {};
-  global.SEEDLLITE.grafica = { ndvi: ndvi, leyenda: leyenda };
+  global.SEEDLLITE.grafica = { ndvi: ndvi, leyenda: leyenda, animarTrazo: animarTrazo };
 })(window);
