@@ -1,0 +1,22 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": null,
+  "installCommand": null,
+  "routes": [
+    {
+      "src": "/(.*)",
+      "headers": {
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      },
+      "continue": true
+    },
+    { "src": "/", "dest": "/landing/index.html" },
+    { "src": "/app/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/app/data/(.*)", "dest": "/data/$1" },
+    { "src": "/app/index.html", "dest": "/index.html" },
+    { "src": "/app/?", "dest": "/index.html" },
+    { "handle": "filesystem" }
+  ]
+}

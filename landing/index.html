@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEEDLLITE · Crédito agropecuario originado desde el satélite</title>
+<meta name="description" content="Un pequeño productor sin extractos bancarios sí tiene historia financiera: está escrita en nueve años de imágenes satelitales de su parcela.">
+
+<!-- Tipografía sin red. El encargo fija cero recursos externos para TODO lo que
+     se entrega, landing incluida: un despliegue en sala, un portátil sin wifi o
+     un jurado que abra el archivo local no pueden quedar sin tipografía. Las
+     familias siguen declaradas en :root con su pila de respaldo del sistema, de
+     modo que si alguien vendoriza los .woff2 en assets/fuentes/ y añade las
+     reglas @font-face, esto rinde igual sin tocar el resto del archivo. -->
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='2 2 28 28' fill='none' stroke='%235980a6' stroke-linejoin='miter'%3E%3Crect x='4' y='4' width='24' height='24' stroke-width='2'/%3E%3Cpath d='M4 16L10 10L16 22L22 13L28 16' stroke-width='3'/%3E%3C/svg%3E">
+
+<style>
+:root{
+  --papel:#f2f2f3; --tinta:#111315; --tinta-2:#5d5d60; --tinta-3:#8a8a8d;
+  --acero:#5980a6; --acero-hondo:#416180; --linea:rgba(17,19,21,.16);
+  --serif:"Instrument Serif",Georgia,serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sal:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--papel); color:var(--tinta);
+  font-family:var(--mono); font-size:13px; line-height:1.6;
+  overflow-x:hidden; -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--tinta); color:var(--papel)}
+a{color:inherit}
+
+.marco{padding:0 5vw; max-width:1600px; margin:0 auto}
+.rotulo{
+  font-family:var(--mono); font-size:10px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--tinta-3);
+}
+.rotulo b{color:var(--tinta); font-weight:500}
+
+/* ---------- 01 · portada ---------- */
+.portada{min-height:100svh; display:flex; flex-direction:column; padding-top:2.2rem}
+.cabecera{display:flex; align-items:center; gap:.7rem}
+.cabecera svg{width:22px; height:22px; flex:none}
+.cabecera .nombre{font-family:var(--mono); font-size:12px; letter-spacing:.24em; font-weight:500}
+
+.mega{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(4rem,20.5vw,19rem); line-height:.78; letter-spacing:-.035em;
+  margin:.28em 0 0; display:flex; flex-wrap:wrap;
+}
+.mega span{display:inline-block; transform:translateY(115%); animation:sube 1.15s var(--sal) forwards}
+@keyframes sube{to{transform:translateY(0)}}
+
+.bajada{
+  display:grid; grid-template-columns:1fr; gap:1.6rem;
+  border-top:1px solid var(--linea); margin-top:2.4rem; padding-top:1.2rem;
+}
+.bajada .frase{font-family:var(--serif); font-size:clamp(1.35rem,2.7vw,2.3rem); line-height:1.24; max-width:22ch}
+.bajada .frase i{color:var(--acero-hondo)}
+.cifras{display:flex; gap:2.6rem; flex-wrap:wrap; align-self:end}
+.cifra b{display:block; font-family:var(--serif); font-size:2.5rem; line-height:1; font-weight:400}
+.cifra span{display:block; margin-top:.45rem}
+
+/* ---------- secciones ---------- */
+section{padding:11vh 0; border-top:1px solid var(--linea)}
+.tit{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(1.9rem,5.2vw,4.4rem); line-height:1.06; letter-spacing:-.02em;
+  max-width:17ch; margin:1.6rem 0 0;
+}
+.pie-sec{margin-top:1.5rem; color:var(--tinta-2); max-width:52ch}
+
+.cita{
+  font-family:var(--serif); font-size:clamp(1.5rem,3.6vw,2.9rem); line-height:1.28;
+  max-width:24ch; margin:1.6rem 0 0; text-indent:-.42em;
+}
+.fuente{margin-top:1.4rem; color:var(--tinta-3)}
+
+.pasos{display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-top:3rem; border-top:1px solid var(--linea)}
+.paso{padding:1.5rem 1.2rem 0 0; border-right:1px solid var(--linea)}
+.paso:last-child{border-right:0}
+.paso b{display:block; font-family:var(--serif); font-size:1.55rem; font-weight:400; margin:.55rem 0 .35rem}
+.paso p{margin:0; color:var(--tinta-2)}
+
+.prueba{display:grid; grid-template-columns:1fr 1fr; gap:3.4rem; align-items:center; margin-top:2.8rem}
+.prueba img{width:100%; display:block; border:1px solid var(--linea)}
+.dato{display:flex; justify-content:space-between; padding:.72rem 0; border-bottom:1px solid var(--linea)}
+.dato b{font-weight:500}
+.veredicto{
+  display:inline-block; margin-top:1.5rem; padding:.5rem 1rem;
+  border:1px solid var(--tinta); font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+}
+
+.limites{display:grid; grid-template-columns:repeat(3,1fr); gap:2.4rem; margin-top:2.4rem}
+.limites p{margin:0; padding-top:1rem; border-top:1px solid var(--tinta); color:var(--tinta-2)}
+
+.cta{display:flex; align-items:baseline; gap:1.2rem; flex-wrap:wrap; margin-top:2rem}
+.boton{
+  display:inline-flex; align-items:center; gap:.8rem; text-decoration:none;
+  background:var(--tinta); color:var(--papel); padding:1.05rem 1.7rem;
+  font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+  transition:background .4s var(--sal), transform .4s var(--sal);
+}
+.boton:hover{background:var(--acero-hondo); transform:translateY(-2px)}
+.boton svg{width:15px; height:15px}
+
+footer{border-top:1px solid var(--linea); padding:2.4rem 0 3.2rem}
+.fin{display:flex; justify-content:space-between; gap:1.6rem; flex-wrap:wrap; color:var(--tinta-3)}
+
+/* aparición al entrar en pantalla */
+.rev{opacity:0; transform:translateY(22px); transition:opacity .9s var(--sal), transform .9s var(--sal)}
+.rev.visible{opacity:1; transform:none}
+
+@media (max-width:900px){
+  .pasos,.limites{grid-template-columns:1fr; }
+  .paso{border-right:0; border-bottom:1px solid var(--linea); padding-bottom:1.2rem}
+  .prueba{grid-template-columns:1fr}
+  .bajada{gap:2.4rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .mega span{animation:none; transform:none}
+  .rev{opacity:1; transform:none; transition:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ 01 · PORTADA ══════════════════════════════════════════════════════ -->
+<div class="marco portada">
+  <header class="cabecera">
+    <svg viewBox="2 2 28 28" fill="none" stroke="currentColor" stroke-linejoin="miter" aria-hidden="true">
+      <rect x="4" y="4" width="24" height="24" stroke-width="2"/>
+      <path d="M4 16L10 10L16 22L22 13L28 16" stroke-width="3"/>
+    </svg>
+    <span class="nombre">SEEDLLITE</span>
+    <span class="rotulo" style="margin-left:auto">Colombia Tech Week 2026</span>
+  </header>
+
+  <h1 class="mega" aria-label="SEEDLLITE">
+    <span style="animation-delay:.02s">S</span><span style="animation-delay:.06s">E</span><span style="animation-delay:.10s">E</span><span style="animation-delay:.14s">D</span><span style="animation-delay:.18s">L</span><span style="animation-delay:.22s">L</span><span style="animation-delay:.26s">I</span><span style="animation-delay:.30s">T</span><span style="animation-delay:.34s">E</span>
+  </h1>
+
+  <div class="bajada">
+    <p class="frase">Un campesino sin extractos bancarios <i>sí</i> tiene historia financiera. Está escrita en su parcela.</p>
+    <div class="cifras">
+      <div class="cifra"><b>108</b><span class="rotulo">meses por predio</span></div>
+      <div class="cifra"><b>9</b><span class="rotulo">años de serie</span></div>
+      <div class="cifra"><b>US$0,18</b><span class="rotulo">por dictamen</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 02 · EL PROBLEMA ══════════════════════════════════════════════════ -->
+<section class="marco rev">
+  <p class="rotulo">[ 02 ] &nbsp;<b>El problema</b></p>
+  <h2 class="tit">Un requisito de trámite excluye a cientos de miles.</h2>
+  <p class="pie-sec">Para pedir crédito con recursos FINAGRO hay que presentar un balance con fecha
+  menor a 90 días. Sin contabilidad formal, no existe. El capital está disponible y la
+  garantía estatal cubre el 80%: lo que falta es una forma barata de evaluar.</p>
+</section>
+
+<!-- ══ 03 · EL HALLAZGO ══════════════════════════════════════════════════ -->
+<section class="marco rev">
+  <p class="rotulo">[ 03 ] &nbsp;<b>El hallazgo</b></p>
+  <blockquote class="cita">“En el caso de microcréditos, la entidad debe contar con una
+  metodología que refleje de forma adecuada el riesgo inherente al deudor y cuyos elementos
+  permitan compensar las deficiencias de información del mismo, de acuerdo a sus características
+  y grado de informalidad. La información requerida podrá ser obtenida y documentada <i>en el
+  lugar donde se desarrolla la actividad económica del deudor</i>.”</blockquote>
+  <p class="fuente">Circular Externa 100 de 1995, Cap. II lit. c · Superintendencia Financiera de Colombia</p>
+  <p class="pie-sec">La norma lleva treinta años pidiendo esta metodología. Nadie la construyó porque
+  visitar cada finca no es rentable. El satélite hace esa visita por US$0,18.</p>
+</section>
+
+<!-- ══ 04 · CÓMO ════════════════════════════════════════════════════════ -->
+<section class="marco rev">
+  <p class="rotulo">[ 04 ] &nbsp;<b>Cómo funciona</b></p>
+  <div class="pasos">
+    <div class="paso"><span class="rotulo">01</span><b>Coordenadas</b><p>El polígono declarado por el productor.</p></div>
+    <div class="paso"><span class="rotulo">02</span><b>Serie</b><p>108 medianas mensuales de NDVI desde Copernicus, enmascaradas de nube.</p></div>
+    <div class="paso"><span class="rotulo">03</span><b>Medición</b><p>Rejilla 4×4 sobre el predio: cuánta tierra muestra actividad agrícola.</p></div>
+    <div class="paso"><span class="rotulo">04</span><b>Dictamen</b><p>Un memorando que un comité de crédito puede firmar.</p></div>
+  </div>
+</section>
+
+<!-- ══ 05 · LA PRUEBA ═══════════════════════════════════════════════════ -->
+<section class="marco rev">
+  <p class="rotulo">[ 05 ] &nbsp;<b>La prueba</b></p>
+  <h2 class="tit">El predio más verde de los nueve es el que rechazamos.</h2>
+  <div class="prueba">
+    <img src="/app/assets/satelite/meta-cacao-2025.svg" alt="Imagen Sentinel-2 del predio meta-cacao con el polígono declarado y la rejilla de medición: catorce de dieciséis celdas sin actividad agrícola.">
+    <div>
+      <div class="dato"><span>NDVI pico promedio</span><b>0,88, el más alto</b></div>
+      <div class="dato"><span>Área declarada</span><b>4,00 ha</b></div>
+      <div class="dato"><span>Área con actividad agrícola</span><b>0,50 ha</b></div>
+      <div class="dato"><span>Celdas agrícolas</span><b>2 de 16</b></div>
+      <p class="pie-sec" style="max-width:38ch">Está cubierto de verde y no se mueve. Verde sin
+      amplitud es monte, no cultivo. Un modelo que mire cuánto verde hay aprueba ese crédito.</p>
+      <span class="veredicto">Rechazar · causal de área</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 06 · LOS LÍMITES ═════════════════════════════════════════════════ -->
+<section class="marco rev">
+  <p class="rotulo">[ 06 ] &nbsp;<b>Lo que no hace</b></p>
+  <div class="limites">
+    <p>No ve el contrato. Ve la tierra: no detecta arrendamiento ni aparcería.</p>
+    <p>No sustituye la visita técnica cuando el intermediario la exige.</p>
+    <p>No evalúa centrales de riesgo ni garantías: eso le corresponde al banco.</p>
+  </div>
+  <p class="pie-sec">Y cuando la nube borra más de la mitad de la ventana, no decide: lo dice.
+  Un predio nublado y uno abandonado producen la misma señal, y negar crédito por lo primero
+  es el peor error que este sistema puede cometer.</p>
+</section>
+
+<!-- ══ CTA ══════════════════════════════════════════════════════════════ -->
+<section class="marco rev">
+  <div class="cta">
+    <a class="boton" href="/app/">Abrir la aplicación
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M3 13L13 3M6 3h7v7"/>
+      </svg>
+    </a>
+    <span class="rotulo">9 predios reales · dictámenes de claude-opus-5</span>
+  </div>
+</section>
+
+<footer class="marco">
+  <div class="fin">
+    <span class="rotulo">Contains modified Copernicus Sentinel data 2017-2025</span>
+    <span class="rotulo">Parcelas y series reales · productores ficticios</span>
+    <span class="rotulo">Colombia Tech Week 2026</span>
+  </div>
+</footer>
+
+<script>
+/* Aparición al entrar en pantalla. IntersectionObserver es nativo: sin librerías. */
+(function () {
+  var objetivos = document.querySelectorAll('.rev');
+  if (!('IntersectionObserver' in window)) {
+    objetivos.forEach(function (n) { n.classList.add('visible'); });
+    return;
+  }
+  var obs = new IntersectionObserver(function (entradas) {
+    entradas.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { rootMargin: '-12% 0px' });
+  objetivos.forEach(function (n) { obs.observe(n); });
+})();
+</script>
+
+</body>
+</html>

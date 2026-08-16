@@ -51,15 +51,42 @@ titulo "3 · La app abre con doble clic (file://)"
 if [ ! -f index.html ]; then
   aviso "todavía no hay index.html en esta rama — se salta"
 else
+  # Se buscan los patrones sobre el codigo CON LOS COMENTARIOS YA QUITADOS.
+  #
+  # Por que: la version anterior grepeaba el archivo crudo y saltaba con el propio
+  # comentario de index.html que explicaba por que no se deben usar modulos —
+  # porque para explicarlo hay que nombrarlos. El frente APP lo resolvio
+  # reescribiendo el comentario para que no contuviera las cadenas literales.
+  # Diagnostico correcto, correccion al reves: se cambio lo medido para que el
+  # guardian callara, y el comentario perdio justo la advertencia que un futuro
+  # mantenedor necesita leer.
+  #
+  # Cuando un guardian grita en falso se arregla el guardian, no la cosa medida.
+  # Se quitan comentarios de bloque, de linea y comentarios HTML antes de mirar.
+  DESNUDO=$(mktemp)
+  for f in index.html $(find assets -name '*.js' -o -name '*.html' 2>/dev/null); do
+    [ -f "$f" ] || continue
+    python3 - "$f" >> "$DESNUDO" <<'PYEOF'
+import re, sys
+ruta = sys.argv[1]
+t = open(ruta, encoding="utf-8", errors="replace").read()
+t = re.sub(r'<!--.*?-->', '', t, flags=re.S)      # comentarios HTML
+t = re.sub(r'/\*.*?\*/', '', t, flags=re.S)       # comentarios de bloque JS/CSS
+t = re.sub(r'(?m)^\s*//.*$', '', t)                # comentarios de linea
+for n, linea in enumerate(t.split("\n"), 1):
+    print("%s:%d:%s" % (ruta, n, linea))
+PYEOF
+  done
+
   PROHIBIDO=0
   for patron in 'fetch(' 'type="module"' "type='module'" 'import ' 'XMLHttpRequest'; do
-    if grep -rn --include='*.js' --include='*.html' -F "$patron" index.html assets/ 2>/dev/null \
-         | grep -v '^\s*//' | grep -vi 'no uses\|nunca\|prohibido' | head -3 | grep -q .; then
-      mal "aparece «$patron» — eso rompe el doble clic"
-      grep -rn --include='*.js' --include='*.html' -F "$patron" index.html assets/ 2>/dev/null | head -3 | sed 's/^/      /'
+    if grep -F "$patron" "$DESNUDO" | head -3 | grep -q .; then
+      mal "aparece «$patron» en codigo — eso rompe el doble clic"
+      grep -F "$patron" "$DESNUDO" | head -3 | sed 's/^/      /'
       PROHIBIDO=1
     fi
   done
+  rm -f "$DESNUDO"
   [ "$PROHIBIDO" -eq 0 ] && ok "sin fetch, sin import, sin type=module"
 
   for cdn in 'https://cdn' 'unpkg.com' 'jsdelivr' 'googleapis.com'; do
