@@ -12,7 +12,12 @@
 <br>
 
 [![Aplicación](https://img.shields.io/badge/Ver_la_aplicación-seedllite--motor.vercel.app-1f5673?style=for-the-badge)](https://seedllite-motor.vercel.app/app/)
-[![Video](https://img.shields.io/badge/Ver_el_video-63_segundos-2b7048?style=for-the-badge)](video/seedllite-demo.mp4)
+[![Video](https://img.shields.io/badge/Ver_el_video-1_minuto-2b7048?style=for-the-badge)](https://youtu.be/LZD7oTlH_2A)
+
+
+[![Ver el demo de SEEDLLITE](https://img.youtube.com/vi/LZD7oTlH_2A/maxresdefault.jpg)](https://youtu.be/LZD7oTlH_2A)
+
+*El demo también está en el repositorio: [`video/seedllite-demo.mp4`](video/seedllite-demo.mp4)*
 
 <br>
 
