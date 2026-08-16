@@ -592,7 +592,10 @@
         '<div class="tarjeta-cab"><h2>Cartera evaluada</h2>' +
           '<span class="etiqueta" style="margin-left:auto">Vista de analista</span></div>' +
         '<div class="tarjeta-cuerpo">' +
-          '<table class="datos">' +
+          /* .datos sola es para tablas clave/valor de dos columnas: lleva
+             th{width:45%} y sin margen horizontal. Con siete columnas los
+             encabezados se pegan entre si. De ahi la variante -lista. */
+          '<table class="datos datos-lista">' +
             "<tr><th>Productor</th><th>Cultivo</th><th>Ha activas</th>" +
             "<th>Ciclos 24m</th><th>Puntaje</th><th>Monto</th><th>Decisión</th></tr>" +
             filas +
