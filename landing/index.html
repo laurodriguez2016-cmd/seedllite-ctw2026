@@ -6,19 +6,35 @@
 <title>SEEDLLITE · Crédito agropecuario originado desde el satélite</title>
 <meta name="description" content="Un campesino sin extractos bancarios sí tiene historia financiera: está escrita en nueve años de imágenes satelitales de su lote.">
 
-<!-- Sin recursos externos. Las familias van con la pila del sistema: en el Mac
-     donde se graba, la sans resuelve a SF y la mono a SF Mono, muy cerca de
-     Inter y JetBrains Mono. Para tenerlas exactas hay que vendorizar los .woff2
-     en landing/fuentes/ y añadir @font-face, sin tocar nada más. -->
+<!-- Sin recursos externos: la pagina tiene que abrir igual desde file:// y
+     desde Vercel, sin red. Barlow y Barlow Condensed —las familias que pide el
+     sistema Industry— viajan vendorizadas en el repositorio; van duplicadas en
+     landing/fuentes/ para que la ruta relativa valga igual en los dos sitios:
+     el deploy sirve la landing en / y la app en /app/. -->
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M12 21V11'/%3E%3Cpath d='M12 13S7 13 4.5 10.5 3 4 3 4s5 0 7.5 2.5S12 13 12 13Z'/%3E%3Cpath d='M12 15s4 0 6-2 1.5-5 1.5-5-4 0-6 2-1.5 5-1.5 5Z'/%3E%3C/svg%3E">
 
 <style>
+@font-face{font-family:"Barlow";font-weight:400;font-display:swap;
+  src:url("fuentes/barlow-400.woff2") format("woff2")}
+@font-face{font-family:"Barlow";font-weight:500;font-display:swap;
+  src:url("fuentes/barlow-500.woff2") format("woff2")}
+@font-face{font-family:"Barlow";font-weight:600;font-display:swap;
+  src:url("fuentes/barlow-600.woff2") format("woff2")}
+@font-face{font-family:"Barlow";font-weight:700;font-display:swap;
+  src:url("fuentes/barlow-700.woff2") format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:400;font-display:swap;
+  src:url("fuentes/barlow-condensed-400.woff2") format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:500;font-display:swap;
+  src:url("fuentes/barlow-condensed-500.woff2") format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:600;font-display:swap;
+  src:url("fuentes/barlow-condensed-600.woff2") format("woff2")}
 :root{
   --papel:#f2f2f3; --tinta:#1d1f20; --tinta-suave:#111315; --hondo:#0a0a0a;
   --g300:#d4d4d7; --g400:#b7b7ba; --g500:#8a8a8d; --g600:#6a6a6e; --g700:#5d5d60; --g800:#3a3a3d;
   --acero:#5980a6; --acero-texto:#416180;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  --sans:"Barlow",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --cond:"Barlow Condensed","Arial Narrow",var(--sans);
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,"JetBrains Mono",monospace;
   --sal:cubic-bezier(.16,1,.3,1);
 }
@@ -163,13 +179,74 @@ a{color:inherit; text-decoration:none}
   padding:0 4rem 3rem; pointer-events:none}
 @media(min-width:768px){.s2-pie{display:flex}}
 
+
+/* ══ 4 · modelo ═══════════════════════════════════════════════════════ */
+.s4{position:relative; z-index:30; background:var(--papel); color:var(--tinta);
+  padding:6rem 1.5rem 5rem}
+@media(min-width:768px){.s4{padding:9rem 4rem 6rem}}
+.s4-tit{font-family:var(--cond); font-size:2.4rem; line-height:1.03; letter-spacing:-.015em;
+  font-weight:600; margin:1.2rem 0 0; max-width:16ch; text-transform:uppercase}
+@media(min-width:768px){.s4-tit{font-size:4.6rem}}
+@media(min-width:1280px){.s4-tit{font-size:6rem}}
+.s4-bajada{max-width:56ch; margin:1.6rem 0 0; font-size:15px; line-height:1.65; color:#3f3f42}
+@media(min-width:768px){.s4-bajada{font-size:17px}}
+
+/* Tres movimientos del modelo, separados por filete: la retícula del sistema
+   Industry, no tres tarjetas iguales. */
+.s4-tres{display:grid; gap:0; margin:4rem 0 0; border-top:1px solid var(--g300)}
+@media(min-width:900px){.s4-tres{grid-template-columns:repeat(3,1fr)}}
+.s4-mov{padding:2rem 0; border-bottom:1px solid var(--g300)}
+@media(min-width:900px){.s4-mov{padding:2.2rem 2rem 2.4rem; border-bottom:0;
+  border-right:1px solid var(--g300)}
+  .s4-mov:first-child{padding-left:0}
+  .s4-mov:last-child{border-right:0; padding-right:0}}
+.s4-mov h3{font-family:var(--cond); font-size:1.5rem; font-weight:600; margin:.9rem 0 .7rem;
+  letter-spacing:-.01em; line-height:1.15}
+.s4-mov p{margin:0; font-size:13.5px; line-height:1.7; color:#4a4a4e}
+.s4-mov b{color:var(--tinta)}
+
+/* El salto de costo: dos magnitudes enfrentadas, sin adorno. */
+.s4-salto{display:flex; flex-wrap:wrap; align-items:flex-end; gap:1.2rem 2.4rem;
+  margin:4rem 0 0; padding:2.2rem 0 0; border-top:1px solid var(--g300)}
+.s4-cifra{display:flex; flex-direction:column; gap:.5rem}
+.s4-cifra b{font-family:var(--cond); font-size:3rem; line-height:.9; font-weight:600;
+  letter-spacing:-.02em}
+@media(min-width:768px){.s4-cifra b{font-size:4.2rem}}
+.s4-antes b{color:var(--g500); text-decoration:line-through; text-decoration-thickness:2px}
+.s4-flecha{font-family:var(--mono); font-size:12px; color:var(--g500); padding-bottom:.9rem;
+  letter-spacing:.2em}
+.s4-desp b{color:var(--acero-texto)}
+
+.s4-cierre{margin:4rem 0 0; padding:2.4rem 0 0; border-top:1px solid var(--g300);
+  display:grid; gap:2rem}
+@media(min-width:1024px){.s4-cierre{grid-template-columns:1.1fr .9fr; gap:4rem}}
+.s4-cita{font-family:var(--cond); font-size:1.7rem; line-height:1.25; font-weight:500;
+  margin:.9rem 0 0; letter-spacing:-.01em}
+@media(min-width:768px){.s4-cita{font-size:2.3rem}}
+.s4-esc{margin:0; padding:0; list-style:none; counter-reset:esc}
+.s4-esc li{counter-increment:esc; display:grid; grid-template-columns:2.6rem 1fr;
+  gap:.4rem 1rem; padding:.95rem 0; border-bottom:1px solid var(--g300); font-size:13.5px}
+.s4-esc li:last-child{border-bottom:0}
+.s4-esc li::before{content:counter(esc,decimal-leading-zero);
+  font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--acero-texto);
+  padding-top:.25rem}
+.s4-esc em{font-style:normal; color:var(--g600); display:block; margin-top:.2rem; font-size:12.5px}
+
 /* ══ 3 · oscura ═══════════════════════════════════════════════════════ */
 .s3{position:relative; width:100%; background:var(--hondo); color:#fff; z-index:30;
   display:flex; flex-direction:column}
-.s3-img{position:absolute; top:0; left:50%; width:150vw; max-width:1050px;
-  transform:translate(-50%,-60%); z-index:0; pointer-events:none; opacity:0;
-  transition:opacity 1.4s ease, transform 1.4s ease; border:1px solid var(--g800)}
-.s3-img.visible{opacity:.9; transform:translate(-50%,-70%)}
+/* La captura Sentinel-2 es telon de fondo, no protagonista: se ancla a la
+   derecha, no cruza la columna de texto y se disuelve por los bordes para que
+   el titular no compita contra ella. Antes medía 150vw y desbordaba hacia la
+   sección anterior tapándola. */
+.s3-img{position:absolute; top:0; right:0; width:min(52vw,620px);
+  transform:translate(6%,-24%) scale(1.02); z-index:0; pointer-events:none; opacity:0;
+  transition:opacity 1.6s ease, transform 1.6s ease;
+  -webkit-mask-image:radial-gradient(ellipse 78% 72% at 62% 44%,#000 38%,transparent 78%);
+  mask-image:radial-gradient(ellipse 78% 72% at 62% 44%,#000 38%,transparent 78%)}
+.s3-img.visible{opacity:.5; transform:translate(6%,-28%) scale(1)}
+@media(max-width:1023px){.s3-img{width:88vw; opacity:0}
+  .s3-img.visible{opacity:.28; transform:translate(14%,-16%) scale(1)}}
 .s3-cab{position:relative; z-index:10; padding:8rem 2rem 0; margin-bottom:4rem;
   display:flex; flex-direction:column; gap:2.5rem; justify-content:space-between}
 @media(min-width:768px){.s3-cab{padding:12rem 4rem 0}}
@@ -232,7 +309,7 @@ a{color:inherit; text-decoration:none}
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important; transition:none !important}
   .rev,.hero-fondo{opacity:1; transform:none}
-  .s3-img{opacity:.9; transform:translate(-50%,-70%)}
+  .s3-img{opacity:.5; transform:translate(6%,-28%)}
   .marca-svg .glifo{transform:none; opacity:1}
   .hero-serie path{stroke-dashoffset:0}
   html{scroll-behavior:auto}
@@ -273,6 +350,8 @@ a{color:inherit; text-decoration:none}
       <nav class="subnav-col subnav-der">
         <a href="#problema">Problema</a>
         <a href="#cartera">Cartera</a>
+    <a href="#modelo">Modelo</a>
+        <a href="#modelo">Modelo</a>
         <a href="/app/">Aplicación</a>
       </nav>
       <button class="hamb" id="hamb" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú"><i></i><i></i></button>
@@ -357,7 +436,7 @@ a{color:inherit; text-decoration:none}
 </section>
 
 <section class="s3" id="cartera">
-  <img class="s3-img" id="s3img" src="/app/assets/satelite/meta-cacao-2025.svg"
+  <img class="s3-img" id="s3img" src="../assets/satelite/meta-cacao-2025.svg"
        alt="Imagen Sentinel-2 del predio meta-cacao con el polígono declarado y la rejilla de medición">
 
   <div class="s3-cab">
@@ -383,7 +462,7 @@ a{color:inherit; text-decoration:none}
   <div class="panel">
     <div class="panel-izq">
       <div class="aster">* * *</div>
-      <div class="lienzo"><img id="capImg" src="/app/assets/satelite/huila-cafe-2025.svg" alt=""></div>
+      <div class="lienzo"><img id="capImg" src="../assets/satelite/huila-cafe-2025.svg" alt=""></div>
       <div class="contador"><span id="capNum">01</span> <em>/</em> 05</div>
     </div>
     <div class="panel-der">
@@ -401,6 +480,76 @@ a{color:inherit; text-decoration:none}
     <span>Lotes y series reales · productores ficticios</span>
   </div>
 </section>
+
+<section class="s4" id="modelo">
+  <p class="rot rev">[ 04 ] &nbsp;<b>El modelo</b></p>
+  <h2 class="s4-tit rev">No prestamos plata.<br>Vendemos la decisión.</h2>
+  <p class="s4-bajada rev">Apollo en Kenia y Agrolend en Brasil prestan de su propio balance:
+  levantan deuda, cargan con el riesgo y compiten contra tasas subsidiadas que no pueden
+  igualar. SEEDLLITE se para un piso más arriba. El dinero ya existe —FINAGRO colocó
+  $48,1 billones en 2025— y el Estado ya garantiza hasta el 80&nbsp;% del crédito al pequeño
+  productor. Lo que no existe es una forma barata de saber a quién prestarle.
+  <b>Eso es lo que vendemos.</b></p>
+
+  <div class="s4-tres rev">
+    <div class="s4-mov">
+      <span class="rot">Qué somos</span>
+      <h3>Infraestructura de originación</h3>
+      <p>El banco conserva la relación, el desembolso y el margen financiero. Nosotros
+      entregamos el dictamen firmable que hoy le cuesta una visita de campo. <b>Somos
+      software, no actividad financiera</b>: sin riesgo de crédito, sin balance que levantar,
+      sin licencia que pedir.</p>
+    </div>
+    <div class="s4-mov">
+      <span class="rot">Cómo cobra</span>
+      <h3>Por dictamen emitido</h3>
+      <p>El insumo es una imagen pública y gratuita: el costo marginal del dictamen número
+      un millón es prácticamente el mismo que el del primero. <b>El techo no lo pone el
+      capital, lo pone la fuerza de ventas</b> — y cada cliente nuevo hereda un motor que
+      ya está construido.</p>
+    </div>
+    <div class="s4-mov">
+      <span class="rot">Por qué compone</span>
+      <h3>Cada dictamen es dato</h3>
+      <p>Cada crédito colocado devuelve el desenlace: pagó, se atrasó, se perdió la cosecha.
+      Esa realimentación calibra los umbrales contra resultados reales, no contra supuestos.
+      <b>El foso no es el satélite —es de todos— es la serie de desenlaces</b> que solo
+      tiene quien lleva años emitiendo.</p>
+    </div>
+  </div>
+
+  <div class="s4-salto rev">
+    <div class="s4-cifra s4-antes"><span class="rot">Originar hoy · visita de campo</span>
+      <b>$400.000</b></div>
+    <span class="s4-flecha">──▶</span>
+    <div class="s4-cifra s4-desp"><span class="rot">Originar con SEEDLLITE</span>
+      <b>$8.000</b></div>
+    <div class="s4-cifra"><span class="rot">Solicitudes por asesor / mes</span>
+      <b>30 ▸ 300</b></div>
+  </div>
+
+  <div class="s4-cierre rev">
+    <div>
+      <span class="rot">La frase que cierra la venta</span>
+      <p class="s4-cita">«No le pedimos que confíe en el campesino. Le pedimos que confíe
+      en nueve años de evidencia satelital de que ese campesino sí siembra.»</p>
+    </div>
+    <div>
+      <span class="rot">Por dónde entra</span>
+      <ol class="s4-esc">
+        <li><span>Microfinancieras rurales<em>Crezcamos, Contactar, Bancamía. Son las que
+        más duele el costo de evaluar y las más rápidas para decidir.</em></span></li>
+        <li><span>Banco Agrario y banca FINAGRO<em>El volumen. Cupo sin colocar y metas
+        rurales que no se cumplen.</em></span></li>
+        <li><span>Aseguradoras<em>El mismo índice que sirve para prestar liquida un
+        siniestro paramétrico sin ajustador.</em></span></li>
+        <li><span>FINAGRO y MinAgricultura<em>No como comprador: como validador. Un piloto
+        aquí abre las demás puertas.</em></span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
 
 <script>
 var PREDIOS = [
@@ -447,7 +596,7 @@ function poner(i, manual) {
   var p = PREDIOS[i];
   disolver(false);
   setTimeout(function () {
-    capImg.src = "/app/assets/satelite/" + p.id + "-2025.svg";
+    capImg.src = "../assets/satelite/" + p.id + "-2025.svg";
     capImg.alt = "Imagen Sentinel-2 del predio " + p.id;
     disolver(true);
   }, 340);

@@ -1,3 +1,67 @@
+/* ---------------------------------------------------------------------- *
+   Tipografia del sistema Industry, empacada en el repositorio.
+
+   El sistema de diseno pide Barlow y Barlow Condensed. Hasta ahora app.css las
+   nombraba en `--sans` y `--display` pero nunca las cargaba: sin @font-face y
+   sin poder usar el @import de Google Fonts —la app tiene que abrir con doble
+   clic bajo file://, sin red— el navegador caia siempre al sans del sistema.
+   Es decir: la tipografia del design system no se estaba viendo.
+
+   Los seis archivos woff2 (subconjunto latino, 96 KB en total) viven en
+   assets/fuentes/ y se cargan por ruta relativa, que es lo unico que funciona
+   igual desde file:// y desde Vercel.
+ * ---------------------------------------------------------------------- */
+
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fuentes/barlow-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fuentes/barlow-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fuentes/barlow-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fuentes/barlow-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fuentes/barlow-condensed-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fuentes/barlow-condensed-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fuentes/barlow-condensed-600.woff2") format("woff2");
+}
+
 /* ==========================================================================
    SEEDLLITE — sistema de diseño
    Frente 🅰 APP.
@@ -252,10 +316,52 @@ p  { margin: 0 0 var(--e2); }
 }
 
 .tarjeta {
+  position: relative;
   background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: var(--r);
+  border: 1px solid var(--borde-pelo, var(--borde));
+  border-radius: 0;                       /* objeto de plano: esquina recta */
 }
+
+/* Marcas de registro en las cuatro esquinas. Es la firma del sistema Industry:
+   la tarjeta deja de ser una caja y pasa a ser un objeto dibujado sobre un
+   plano. Se hacen con gradientes para no exigir cuatro elementos por tarjeta. */
+.tarjeta::before,
+.tarjeta::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  width: 9px; height: 9px;
+  background-image:
+    linear-gradient(var(--acento) 0 100%),
+    linear-gradient(var(--acento) 0 100%);
+  background-size: 9px 1px, 1px 9px;
+  background-position: 0 4px, 4px 0;
+  background-repeat: no-repeat;
+  opacity: .55;
+}
+.tarjeta::before { top: -5px; left: -5px; }
+.tarjeta::after  { top: -5px; right: -5px; }
+/* Las dos de abajo cuelgan del cuerpo, que es el ultimo bloque de toda tarjeta. */
+.tarjeta > :last-child::before,
+.tarjeta > :last-child::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  width: 9px; height: 9px;
+  background-image:
+    linear-gradient(var(--acento) 0 100%),
+    linear-gradient(var(--acento) 0 100%);
+  background-size: 9px 1px, 1px 9px;
+  background-position: 0 4px, 4px 0;
+  background-repeat: no-repeat;
+  opacity: .55;
+}
+.tarjeta > :last-child { position: relative; }
+.tarjeta > :last-child::before { bottom: -5px; left: -5px; }
+.tarjeta > :last-child::after  { bottom: -5px; right: -5px; }
+
+/* La cabecera de la tarjeta, en condensada y con el rotulo en versalitas. */
+.tarjeta-cab { font-family: var(--display, var(--sans)); letter-spacing: .01em; }
 .tarjeta-cab {
   padding: var(--e2) var(--e3);
   border-bottom: 1px solid var(--borde);
@@ -1504,3 +1610,100 @@ h1, h2, h3, .marca { font-family: var(--display); letter-spacing: 0.01em; }
 @media (max-width: 900px) {
   .nc, .nc-dos { grid-template-columns: 1fr; }
 }
+
+
+/* ==========================================================================
+   REMATE DEL SISTEMA — esquina recta en todo, y el primario como unico solido
+   ========================================================================== */
+.boton, .boton-icono, input, select, textarea, .marca-riesgo, .decision,
+.pil, .chip-modelo { border-radius: 0 !important; }
+
+.boton-primario {
+  background: var(--acento);
+  border: 1px solid var(--acento);
+  color: #fff;
+}
+.boton-primario:hover { background: var(--acento-600, var(--acento-texto));
+  border-color: var(--acento-600, var(--acento-texto)); }
+
+/* La marca de la cabecera, con la plantula */
+.marca { display: inline-flex; align-items: center; gap: .5rem; }
+.marca svg { width: 17px; height: 17px; flex: none; }
+
+/* ---------------------------------------------------------------------- *
+   Vista global (80-globo.js)
+ * ---------------------------------------------------------------------- */
+
+/* La columna derecha apila las dos tarjetas de texto contra el globo. */
+.glb-col {
+  display: grid;
+  gap: var(--e3);
+  align-content: start;
+}
+
+@media (min-width: 901px) {
+  .glb-rejilla { grid-template-columns: minmax(360px, 480px) 1fr; }
+}
+
+.glb-lienzo { display: flex; justify-content: center; }
+
+.glb-svg {
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+  touch-action: none;
+  user-select: none;
+}
+
+.glb-rot {
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 8.5px;
+  letter-spacing: .12em;
+}
+
+.glb-pie,
+.glb-fuente {
+  margin: var(--e2) 0 0;
+  color: var(--texto-3, var(--texto-2));
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.glb-nota { margin: 0 0 var(--e3); font-size: 13px; line-height: 1.6; }
+
+.glb-lista { margin: 0; }
+.glb-lista dt {
+  margin-top: var(--e3);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+.glb-lista dt:first-child { margin-top: 0; }
+.glb-lista dd {
+  margin: 5px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--texto-2);
+}
+.glb-lista code { font-family: var(--mono, ui-monospace, monospace); font-size: 11.5px; }
+
+/* Cifras del embudo: rotulo a la izquierda, numero alineado a la derecha en
+   monoespaciada para que las magnitudes se comparen de un vistazo. */
+.glb-datos {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0;
+}
+.glb-datos dt,
+.glb-datos dd {
+  margin: 0;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--borde-pelo, var(--borde));
+  font-size: 13px;
+}
+.glb-datos dt { color: var(--texto-2); }
+.glb-datos dd { text-align: right; color: var(--texto); font-variant-numeric: tabular-nums; }
+.glb-datos dt:nth-last-of-type(1),
+.glb-datos dd:last-of-type { border-bottom: 0; }

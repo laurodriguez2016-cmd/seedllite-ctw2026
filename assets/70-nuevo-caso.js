@@ -398,102 +398,61 @@
     validar();
   }
 
-  /* Mapa de seleccion. Proyeccion equirectangular, la misma idea que 10-mapa.js
-     pero autonoma: esta pantalla no debe romperse si aquel cambia. */
+  /* Mapa de seleccion. Usa EL MISMO mapa de la aplicacion (10-mapa.js) en vez
+     de dibujar otro: el contorno real de Natural Earth, la malla de celdas y los
+     nueve predios ya evaluados como referencia de escala.
+
+     Para saber donde se hizo clic hay que invertir la proyeccion, y `proyectar`
+     esta exportada pero sus constantes internas no. Se calibra numericamente:
+     se proyectan dos puntos conocidos, se despeja la transformacion lineal, y
+     asi esto sigue funcionando aunque el frente APP cambie el encuadre. */
   function montarMapa(cont) {
-    var CAJA = { lat0: -4.3, lat1: 12.6, lon0: -79.1, lon1: -66.8 };
-    var W = 460, H = 620;
-    var ns = "http://www.w3.org/2000/svg";
-    var svg = document.createElementNS(ns, "svg");
-    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
-    svg.setAttribute("class", "nc-svg");
-
-    var fondo = document.createElementNS(ns, "rect");
-    fondo.setAttribute("width", W); fondo.setAttribute("height", H);
-    fondo.setAttribute("fill", "var(--superficie-2)");
-    svg.appendChild(fondo);
-
-    /* Silueta de Colombia. Va simplificada a proposito: reconocerla basta para
-       ubicarse, y traer cartografia de verdad exigiria una peticion externa que
-       rompe el requisito de abrir con doble clic. */
-    var CONTORNO = [
-      [-77.4,8.6],[-76.9,8.0],[-76.1,9.3],[-75.6,9.4],[-75.3,10.8],[-74.8,11.1],
-      [-74.2,11.3],[-73.4,11.3],[-72.4,11.8],[-71.3,12.4],[-71.1,12.0],[-71.9,11.4],
-      [-72.5,11.1],[-72.9,10.4],[-72.7,9.4],[-73.4,9.2],[-72.9,8.6],[-72.4,8.0],
-      [-72.4,7.4],[-71.1,7.0],[-70.1,6.9],[-69.4,6.1],[-67.9,6.2],[-67.5,5.3],
-      [-67.9,4.2],[-67.3,3.4],[-67.9,2.8],[-67.1,2.4],[-66.9,1.2],[-67.3,1.9],
-      [-68.2,1.7],[-69.8,1.1],[-69.8,0.6],[-70.1,-0.2],[-70.7,-0.5],[-70.0,-2.7],
-      [-70.9,-4.2],[-71.5,-4.5],[-72.9,-2.4],[-73.2,-2.6],[-74.8,-0.2],[-75.3,0.1],
-      [-76.4,0.4],[-77.4,0.4],[-78.6,1.3],[-78.9,2.2],[-77.9,3.5],[-77.3,4.1],
-      [-77.5,5.6],[-77.4,6.3],[-77.9,7.2],[-77.2,7.9],[-77.4,8.6]
-    ];
-    var d = CONTORNO.map(function (p, i) {
-      var x = (p[0] - CAJA.lon0) / (CAJA.lon1 - CAJA.lon0) * W;
-      var y = (1 - (p[1] - CAJA.lat0) / (CAJA.lat1 - CAJA.lat0)) * H;
-      return (i ? "L" : "M") + x.toFixed(1) + "," + y.toFixed(1);
-    }).join(" ") + " Z";
-    var pais = document.createElementNS(ns, "path");
-    pais.setAttribute("d", d);
-    pais.setAttribute("fill", "var(--superficie)");
-    pais.setAttribute("stroke", "var(--borde-fuerte)");
-    pais.setAttribute("stroke-width", "1");
-    svg.appendChild(pais);
-
-    /* Retícula de un grado: da escala sin necesidad de cartografía. */
-    for (var la = -4; la <= 12; la += 2) {
-      var y = (1 - (la - CAJA.lat0) / (CAJA.lat1 - CAJA.lat0)) * H;
-      var l = document.createElementNS(ns, "line");
-      l.setAttribute("x1", 0); l.setAttribute("x2", W);
-      l.setAttribute("y1", y); l.setAttribute("y2", y);
-      l.setAttribute("stroke", "var(--borde)"); l.setAttribute("stroke-width", ".5");
-      svg.appendChild(l);
-    }
-    for (var lo = -79; lo <= -67; lo += 2) {
-      var x = (lo - CAJA.lon0) / (CAJA.lon1 - CAJA.lon0) * W;
-      var v = document.createElementNS(ns, "line");
-      v.setAttribute("y1", 0); v.setAttribute("y2", H);
-      v.setAttribute("x1", x); v.setAttribute("x2", x);
-      v.setAttribute("stroke", "var(--borde)"); v.setAttribute("stroke-width", ".5");
-      svg.appendChild(v);
-    }
-
-    /* Los nueve predios ya evaluados, como referencia de escala. */
+    var M = (global.SEEDLLITE || {}).mapa;
     var datos = global.SEEDLLITE_DATOS;
-    if (datos && datos.predios) {
-      datos.predios.predios.forEach(function (p) {
-        var c = document.createElementNS(ns, "circle");
-        c.setAttribute("cx", (p.coordenadas.lon - CAJA.lon0) / (CAJA.lon1 - CAJA.lon0) * W);
-        c.setAttribute("cy", (1 - (p.coordenadas.lat - CAJA.lat0) / (CAJA.lat1 - CAJA.lat0)) * H);
-        c.setAttribute("r", 3);
-        c.setAttribute("fill", "var(--borde-fuerte)");
-        svg.appendChild(c);
-      });
+
+    if (!M || !M.render || !M.proyectar || !datos) {
+      cont.innerHTML = '<p class="nc-mal">El mapa no cargó. Usa la pestaña de ' +
+        "coordenadas o la de matrícula.</p>";
+      return;
     }
 
-    var marca = document.createElementNS(ns, "g");
-    marca.setAttribute("class", "nc-marca");
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "nc-svg");
+    cont.appendChild(svg);
+
+    M.render(svg, datos.predios.predios,
+             (datos.dictamenes || {}).dictamenes || {}, null, function () {});
+
+    /* Calibracion de la inversa con dos puntos separados. */
+    var A = M.proyectar(-78, 2), B = M.proyectar(-68, 11);
+    var mLon = (-68 - (-78)) / (B[0] - A[0]);
+    var mLat = (11 - 2) / (B[1] - A[1]);
+
+    var marca = document.createElementNS("http://www.w3.org/2000/svg", "g");
     marca.style.display = "none";
-    var cr = document.createElementNS(ns, "circle");
-    cr.setAttribute("r", 7); cr.setAttribute("fill", "none");
-    cr.setAttribute("stroke", "var(--acento)"); cr.setAttribute("stroke-width", "2");
-    var pt = document.createElementNS(ns, "circle");
-    pt.setAttribute("r", 2); pt.setAttribute("fill", "var(--acento)");
-    marca.appendChild(cr); marca.appendChild(pt);
+    var aro = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    aro.setAttribute("r", 9); aro.setAttribute("fill", "none");
+    aro.setAttribute("stroke", "var(--acento)"); aro.setAttribute("stroke-width", "2");
+    var pt = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    pt.setAttribute("r", 2.5); pt.setAttribute("fill", "var(--acento)");
+    marca.appendChild(aro); marca.appendChild(pt);
     svg.appendChild(marca);
 
+    svg.style.cursor = "crosshair";
     svg.addEventListener("click", function (ev) {
-      var r = svg.getBoundingClientRect();
-      var px = (ev.clientX - r.left) / r.width * W;
-      var py = (ev.clientY - r.top) / r.height * H;
-      var lon = CAJA.lon0 + px / W * (CAJA.lon1 - CAJA.lon0);
-      var lat = CAJA.lat0 + (1 - py / H) * (CAJA.lat1 - CAJA.lat0);
-      marca.style.display = "";
-      cr.setAttribute("cx", px); cr.setAttribute("cy", py);
-      pt.setAttribute("cx", px); pt.setAttribute("cy", py);
-      ubicar(lat, lon, "mapa", "Señalado en el mapa");
-    });
+      var caja = svg.viewBox.baseVal, r = svg.getBoundingClientRect();
+      var vx = (ev.clientX - r.left) / r.width * caja.width;
+      var vy = (ev.clientY - r.top) / r.height * caja.height;
+      var lon = -78 + (vx - A[0]) * mLon;
+      var lat = 2 + (vy - A[1]) * mLat;
 
-    cont.appendChild(svg);
+      if (lat < -4.5 || lat > 13.5 || lon < -80 || lon > -66) { return; }
+
+      marca.style.display = "";
+      aro.setAttribute("cx", vx); aro.setAttribute("cy", vy);
+      pt.setAttribute("cx", vx); pt.setAttribute("cy", vy);
+      ubicar(lat, lon, "mapa", "Señalado sobre el mapa");
+    });
   }
 
   /* --- Enganche a la navegacion ---------------------------------------- */

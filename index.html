@@ -5,16 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SEEDLLITE — Puntaje de crédito agrícola desde imágenes satelitales</title>
 <meta name="description" content="Puntaje de crédito agrícola construido desde 10 años de imágenes satelitales. Hackathon Colombia Tech Week 2026.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235980a6' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M12 21V11'/%3E%3Cpath d='M12 13S7 13 4.5 10.5 3 4 3 4s5 0 7.5 2.5S12 13 12 13Z'/%3E%3Cpath d='M12 15s4 0 6-2 1.5-5 1.5-5-4 0-6 2-1.5 5-1.5 5Z'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/app.css">
 </head>
 <body>
 
 <header class="barra">
-  <span class="marca">SEEDLLITE</span>
+  <span class="marca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 21V11"/><path d="M12 13S7 13 4.5 10.5 3 4 3 4s5 0 7.5 2.5S12 13 12 13Z"/><path d="M12 15s4 0 6-2 1.5-5 1.5-5-4 0-6 2-1.5 5-1.5 5Z"/></svg>SEEDLLITE</span>
   <span class="marca-sub">Originación y monitoreo satelital de crédito agropecuario</span>
   <nav class="barra-fin">
     <button class="boton boton-icono" data-nav="mapa">Mapa</button>
     <button class="boton boton-icono" data-nav="cartera">Cartera</button>
+    <a class="boton boton-icono" href="#globo">Cobertura</a>
     <a class="boton boton-icono" href="#nuevo">Radicar</a>
     <button class="boton boton-icono" id="tema" aria-label="Alternar tema claro y oscuro">◐</button>
   </nav>
@@ -63,7 +65,8 @@
 <script src="assets/40-tooltips.js"></script>
 <script src="assets/50-estadistica.js"></script>
 <script src="assets/70-nuevo-caso.js"></script>
-<script src="assets/90-app.js"></script>
+<script src="assets/80-globo.js"></script>
+  <script src="assets/90-app.js"></script>
 
 </body>
 </html>
