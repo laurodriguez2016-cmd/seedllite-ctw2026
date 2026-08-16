@@ -1145,3 +1145,11 @@ p  { margin: 0 0 var(--e2); }
   letter-spacing: 0.04em;
   fill: var(--texto-3);
 }
+
+/* La unidad pesa menos que la cifra: convención de terminal financiero. El
+   símbolo de moneda y la unidad van en un tono más claro porque lo que se lee
+   es la magnitud; "$" y "ha" solo dicen en qué se está midiendo. */
+.unidad {
+  color: var(--texto-3);
+  font-weight: 400;
+}
