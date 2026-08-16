@@ -82,6 +82,49 @@
     global.scrollTo(0, 0);
   }
 
+  /* --- portada ---------------------------------------------------------- */
+
+  /**
+   * El plano de apertura se disuelve solo y devuelve la pantalla a la app.
+   *
+   * Solo aparece cuando se entra SIN ruta. Con ruta directa no se muestra, para
+   * que durante la grabación se pueda saltar a cualquier toma sin esperarla en
+   * cada intento. Un clic o una tecla la saltan.
+   *
+   * Los 2,2 s son los que tarda el mapa en trazarse y en clavar sus agujas: al
+   * disolverse, el país ya está apareciendo detrás. La portada no hace esperar
+   * a nadie, ocupa el tiempo que la primera pantalla ya necesitaba.
+   */
+  function resolverPortada() {
+    var portada = document.getElementById("portada");
+    if (!portada) { return; }
+
+    if (location.hash && location.hash !== "#mapa") {
+      portada.parentNode.removeChild(portada);
+      return;
+    }
+
+    var cerrada = false;
+    function cerrar() {
+      if (cerrada) { return; }
+      cerrada = true;
+      portada.classList.add("portada-sale");
+      global.setTimeout(function () {
+        if (portada.parentNode) { portada.parentNode.removeChild(portada); }
+      }, 620);
+    }
+
+    var espera = global.setTimeout(cerrar, 2200);
+
+    function saltar() {
+      global.clearTimeout(espera);
+      cerrar();
+    }
+
+    portada.addEventListener("click", saltar);
+    document.addEventListener("keydown", saltar, { once: true });
+  }
+
   /* --- arranque --------------------------------------------------------- */
 
   function arrancar() {
@@ -116,6 +159,7 @@
 
     global.addEventListener("hashchange", pintar);
     pintar();
+    resolverPortada();
   }
 
   if (document.readyState === "loading") {

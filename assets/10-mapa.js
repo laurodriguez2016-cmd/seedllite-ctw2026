@@ -389,13 +389,11 @@
     /* Se acomodan de norte a sur, con un desorden corto encima para que no se
        lea como un barrido mecanico. */
     celdas.forEach(function (c, i) {
-      /* Círculo y no hexágono: los mapas de puntos que sirvieron de
-         referencia usan discos, y a esta densidad leen más limpio — el
-         hexágono a 4,6 px se vuelve un cuadrado con esquinas sucias. */
-      var hex = svgEl("circle", {
-        cx: c.x.toFixed(1), cy: c.y.toFixed(1), r: (HEX_R * 0.74).toFixed(2),
-        "class": "hex"
-      });
+      /* Hexágono y no círculo. Se probó con discos —es lo que usan los mapas
+         de puntos de referencia— pero a esta densidad quedaban como bolitas
+         sueltas sobre el fondo. El hexágono tesela: se lee como una superficie
+         dividida en celdas, que es lo que el satélite realmente hace. */
+      var hex = svgEl("path", { d: rutaHex(c.x, c.y, HEX_R * 0.78), "class": "hex" });
       var avance = (c.y - MARGEN) / (ALTO - MARGEN * 2);
       hex.style.animationDelay =
         (avance * (MALLA_MS / 1000) * 0.75 + ruido(i) * 0.22).toFixed(3) + "s";
