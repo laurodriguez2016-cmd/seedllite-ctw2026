@@ -120,9 +120,16 @@ patrón*) **no está sostenido por el dato**. Lo que parecía "ciclaba y se apla
 resultaron ser meses sueltos de nube en 2017-2022 que desaparecen al aplicar la
 mediana móvil.
 
-Hay un barrido corriendo sobre Espinal, Saldaña y Villavicencio buscando parcela
-transitoria con amplitud ≥ 0,35 hasta 2021 y ≤ 0,15 desde 2023
-(`scratchpad/buscar2.py`, salidas en `out_ab2_*.txt`). Si no aparece nada:
+El barrido y sus resultados quedaron versionados en **`scripts/exploracion/`**
+(lee su `LEEME.md`: documenta el falso positivo y por qué se descartó). Estado:
+**Espinal devolvió 0 parcelas**; Saldaña y Villavicencio quedaron corriendo — sus
+salidas son `out_ab2_saldana.txt` y `out_ab2_villavo.txt`. Para relanzarlo:
+
+```bash
+python3 scripts/exploracion/buscar_abandono_transitorio.py espinal
+```
+
+Si no aparece nada:
 
 - **Opción 1** — mover el rechazo a `boyaca-papa`, cuya área detectada real es
   12% menor que la declarada. Esa regla sí está sostenida por dato.
