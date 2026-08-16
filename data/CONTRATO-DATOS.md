@@ -121,17 +121,18 @@ La serie temporal satelital. **El corazón del producto.**
       "desembolso": "Dos tramos, el segundo condicionado a verificación satelital de siembra",
 
       "ejes": [                               // los 4 ejes de evaluación, con su peso
-        { "eje": "Verificación del predio",  "peso": 20, "puntaje": 19 },
-        { "eje": "Historial productivo",     "peso": 35, "puntaje": 32 },
-        { "eje": "Riesgo climático",         "peso": 25, "puntaje": 19 },
-        { "eje": "Coherencia agronómica",    "peso": 20, "puntaje": 16 }
+        { "eje": "Capacidad de pago proyectada",        "peso": 40, "puntaje": 36 },
+        { "eje": "Verificación del activo productivo",  "peso": 20, "puntaje": 19 },
+        { "eje": "Riesgo sectorial y climático",        "peso": 25, "puntaje": 19 },
+        { "eje": "Coherencia del destino del crédito",  "peso": 15, "puntaje": 12 }
       ],
 
       "evidencia": [                          // lo que sustenta la decisión
         { "tipo": "favorable", "texto": "9 ciclos de cosecha completos detectados entre 2016 y 2025" },
-        { "tipo": "favorable", "texto": "NDVI pico promedio 0,78 — percentil 71 de su vereda" },
+        { "tipo": "favorable", "texto": "Rendimiento estimado 1,9 t/ha frente a 1,6 t/ha del promedio municipal de Pitalito (EVA 2024)" },
         { "tipo": "favorable", "texto": "Sobrevivió El Niño 2023-24 con caída de vigor de 18% frente al 34% promedio regional" },
-        { "tipo": "alerta",    "texto": "Aptitud UPRA del suelo para el cultivo declarado: MEDIA" }
+        { "tipo": "alerta",    "texto": "Aptitud UPRA del suelo para el cultivo declarado: MEDIA" },
+        { "tipo": "favorable", "texto": "Verificación RTDAF/RUPTA: el predio no figura en el Registro de Tierras Despojadas ni tiene medida de protección vigente" }
       ],
 
       "memorando": "Texto corrido del dictamen...",  // string, 120-200 palabras
@@ -145,7 +146,11 @@ La serie temporal satelital. **El corazón del producto.**
 - `evidencia[].tipo` es `"favorable"` | `"alerta"` | `"critico"`. La APP los pinta ✓ ⚠ 🔴.
 - Deben ser **entre 3 y 5 evidencias** por predio. Menos se ve pobre, más no cabe en pantalla.
 - `memorando` es lo que se muestra con **animación de escritura** en la pantalla 3.
-- La suma de `ejes[].peso` es siempre **100**.
+- La suma de `ejes[].peso` es siempre **100**. Los nombres y pesos de los ejes están fijados en
+  [`docs/criterios-de-credito.md`](../docs/criterios-de-credito.md) §3 y **mapean uno a uno
+  contra los criterios del SARC**. No se cambian.
+- **Toda evidencia debe incluir la verificación RTDAF/RUPTA** (control anti-despojo, Ley 1448
+  de 2011) y la **verificación ambiental**, aunque el resultado sea favorable.
 
 ---
 
