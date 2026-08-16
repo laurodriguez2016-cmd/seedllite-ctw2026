@@ -111,6 +111,19 @@
     return "<tr><th>" + esc(etiqueta) + "</th><td>" + valor + "</td></tr>";
   }
 
+  function lecturaCiclosRecientes(serie, predio) {
+    var ciclos = serie && serie.ciclos_ultimos_24m;
+    if (!esNumero(ciclos)) return "Sin dato";
+    if (ciclos > 0) return '<span class="texto-favorable">' + entero(ciclos) + "</span>";
+    if (predio && predio.tipo_cultivo === "transitorio") {
+      return '<span class="texto-critico">0</span><small class="dato-aclaracion">Alerta: un cultivo transitorio debería mostrar ciclo.</small>';
+    }
+    if (predio && predio.tipo_cultivo === "perenne") {
+      return '0<small class="dato-aclaracion">En cultivos perennes se evalúan vigor y amplitud.</small>';
+    }
+    return "0";
+  }
+
   function estadoVacio(mensaje) {
     return '<div class="vacio">' + esc(mensaje) + "</div>";
   }
@@ -299,9 +312,7 @@
             '<div class="tarjeta-cab"><span class="etiqueta">Indicadores calculados</span></div>' +
             '<div class="tarjeta-cuerpo"><table class="datos datos-dos-columnas">' +
               fila("Ciclos en toda la serie", entero(serie && serie.ciclos_detectados)) +
-              fila("Ciclos en los últimos 24 meses", '<span class="' +
-                (serie && serie.ciclos_ultimos_24m === 0 ? "texto-critico" : "texto-favorable") + '">' +
-                entero(serie && serie.ciclos_ultimos_24m) + "</span>") +
+              fila("Ciclos en los últimos 24 meses", lecturaCiclosRecientes(serie, predio)) +
               fila("Amplitud histórica", decimal(serie && serie.amplitud_historica, 3)) +
               fila("Amplitud reciente", decimal(serie && serie.amplitud_reciente_24m, 3)) +
               fila("Pérdida de amplitud", porcentaje(serie && serie.perdida_amplitud_pct, 1)) +
