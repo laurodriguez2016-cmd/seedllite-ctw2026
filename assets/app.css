@@ -723,3 +723,125 @@ p  { margin: 0 0 var(--e2); }
   .eje-barra { transition: none; }
   .escribiendo::after { animation: none; }
 }
+
+/* ==========================================================================
+   PANTALLA 5 — cartera reconstruida
+   Es la única vista que muestra las cuatro solicitudes juntas: aquí se ve de
+   un golpe que el modelo no aprueba todo. Por eso lleva resumen arriba y
+   explicación al pie — quien entra no tiene a nadie que se lo cuente.
+   ========================================================================== */
+
+.cart-intro {
+  margin: 0 0 var(--e3);
+  max-width: 62ch;
+  color: var(--texto-2);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* --- resumen de cartera --------------------------------------------------- */
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  margin-bottom: var(--e4);
+  background: var(--borde);
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.kpi {
+  padding: var(--e3);
+  background: var(--superficie);
+}
+
+.kpi-cifra {
+  display: block;
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-de {
+  margin-left: 3px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--texto-3);
+}
+
+.kpi-rotulo {
+  display: block;
+  margin-top: 5px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--texto-2);
+}
+
+/* --- tabla ---------------------------------------------------------------- */
+
+.datos-lista th.num { text-align: right; }
+
+.cart-tabla th {
+  padding-bottom: var(--e2);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--borde-fuerte);
+}
+
+.cart-tabla td { vertical-align: top; padding-top: var(--e2); padding-bottom: var(--e2); }
+
+.cart-nombre { font-weight: 600; }
+
+.cart-meta {
+  margin-top: 2px;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--texto-2);
+}
+
+/* El puntaje con su barra: el número dice cuánto y la barra dice dónde cae. */
+.cart-puntaje { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.cart-riel {
+  height: 3px;
+  margin-top: 4px;
+  margin-left: auto;
+  width: 68px;
+  border-radius: 2px;
+  background: var(--superficie-2);
+  overflow: hidden;
+}
+
+.cart-barra {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.riesgo-barra-bajo    { background: var(--favorable); }
+.riesgo-barra-medio   { background: var(--alerta); }
+.riesgo-barra-alto    { background: var(--critico); }
+.riesgo-barra-rechazo { background: var(--critico); }
+
+/* La fila rechazada se distingue sin gritar. */
+.cart-tabla .fila-rechazo .cart-nombre { color: var(--critico); }
+
+/* --- nota al pie ---------------------------------------------------------- */
+
+.cart-nota {
+  margin: var(--e4) 0 0;
+  padding-top: var(--e3);
+  max-width: 78ch;
+  border-top: 1px solid var(--borde);
+  color: var(--texto-2);
+  font-size: 12.5px;
+  line-height: 1.65;
+}
+
+.cart-nota strong { color: var(--texto); }

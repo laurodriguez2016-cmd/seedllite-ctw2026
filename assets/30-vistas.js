@@ -52,7 +52,9 @@
     /* firmado: para desvíos, donde el signo es la información */
     pctf: function (v) { return (v > 0 ? "+" : "") + numero(v, 1) + "%"; },
     tha:  function (v) { return numero(v, 2) + " t/ha"; },
-    ha:   function (v) { return numero(v, 2) + " ha"; }
+    ha:   function (v) { return numero(v, 2) + " ha"; },
+    smmlv: function (v) { return numero(Math.round(v)) + " SMMLV"; },
+    cop:  function (v) { return cop(Math.round(v)); }
   };
 
   function cifraViva(valor, formato) {
@@ -105,12 +107,13 @@
              'aria-current="' + (p.id === seleccionado) + '">' +
                '<div class="fila">' +
                  '<span class="nombre">' + esc(p.productor) + "</span>" +
-                 (dict ? '<span class="mono cifra">' + dict.puntaje + "</span>" : "") +
+                 (dict ? '<span class="mono cifra">' +
+                           cifraViva(dict.puntaje, "ent") + "</span>" : "") +
                "</div>" +
                '<div class="fila">' +
                  '<span class="meta">' + esc(p.cultivo) + " · " + esc(p.municipio) +
                    ", " + esc(p.departamento) + "</span>" +
-                 '<span class="meta">' + p.area_declarada_ha + " ha</span>" +
+                 '<span class="meta">' + cifraViva(p.area_declarada_ha, "ha") + "</span>" +
                "</div>" +
              "</button>";
     }).join("");
@@ -151,6 +154,10 @@
         location.hash = "#ficha/" + b.getAttribute("data-predio");
       });
     });
+
+    /* Los puntajes y las áreas de la lista suben desde cero, al tiempo que los
+       pines van cayendo sobre el mapa. */
+    animarCifras(host, 900);
   }
 
   /* ======================================================================
@@ -181,10 +188,10 @@
               '<table class="datos" style="margin-top:var(--e3)">' +
                 fila("Tipo de productor", esc(p.tipo_productor)) +
                 fila("Cultivo", esc(p.cultivo) + " (" + esc(p.variedad) + ")") +
-                fila("Años en el predio", p.anos_en_el_predio) +
+                fila("Años en el predio", cifraViva(p.anos_en_el_predio, "ent")) +
                 fila("Crédito previo", p.credito_previo ? "Sí" : "No") +
-                fila("Activos declarados", p.activos_declarados_smmlv + " SMMLV") +
-                fila("Monto solicitado", cop(p.monto_solicitado_cop)) +
+                fila("Activos declarados", cifraViva(p.activos_declarados_smmlv, "smmlv")) +
+                fila("Monto solicitado", cifraViva(p.monto_solicitado_cop, "cop")) +
                 fila("Destino", esc(p.destino)) +
               "</table>" +
             "</div>" +
@@ -663,42 +670,156 @@
   }
 
   /* ======================================================================
-     PANTALLA 5 — Cartera (opcional; se corta a las 02:30 si no alcanza)
+     PANTALLA 5 - Cartera (opcional; se corta a las 02:30 si no alcanza)
+
+     Es la unica pantalla que muestra las cuatro solicitudes juntas, asi que es
+     donde se ve el argumento del producto de un golpe: el modelo no aprueba
+     todo. Por eso lleva un resumen arriba y explicaciones al pie: quien entra
+     aqui no tiene a nadie que se lo cuente.
      ====================================================================== */
 
   function cartera(host, datos) {
-    var filas = datos.predios.predios.map(function (p) {
+    var lista = datos.predios.predios;
+
+    /* Totales de la cartera. Se calculan, no se escriben. */
+    var totalSolicitado = 0, totalSugerido = 0, favorables = 0, evaluados = 0;
+
+    lista.forEach(function (p) {
       var d = S.estado.dictamen(p.id);
-      var s = datos.series.series[p.id];
-      if (!d) return "";
-      return "<tr>" +
-        "<td>" + esc(p.productor) + '<div class="meta" style="color:var(--texto-2);font-size:12px">' +
-          esc(p.municipio) + ", " + esc(p.departamento) + "</div></td>" +
-        "<td>" + esc(p.cultivo) + "</td>" +
-        '<td class="num mono">' + p.area_detectada_ha + "</td>" +
-        '<td class="num mono">' + s.ciclos_ultimos_24m + "</td>" +
-        '<td class="num mono" style="font-weight:700">' + d.puntaje + "</td>" +
-        '<td class="num mono">' + (d.monto_sugerido_cop ? cop(d.monto_sugerido_cop) : "—") + "</td>" +
+      if (!d) { return; }
+      evaluados += 1;
+      totalSolicitado += p.monto_solicitado_cop || 0;
+      totalSugerido += d.monto_sugerido_cop || 0;
+      if (d.decision !== "rechazar") { favorables += 1; }
+    });
+
+    var filas = lista.map(function (p) {
+      var d = S.estado.dictamen(p.id);
+      var s = (datos.series.series || {})[p.id] || {};
+      if (!d) { return ""; }
+
+      var rechazado = d.decision === "rechazar";
+      var pct = Math.max(0, Math.min(100, (d.puntaje || 0) / 10));
+      var sinCiclo = s.ciclos_ultimos_24m === 0;
+
+      return '<tr class="fila-' + esc(d.banda_riesgo) + '">' +
+
+        /* productor */
+        "<td>" +
+          '<div class="cart-nombre">' + esc(p.productor) + "</div>" +
+          '<div class="cart-meta">' + esc(p.municipio) + ", " +
+            esc(p.departamento) + "</div>" +
+        "</td>" +
+
+        /* cultivo */
+        "<td>" + esc(p.cultivo) +
+          '<div class="cart-meta">' + esc(p.variedad || "") + "</div>" +
+        "</td>" +
+
+        /* area medida */
+        '<td class="num mono">' + cifraViva(p.area_detectada_ha, "ha") + "</td>" +
+
+        /* ciclos: cero es la senal que sustenta un rechazo */
+        '<td class="num mono">' +
+          '<span style="color:' + (sinCiclo ? "var(--critico)" : "var(--favorable)") +
+            ';font-weight:700">' + cifraViva(s.ciclos_ultimos_24m, "ent") + "</span>" +
+        "</td>" +
+
+        /* puntaje con su barra */
+        '<td class="num">' +
+          '<div class="cart-puntaje mono">' + cifraViva(d.puntaje, "ent") + "</div>" +
+          '<div class="cart-riel"><div class="cart-barra riesgo-barra-' +
+            esc(d.banda_riesgo) + '" data-ancho="' + pct.toFixed(0) +
+            '" style="width:0"></div></div>' +
+        "</td>" +
+
+        /* monto y su recorte */
+        '<td class="num mono">' +
+          (rechazado
+            ? '<span style="color:var(--critico)">Sin desembolso</span>'
+            : cifraViva(d.monto_sugerido_cop, "cop") +
+              (d.monto_sugerido_cop && p.monto_solicitado_cop &&
+               d.monto_sugerido_cop !== p.monto_solicitado_cop
+                ? '<div class="cart-meta" style="color:var(--alerta)">\u2212' +
+                    Math.round((p.monto_solicitado_cop - d.monto_sugerido_cop) /
+                               p.monto_solicitado_cop * 100) + "% sobre lo pedido</div>"
+                : '<div class="cart-meta">Completo</div>')) +
+        "</td>" +
+
+        /* decision */
         "<td>" + marcaRiesgo(d) + "</td>" +
-        "</tr>";
+      "</tr>";
     }).join("");
 
     host.innerHTML =
-      '<div class="migas"><a href="#mapa">← Mapa</a><span>/</span><span>Cartera</span></div>' +
+      '<div class="migas"><a href="#mapa">\u2190 Mapa</a><span>/</span><span>Cartera</span></div>' +
       '<div class="tarjeta">' +
         '<div class="tarjeta-cab"><h2>Cartera evaluada</h2>' +
           '<span class="etiqueta" style="margin-left:auto">Vista de analista</span></div>' +
         '<div class="tarjeta-cuerpo">' +
+
+          '<p class="cart-intro">Las solicitudes en evaluaci\u00f3n con el resultado que ' +
+            "SEEDLLITE entrega al comit\u00e9 de cr\u00e9dito. El puntaje resume los cuatro " +
+            "ejes exigidos por el SARC; los ciclos son cosechas terminadas que el " +
+            "sat\u00e9lite midi\u00f3 en los \u00faltimos dos a\u00f1os." +
+          "</p>" +
+
+          /* Resumen: lo que un analista mira antes que la tabla. */
+          '<div class="kpis">' +
+            '<div class="kpi">' +
+              '<span class="kpi-cifra">' + cifraViva(evaluados, "ent") + "</span>" +
+              '<span class="kpi-rotulo">Solicitudes evaluadas</span>' +
+            "</div>" +
+            '<div class="kpi">' +
+              '<span class="kpi-cifra">' + cifraViva(totalSolicitado, "cop") + "</span>" +
+              '<span class="kpi-rotulo">Capital solicitado</span>' +
+            "</div>" +
+            '<div class="kpi">' +
+              '<span class="kpi-cifra">' + cifraViva(totalSugerido, "cop") + "</span>" +
+              '<span class="kpi-rotulo">Capital recomendado</span>' +
+            "</div>" +
+            '<div class="kpi">' +
+              '<span class="kpi-cifra">' + cifraViva(favorables, "ent") +
+                '<span class="kpi-de">/ ' + evaluados + "</span></span>" +
+              '<span class="kpi-rotulo">Con recomendaci\u00f3n favorable</span>' +
+            "</div>" +
+          "</div>" +
+
           /* .datos sola es para tablas clave/valor de dos columnas: lleva
              th{width:45%} y sin margen horizontal. Con siete columnas los
              encabezados se pegan entre si. De ahi la variante -lista. */
-          '<table class="datos datos-lista">' +
-            "<tr><th>Productor</th><th>Cultivo</th><th>Ha activas</th>" +
-            "<th>Ciclos 24m</th><th>Puntaje</th><th>Monto</th><th>Decisión</th></tr>" +
+          '<table class="datos datos-lista cart-tabla">' +
+            "<tr>" +
+              "<th>Productor</th><th>Cultivo</th>" +
+              '<th class="num">\u00c1rea medida</th>' +
+              '<th class="num">Ciclos 24m</th>' +
+              '<th class="num">Puntaje</th>' +
+              '<th class="num">Monto recomendado</th>' +
+              "<th>Decisi\u00f3n</th>" +
+            "</tr>" +
             filas +
           "</table>" +
+
+          '<p class="cart-nota">' +
+            "<strong>C\u00f3mo se lee.</strong> El \u00e1rea medida es la que el sat\u00e9lite " +
+            "ve cultivada, no la declarada por el productor: cuando es menor, el monto " +
+            "recomendado baja en la misma proporci\u00f3n. Cero ciclos en veinticuatro " +
+            "meses significa que la parcela dej\u00f3 de mostrar siembra y cosecha, y es " +
+            "lo que sustenta un rechazo \u2014 no un NDVI bajo: un predio abandonado se " +
+            "llena de rastrojo y sigue verde; lo que desaparece es el patr\u00f3n." +
+          "</p>" +
+
         "</div>" +
       "</div>";
+
+    /* Las barras crecen y las cifras suben, igual que en el dictamen. */
+    var barras = host.querySelectorAll(".cart-barra");
+    requestAnimationFrame(function () {
+      for (var k = 0; k < barras.length; k++) {
+        barras[k].style.width = barras[k].getAttribute("data-ancho") + "%";
+      }
+    });
+    animarCifras(host, 900);
   }
 
   S.vistas = {

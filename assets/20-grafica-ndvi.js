@@ -98,27 +98,56 @@
       svg.appendChild(t);
     });
 
-    /* --- 3. área y línea de la serie ----------------------------------- */
+    /* --- 3. área, línea y puntos, bajo una máscara que avanza -----------
+
+       Todo lo que representa la serie va dentro de un mismo grupo recortado por
+       un rectángulo que crece de izquierda a derecha.
+
+       La versión anterior trazaba la línea con un guion que se desplazaba y al
+       área le hacía un fundido: dos animaciones distintas que coincidían en
+       duración pero no iban sincronizadas, así que la estela verde no seguía a
+       la punta de la línea. Con una sola máscara, línea, área y puntos se
+       construyen juntos y el avance es exacto.
+       ------------------------------------------------------------------ */
+    ndvi.n = (ndvi.n || 0) + 1;
+    var idMascara = "seedllite-revelado-" + ndvi.n;
+
     var d = puntos.map(function (p, i) {
       return (i === 0 ? "M" : "L") + x(i).toFixed(1) + " " + y(p.ndvi).toFixed(1);
     }).join(" ");
 
-    svg.appendChild(svgEl("path", {
+    var finTrazo = x(puntos.length - 1) + 6;
+
+    var ventana = svgEl("rect", {
+      x: 0, y: 0, width: 0, height: "100%",
+      "class": "serie-ventana", "data-fin": finTrazo.toFixed(1)
+    });
+    var recorte = svgEl("clipPath", { id: idMascara });
+    recorte.appendChild(ventana);
+    var defs = svgEl("defs", {});
+    defs.appendChild(recorte);
+    svg.appendChild(defs);
+
+    var capa = svgEl("g", { "clip-path": "url(#" + idMascara + ")" });
+
+    capa.appendChild(svgEl("path", {
       d: d + " L" + x(puntos.length - 1).toFixed(1) + " " + y(0) +
          " L" + x(0).toFixed(1) + " " + y(0) + " Z",
       "class": "serie-area"
     }));
-    svg.appendChild(svgEl("path", { d: d, "class": "serie-linea" }));
+    capa.appendChild(svgEl("path", { d: d, "class": "serie-linea" }));
 
     /* --- 4. puntos: los muy nublados van atenuados --------------------- */
     puntos.forEach(function (p, i) {
       var nublado = p.nubosidad > UMBRAL_NUBE;
-      svg.appendChild(svgEl("circle", {
+      capa.appendChild(svgEl("circle", {
         cx: x(i), cy: y(p.ndvi),
         r: nublado ? 2.4 : 1.6,
         "class": nublado ? "punto-nube" : "punto"
       }));
     });
+
+    svg.appendChild(capa);
 
     /* --- 5. eje X: una marca por año ----------------------------------- */
     puntos.forEach(function (p, i) {
@@ -161,30 +190,28 @@
    */
   function animarTrazo(host, ms) {
     if (!host) { return; }
-    var linea = host.querySelector(".serie-linea");
-    if (!linea || typeof linea.getTotalLength !== "function") { return; }
+
+    var ventana = host.querySelector(".serie-ventana");
+    if (!ventana) { return; }
+
+    var fin = parseFloat(ventana.getAttribute("data-fin"));
+    if (!isFinite(fin) || !fin) { return; }
+
+    if (global.matchMedia &&
+        global.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      ventana.setAttribute("width", fin);
+      return;
+    }
 
     var dur = ms || 1500;
-    var largo;
-    try { largo = linea.getTotalLength(); } catch (e) { return; }
-    if (!largo) { return; }
+    var t0 = new Date().getTime();
 
-    linea.style.strokeDasharray = largo + " " + largo;
-    linea.style.strokeDashoffset = largo;
-    linea.getBoundingClientRect();                 /* fuerza el reflujo */
-    linea.style.transition = "stroke-dashoffset " + dur + "ms linear";
-    linea.style.strokeDashoffset = "0";
-
-    /* El área bajo la curva y los puntos de nube entran detrás del trazo, para
-       que no se adelanten a la línea que los explica. */
-    var rezagados = host.querySelectorAll(".serie-area, .punto, .punto-nube");
-    for (var i = 0; i < rezagados.length; i++) {
-      rezagados[i].style.opacity = "0";
-      rezagados[i].style.transition = "opacity " + dur + "ms ease-in";
-    }
-    requestAnimationFrame(function () {
-      for (var k = 0; k < rezagados.length; k++) { rezagados[k].style.opacity = ""; }
-    });
+    /* Avance lineal: la serie es tiempo, y el tiempo no acelera. */
+    (function avanzar() {
+      var a = Math.min(1, (new Date().getTime() - t0) / dur);
+      ventana.setAttribute("width", (fin * a).toFixed(1));
+      if (a < 1) { global.requestAnimationFrame(avanzar); }
+    })();
   }
 
   global.SEEDLLITE = global.SEEDLLITE || {};
