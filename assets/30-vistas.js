@@ -45,16 +45,33 @@
     }).format(v);
   }
 
+  /* La unidad pesa menos que la cifra.
+     Es la convención de los terminales financieros: el símbolo de moneda y la
+     unidad se ponen en un tono más claro que el número, porque lo que se lee
+     es la magnitud — el "$" y el "ha" solo dicen en qué se está midiendo. A
+     ojo se nota poco; junto, ordena toda la pantalla.
+
+     Los formatos devuelven marcado y no texto plano, así que animarCifras usa
+     innerHTML. Es seguro: aquí solo entran números formateados por Intl y
+     unidades escritas en este archivo. Ningún texto del modelo pasa por acá
+     — el memorando sigue entrando por textContent. */
+  function unidad(u) { return '<span class="unidad">' + u + "</span>"; }
+
   var FORMATO = {
     ent:  function (v) { return numero(Math.round(v)); },
     dec2: function (v) { return numero(v, 2); },
-    pct:  function (v) { return numero(v, 1) + "%"; },
+    pct:  function (v) { return numero(v, 1) + unidad("%"); },
     /* firmado: para desvíos, donde el signo es la información */
-    pctf: function (v) { return (v > 0 ? "+" : "") + numero(v, 1) + "%"; },
-    tha:  function (v) { return numero(v, 2) + " t/ha"; },
-    ha:   function (v) { return numero(v, 2) + " ha"; },
-    smmlv: function (v) { return numero(Math.round(v)) + " SMMLV"; },
-    cop:  function (v) { return cop(Math.round(v)); }
+    pctf: function (v) { return (v > 0 ? "+" : "") + numero(v, 1) + unidad("%"); },
+    tha:  function (v) { return numero(v, 2) + unidad(" t/ha"); },
+    ha:   function (v) { return numero(v, 2) + unidad(" ha"); },
+    smmlv: function (v) { return numero(Math.round(v)) + unidad(" SMMLV"); },
+    cop:  function (v) {
+      /* Intl entrega "$ 18.000.000": se separa el símbolo del número. */
+      var t = cop(Math.round(v));
+      var m = t.match(/^(\D+)\s*(.+)$/);
+      return m ? unidad(m[1].trim() + " ") + m[2] : t;
+    }
   };
 
   function cifraViva(valor, formato) {
@@ -79,9 +96,9 @@
         (function tic() {
           var a = Math.min(1, (new Date().getTime() - t0) / dur);
           /* desaceleración: arranca rápido y se asienta en el valor */
-          el.textContent = f(destino * (1 - Math.pow(1 - a, 3)));
+          el.innerHTML = f(destino * (1 - Math.pow(1 - a, 3)));
           if (a < 1) { setTimeout(tic, 32); return; }
-          el.textContent = f(destino);
+          el.innerHTML = f(destino);
         })();
       })(nodos[k]);
     }

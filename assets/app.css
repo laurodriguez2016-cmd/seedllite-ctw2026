@@ -1215,3 +1215,126 @@ h1, h2, h3, .marca { font-family: var(--display); letter-spacing: 0.01em; }
 /* Foco de teclado tematizado, nunca el anillo azul por defecto. */
 :focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
 ::selection { background: var(--acento-200); color: var(--texto); }
+/* --------------------------------------------------------------------------
+   Retículo de coordenadas
+   Paralelos y meridianos cada 4°, trazados con la misma proyección que el
+   contorno y los predios. Es lo que convierte una silueta en un mapa: la
+   referencia que permite decir dónde está algo.
+   -------------------------------------------------------------------------- */
+
+.mapa .reticulo { pointer-events: none; }
+
+.mapa .ret-linea {
+  stroke: var(--borde);
+  stroke-width: 0.5;
+  stroke-dasharray: 2 4;
+  opacity: 0.7;
+}
+
+.mapa .ret-texto {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.04em;
+  fill: var(--texto-3);
+}
+
+/* La unidad pesa menos que la cifra: convención de terminal financiero. El
+   símbolo de moneda y la unidad van en un tono más claro porque lo que se lee
+   es la magnitud; "$" y "ha" solo dicen en qué se está midiendo. */
+.unidad {
+  color: var(--texto-3);
+  font-weight: 400;
+}
+
+/* ==========================================================================
+   PORTADA — el plano de apertura
+   Ocupa los 2,2 s que el mapa ya necesitaba para trazarse: al disolverse, el
+   país está apareciendo detrás. No hace esperar a nadie.
+   ========================================================================== */
+
+#portada {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--e4);
+  background: var(--fondo);
+  cursor: pointer;
+}
+
+.portada-cuerpo {
+  max-width: 620px;
+  text-align: center;
+}
+
+.portada-marca {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.42em;
+  color: var(--acento);
+  animation: portada-marca 0.6s ease-out both;
+}
+
+.portada-frase {
+  margin: var(--e3) 0 0;
+  font-size: clamp(26px, 4.2vw, 40px);
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: -0.015em;
+  animation: portada-sube 0.75s cubic-bezier(0.2, 0.8, 0.25, 1) 0.18s both;
+}
+
+.portada-regla {
+  height: 1px;
+  margin: var(--e4) auto 0;
+  background: var(--borde-fuerte);
+  animation: portada-regla 0.7s cubic-bezier(0.2, 0.8, 0.25, 1) 0.5s both;
+}
+
+.portada-pie {
+  margin: var(--e3) 0 0;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--texto-2);
+  animation: portada-sube 0.7s ease-out 0.72s both;
+}
+
+@keyframes portada-marca {
+  from { opacity: 0; letter-spacing: 0.62em; }
+  to   { opacity: 1; letter-spacing: 0.42em; }
+}
+
+@keyframes portada-sube {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* La regla se abre desde el centro: separa la marca del resto sin ser una raya
+   que ya estaba ahí. */
+@keyframes portada-regla {
+  from { width: 0; opacity: 0; }
+  to   { width: 220px; opacity: 1; }
+}
+
+/* Al salir se disuelve y se aleja un punto, para que el mapa que ya está
+   detrás parezca acercarse. */
+.portada-sale {
+  animation: portada-sale 0.6s ease-in both;
+  pointer-events: none;
+}
+
+@keyframes portada-sale {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portada-marca,
+  .portada-frase,
+  .portada-regla,
+  .portada-pie { animation: none; }
+  .portada-regla { width: 220px; }
+}

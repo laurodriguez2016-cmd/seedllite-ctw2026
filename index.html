@@ -19,6 +19,28 @@
   </nav>
 </header>
 
+<!--
+  PORTADA — el plano de apertura.
+
+  Va en el HTML y no la construye el JavaScript a propósito: así pinta en el
+  primer fotograma, sin el parpadeo de un lienzo vacío mientras cargan los
+  scripts. 90-app.js la disuelve sola a los 2,2 s, o antes si se hace clic.
+
+  Solo aparece al entrar sin ruta (index.html a secas). Con ruta directa
+  —index.html#dictamen/meta-cacao— no se muestra: durante la grabación se salta
+  a cualquier toma sin tener que esperarla cada vez.
+-->
+<div id="portada">
+  <div class="portada-cuerpo">
+    <p class="portada-marca">SEEDLLITE</p>
+    <h1 class="portada-frase">Historial crediticio<br>construido desde el espacio</h1>
+    <div class="portada-regla"></div>
+    <p class="portada-pie">
+      Evaluación de riesgo crediticio agropecuario por análisis satelital
+    </p>
+  </div>
+</div>
+
 <main class="lienzo" id="vista"></main>
 
 <!--

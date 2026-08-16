@@ -308,6 +308,52 @@
     return s - Math.floor(s);
   }
 
+  /**
+   * Retículo de coordenadas: paralelos y meridianos cada 4°.
+   *
+   * No es decoración: son coordenadas reales, trazadas con la misma función de
+   * proyección que el contorno y los predios. Es lo que convierte una silueta
+   * en un mapa — la referencia que permite decir dónde está algo. El globo del
+   * Economist lo usa por lo mismo.
+   *
+   * El paralelo 0° lleva su nombre: el ecuador cruza Colombia, y decirlo
+   * ubica al espectador extranjero en un segundo.
+   */
+  function construirReticulo(svg) {
+    var r = svgEl("g", { "class": "reticulo" });
+    var PASO = 4;
+    var i;
+
+    for (i = Math.ceil(LAT_MIN / PASO) * PASO; i <= LAT_MAX; i += PASO) {
+      var a = proyectar(LON_MIN, i), b = proyectar(LON_MAX, i);
+      r.appendChild(svgEl("line", {
+        x1: a[0].toFixed(1), y1: a[1].toFixed(1),
+        x2: b[0].toFixed(1), y2: b[1].toFixed(1), "class": "ret-linea"
+      }));
+      var tp = svgEl("text", {
+        x: (b[0] - 3).toFixed(1), y: (b[1] - 3).toFixed(1),
+        "class": "ret-texto", "text-anchor": "end"
+      });
+      tp.textContent = i === 0 ? "0° ecuador" : Math.abs(i) + "° " + (i > 0 ? "N" : "S");
+      r.appendChild(tp);
+    }
+
+    for (i = Math.ceil(LON_MIN / PASO) * PASO; i <= LON_MAX; i += PASO) {
+      var c = proyectar(i, LAT_MIN), d = proyectar(i, LAT_MAX);
+      r.appendChild(svgEl("line", {
+        x1: c[0].toFixed(1), y1: c[1].toFixed(1),
+        x2: d[0].toFixed(1), y2: d[1].toFixed(1), "class": "ret-linea"
+      }));
+      var tm = svgEl("text", {
+        x: (c[0] + 3).toFixed(1), y: (c[1] - 4).toFixed(1), "class": "ret-texto"
+      });
+      tm.textContent = Math.abs(i) + "° O";
+      r.appendChild(tm);
+    }
+
+    svg.appendChild(r);
+  }
+
   function construirMalla(svg, poligono, predios) {
     var malla = svgEl("g", { "class": "malla" });
 
@@ -343,6 +389,10 @@
     /* Se acomodan de norte a sur, con un desorden corto encima para que no se
        lea como un barrido mecanico. */
     celdas.forEach(function (c, i) {
+      /* Hexágono y no círculo. Se probó con discos —es lo que usan los mapas
+         de puntos de referencia— pero a esta densidad quedaban como bolitas
+         sueltas sobre el fondo. El hexágono tesela: se lee como una superficie
+         dividida en celdas, que es lo que el satélite realmente hace. */
       var hex = svgEl("path", { d: rutaHex(c.x, c.y, HEX_R * 0.78), "class": "hex" });
       var avance = (c.y - MARGEN) / (ALTO - MARGEN * 2);
       hex.style.animationDelay =
@@ -473,14 +523,33 @@
 
     /* Orden de capas: la malla al fondo, el contorno encima para definirla, y
        las agujas al final para que nada las tape. */
+    construirReticulo(svg);
     construirMalla(svg, poligono, predios);
 
     var pais = svgEl("path", { d: d, "class": "pais" });
     svg.appendChild(pais);
     dibujarContorno(pais);
 
+    /* Nueve predios repartidos en cuatro municipios: si cada aguja lleva su
+       etiqueta, "Granada" sale tres veces apilada y en pantalla se lee como un
+       error. El municipio se rotula UNA vez —en la primera aguja que cae
+       ahí— y las demás del mismo sitio alargan el tallo para que las cabezas
+       no se monten unas sobre otras. */
+    var rotulados = {};
+    var porMunicipio = {};
+
     predios.forEach(function (predio, indice) {
       var xy = proyectar(predio.coordenadas.lon, predio.coordenadas.lat);
+
+      var muni = predio.municipio;
+      var orden = porMunicipio[muni] = (porMunicipio[muni] || 0) + 1;
+      var rotular = !rotulados[muni];
+      rotulados[muni] = true;
+
+      /* Cada aguja del mismo municipio se clava con el tallo más largo que la
+         anterior: las puntas siguen en su coordenada exacta y las cabezas se
+         escalonan hacia arriba. */
+      var tallo = 22 + (orden - 1) * 13;
       var dict = dictamenes && dictamenes[predio.id];
       var color = dict ? (COLOR_DECISION[dict.decision] || "var(--acento)") : "var(--acento)";
 
@@ -511,11 +580,11 @@
          cabeza arriba con el color de la decision. El punto de contacto con el
          mapa es la punta, no la cabeza — el pin senala donde esta el predio. */
       g.appendChild(svgEl("line", {
-        x1: xy[0], y1: xy[1] - 26, x2: xy[0], y2: xy[1],
+        x1: xy[0], y1: xy[1] - tallo, x2: xy[0], y2: xy[1],
         "class": "aguja-tallo", stroke: color
       }));
       g.appendChild(svgEl("circle", {
-        cx: xy[0], cy: xy[1] - 26, r: 4.5, fill: color, "class": "aguja-cabeza"
+        cx: xy[0], cy: xy[1] - tallo, r: 4.5, fill: color, "class": "aguja-cabeza"
       }));
       g.appendChild(svgEl("circle", {
         cx: xy[0], cy: xy[1], r: 1.6, fill: color, "class": "aguja-punta"
@@ -535,9 +604,11 @@
         ondaEnMalla(svg, xy[0], xy[1], color);
       }, impacto);
 
-      var t = svgEl("text", { x: xy[0] + 9, y: xy[1] - 24 });
-      t.textContent = predio.municipio;
-      g.appendChild(t);
+      if (rotular) {
+        var t = svgEl("text", { x: xy[0] + 9, y: xy[1] - tallo + 3 });
+        t.textContent = predio.municipio;
+        g.appendChild(t);
+      }
 
       /* Al elegir, la cámara se mete hacia la celda antes de cambiar de
          pantalla: el paso al predio es un movimiento, no un corte. */
