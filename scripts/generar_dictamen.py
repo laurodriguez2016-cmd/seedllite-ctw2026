@@ -45,6 +45,12 @@ import urllib.error
 import urllib.request
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# La amplitud se calcula con la funcion del pipeline, no con una copia: si el
+# detector cambia de metodo, el prompt cambia con el. Una segunda implementacion
+# aqui es como se producen dos cifras distintas para la misma magnitud.
+sys.path.insert(0, os.path.join(RAIZ, "scripts"))
+from ingesta_sentinel import amplitud as amplitud_serie      # noqa: E402
 DATA = os.path.join(RAIZ, "data")
 SALIDA = os.path.join(DATA, "dictamenes.json")
 
@@ -55,7 +61,12 @@ MODELO = "anthropic/claude-opus-5"
 # Con holgura para que no trunque el dictamen a mitad de una frase.
 MAX_TOKENS = 16000
 
-SMMLV_2026 = 1_623_500     # SUPUESTO: verificar contra decreto de salarios 2026
+# VERIFICADO 15-ago-2026: Decreto 1469 de 2025 fija el salario minimo de 2026 en
+# $1.750.905 (+23,7% sobre los $1.423.500 de 2025). Estaba en 1_623_500 como
+# supuesto sin verificar, un 7,3% por debajo. Importa porque de aqui salen dos
+# cifras normativas: el tope de credito del pequeno productor (70% de sus activos)
+# y el contraste contra el tope de 20 SMMLV de Capital de Trabajo.
+SMMLV_2026 = 1_750_905
 
 
 # ===========================================================================
@@ -73,17 +84,31 @@ ESQUEMA_DICTAMEN = {
     "properties": {
         "puntaje": {
             "type": "integer",
-            "description": "Puntaje SEEDLLITE de 0 a 1000. Es la suma ponderada de los 4 ejes, escalada a 1000.",
+            "description": (
+                "Puntaje SEEDLLITE de 0 a 1000. NO es un juicio aparte: es exactamente "
+                "la suma de los puntajes de los 4 ejes multiplicada por 10. Si los ejes "
+                "puntúan 36+19+23+13 = 91, el puntaje es 910. Debe cuadrar con los ejes."
+            ),
         },
-        "banda_riesgo": {"type": "string", "enum": ["bajo", "medio", "alto", "rechazo"]},
-        "decision": {"type": "string", "enum": ["aprobar", "aprobar_con_ajuste", "rechazar"]},
+        "banda_riesgo": {"type": "string", "enum": ["bajo", "medio", "alto", "rechazo", "sin_concepto"],
+                         "description": "sin_concepto SOLO cuando la cobertura del dato no permite evaluar. No es una banda mala: es la ausencia de banda."},
+        "decision": {"type": "string", "enum": ["aprobar", "aprobar_con_ajuste", "rechazar",
+                                                "aplazar_por_verificacion"],
+                     "description": "aplazar_por_verificacion cuando el dato satelital no alcanza para concluir. NO es un rechazo: el expediente se remite a visita técnica."},
         "monto_sugerido_cop": {
             "type": "integer",
             "description": "Monto en pesos. 0 si la decisión es rechazar. Nunca mayor al solicitado.",
         },
         "linea_finagro": {
             "type": "string",
-            "description": "Línea FINAGRO aplicable, p.ej. 'Capital de trabajo — pequeño productor'. Cadena vacía si se rechaza.",
+            "description": (
+                "Denominación OFICIAL de la línea FINAGRO más el tipo de productor, y nada más: "
+                "'Inversión — pequeño productor', 'Capital de Trabajo — pequeño productor' o "
+                "'Normalización de Cartera — pequeño productor'. Son las tres únicas líneas que "
+                "existen. NO inventes subdenominaciones como 'Inversión — renovación de perennes': "
+                "el destino específico del crédito no es parte del nombre de la línea, va aparte "
+                "conforme a la Resolución 08 de 2023 CNCA. Cadena vacía si se rechaza."
+            ),
         },
         "cobertura_fag_pct": {
             "type": "integer",
@@ -117,7 +142,15 @@ ESQUEMA_DICTAMEN = {
                         ],
                     },
                     "peso": {"type": "integer"},
-                    "puntaje": {"type": "integer"},
+                    "puntaje": {
+                        "type": "integer",
+                        "description": (
+                            "Puntos OBTENIDOS en este eje, sobre el peso del eje — NO sobre 100. "
+                            "Si el peso es 40, el puntaje va de 0 a 40. Un eje evaluado en 90% "
+                            "con peso 40 puntúa 36, nunca 90. La app dibuja la barra como "
+                            "puntaje/peso: un puntaje mayor que el peso desborda la pantalla."
+                        ),
+                    },
                 },
             },
         },
@@ -192,10 +225,43 @@ D. Coherencia del destino del crédito — 15 (Resolución 08 de 2023 CNCA). ¿E
    pedido es proporcional al área real verificada? ¿El destino declarado coincide \
    con lo que se observa en el predio?
 
-DOS REGLAS DE RECHAZO AUTOMÁTICO — no admiten compensación entre ejes
-- Sin ciclo de cosecha detectable en los últimos 24 meses → rechazar.
+REGLAS DE RECHAZO AUTOMÁTICO — no admiten compensación entre ejes
+- CULTIVO TRANSITORIO (arroz, papa, maíz, hortalizas) sin ciclo de cosecha \
+  detectable en los últimos 24 meses → rechazar. En un transitorio el suelo queda \
+  desnudo entre siembras: si no hay diente de sierra, no hubo siembra.
+- CULTIVO PERENNE (café, cacao, caña, frutales): la ausencia de ciclo NO es causal \
+  y no se puede citar como defecto. La planta permanece todo el año y la cosecha no \
+  deja huella espectral. Aquí el rechazo exige LAS DOS condiciones juntas: pérdida \
+  de amplitud ≥ 40% frente a la historia del propio predio Y rendimiento estimado \
+  por debajo del municipal de EVA. Exigir las dos evita castigar a un cafetal en \
+  renovación por zoca, que pierde amplitud a propósito y sigue siendo buen sujeto.
 - Área detectada menor al 50% de la declarada → rechazar.
 Cuando una de estas se activa, el dictamen la nombra como la causa, con su cifra.
+Cuando NINGUNA se activa, no se insinúa que casi se activó.
+
+LA REGLA QUE MANDA SOBRE TODAS LAS DEMÁS — cobertura insuficiente
+Si la ventana de 24 meses tiene MENOS DE 12 MESES CON OBSERVACIÓN ÓPTICA \
+UTILIZABLE, ninguna causal del eje A opera y NO se emite concepto de riesgo. La \
+decisión es `aplazar_por_verificacion`, la banda es `sin_concepto`, el puntaje es \
+0 y el monto sugerido es 0.
+
+Esto NO es un rechazo y el dictamen tiene que decirlo con todas las letras. La \
+razón importa y hay que explicarla: cuando la nubosidad borra la mitad de la \
+ventana, la interpolación aplana la serie, los ciclos dejan de detectarse y la \
+amplitud se desploma — el predio produce EXACTAMENTE la misma firma que uno \
+abandonado. Un predio nublado y un predio abandonado son indistinguibles, y el \
+sistema no puede fingir que los distingue.
+
+Rechazar un crédito porque estuvo nublado sobre la parcela es el peor error que \
+este sistema puede cometer: es invisible, se ve técnico, y le cae encima al \
+productor que menos capacidad tiene de apelarlo. Cuando el dato no alcanza, la \
+respuesta correcta no es "no": es "no sé, vaya y mire".
+
+En ese caso el memorando: dice cuántos meses se midieron de los 24, explica por \
+qué eso impide concluir, ADVIERTE que los indicadores de forma que se ven abajo \
+NO deben leerse como evidencia de abandono, y remite a visita técnica de campo \
+indicando qué habría que verificar en ella. Los ejes se puntúan en 0: no es que \
+el predio saque cero, es que no hay concepto que emitir.
 
 CONTROLES OBLIGATORIOS QUE SIEMPRE SE REPORTAN
 - Verificación RTDAF/RUPTA (Registro de Tierras Despojadas y Abandonadas \
@@ -210,12 +276,33 @@ El error de un modelo ingenuo es mirar el NIVEL del NDVI. Un predio abandonado N
 tiene NDVI bajo: se llena de rastrojo y maleza, y el verde se mantiene alto. Lo que \
 desaparece es el PATRÓN CÍCLICO de siembra y cosecha. La serie se APLANA.
 Por eso el dato decisivo no es cuánto verde hay, sino si ese verde SUBE Y BAJA con \
-el calendario del cultivo. Un predio sin ciclos detectables en los últimos 24 meses \
-no está produciendo, por alto que esté su NDVI.
+el calendario del cultivo.
+
+La medida de esa forma es la AMPLITUD (percentil 90 menos percentil 10 de la serie \
+suavizada). Se te entregan tres cifras que hay que leer juntas:
+- amplitud histórica: cuánto subía y bajaba el predio antes.
+- amplitud de los últimos 24 meses: cuánto sube y baja ahora.
+- pérdida de amplitud: cuánto de su PROPIO ritmo perdió. No se compara contra otros \
+  predios, porque cada parcela tiene su altitud, su variedad y su sombrío; \
+  compararla contra sí misma es lo único honesto.
+
+Y la lectura cambia según el tipo de cultivo:
+- TRANSITORIO: la amplitud ES el ciclo. Amplitud que colapsa = predio que dejó de \
+  sembrarse, por alto que esté su NDVI.
+- PERENNE: la amplitud refleja el ritmo de MANEJO (poda, renovación, recolección), \
+  no la cosecha. Una amplitud baja en un perenne es normal. Lo que importa es el \
+  vigor sostenido y el rendimiento contra el municipio.
+
+HONESTIDAD SOBRE LA COBERTURA DEL DATO
+Se te dice cuántos de los meses de la serie son medición real y cuántos son relleno \
+por nubosidad. En el trópico andino entre 19 y 33 de 108 meses no tienen observación \
+óptica utilizable. Los meses interpolados NO entran en ningún indicador. Si la \
+cobertura del predio es baja, dilo en el memorando: es una limitación del dictamen, \
+no un defecto que se esconde.
 
 REGLAS DE REDACCIÓN — no negociables
 - Cada ítem de evidencia CITA UNA CIFRA de los datos que recibes. "Buen historial" \
-  no es evidencia; "9 ciclos completos entre 2016 y 2025" sí lo es.
+  no es evidencia; "9 ciclos completos entre 2017 y 2025" sí lo es.
 - Cuando cites rendimiento, cita SIEMPRE la fuente y su año tal como viene en los \
   datos (p. ej. "EVA 2018 — Pitalito, Huila — Café"). El rendimiento del predio es \
   una ESTIMACIÓN derivada del vigor satelital: nómbrala como estimación, nunca como \
@@ -225,8 +312,14 @@ REGLAS DE REDACCIÓN — no negociables
   riesgo: no los tienes.
 - Si el área detectada es menor que la declarada, el monto se ajusta a la baja en \
   proporción al área real y se dice explícitamente por qué.
-- Si no hay ciclos en los últimos 24 meses, la decisión es rechazar, con el motivo \
-  satelital exacto. Un modelo que solo aprueba no es un modelo de riesgo.
+- Si se activa una causal de rechazo, la decisión es rechazar, con el motivo \
+  satelital exacto. Un modelo que solo aprueba no es un modelo de riesgo. Pero \
+  tampoco se fabrica un rechazo: si la evidencia no lo sostiene, se aprueba y las \
+  alertas se dicen igual.
+- En un cultivo PERENNE está prohibido escribir que "no se detectan ciclos de \
+  cosecha" como si fuera un hallazgo negativo. Es el comportamiento esperado del \
+  cultivo y presentarlo como defecto es un error de criterio agronómico que un \
+  evaluador del sector detecta de inmediato.
 - El memorando va dirigido al comité, entre 120 y 200 palabras, sin viñetas ni \
   encabezados. Prosa continua.
 - Español de Colombia. Cifras en pesos con separador de miles.
@@ -265,17 +358,57 @@ def construir_prompt(predio, serie, caida_regional):
     tope_smmlv = predio["activos_declarados_smmlv"] * 0.70
     tope_cop = tope_smmlv * SMMLV_2026
 
-    # Muestra anual de la serie: el modelo no necesita los 120 puntos crudos para
+    # El rendimiento se estima escalando el vigor satelital contra la cifra
+    # municipal de EVA. Sobre un poligono sin actividad agricola esa estimacion
+    # no significa nada: el bosque en pie tiene NDVI altisimo y produce un
+    # "rendimiento" alto para un cultivo que no esta. Si el modelo lo cita como
+    # favorable, aprueba un credito sobre un bosque. Hay que decirselo.
+    # Menos de 12 meses medidos en la ventana de 24: la firma de abandono y la de
+    # nubosidad son la misma, y no hay forma de separarlas. Manda sobre todo lo demas.
+    med24 = serie.get("cobertura_24m_medidos", 24)
+    aviso_cobertura = (
+        "Cobertura suficiente: las causales del eje A operan normalmente."
+        if med24 >= 12 else
+        "⚠ COBERTURA INSUFICIENTE. Con %d de 24 meses medidos NO se puede concluir sobre\n"
+        "  la actividad reciente del predio. Los indicadores de forma de más abajo —ciclos\n"
+        "  recientes y pérdida de amplitud— están contaminados por la interpolación y NO\n"
+        "  son evidencia de abandono: un predio nublado los produce iguales que uno\n"
+        "  abandonado. Aplica la regla que manda sobre todas: aplazar_por_verificacion,\n"
+        "  banda sin_concepto, puntaje 0, ejes en 0, monto 0, y remitir a visita técnica."
+        % med24)
+
+    sin_actividad = (serie["ciclos_detectados"] == 0
+                     or (area_dec and area_det / area_dec < 0.50))
+    aviso_rendimiento = ""
+    if sin_actividad:
+        aviso_rendimiento = (
+            "\n⚠ ESTA ESTIMACIÓN NO ES INTERPRETABLE EN ESTE EXPEDIENTE. El rendimiento se\n"
+            "  deriva escalando el vigor NDVI, y este polígono no muestra actividad agrícola\n"
+            "  suficiente. La vegetación permanente —bosque o rastrojo— tiene vigor alto y\n"
+            "  produce una cifra alta para un cultivo que no está sembrado. NO la cites como\n"
+            "  evidencia favorable. Si la mencionas, es para advertir que no aplica.")
+
+    # Muestra anual de la serie: el modelo no necesita los 108 puntos crudos para
     # razonar sobre la forma, pero si necesita ver la trayectoria completa.
+    # La amplitud anual se calcula con la MISMA funcion que el indicador agregado
+    # (p90-p10 sobre la serie suavizada, solo meses medidos). Antes usaba max-min
+    # crudo sobre todos los meses, y daba cifras hasta cuatro veces mayores: el
+    # modelo veia "amplitud 0,53" en la trayectoria y "amplitud historica 0,123"
+    # en los indicadores, y citaba las dos en el mismo dictamen.
     resumen_anual = []
-    for anio in range(2016, 2026):
+    for anio in range(2017, 2026):
         del_anio = [p for p in puntos if p["fecha"].startswith(str(anio))]
         if not del_anio:
             continue
-        vals = [p["ndvi"] for p in del_anio]
+        medidos_anio = [p["ndvi"] if not p["interpolado"] else None for p in del_anio]
+        vals = [v for v in medidos_anio if v is not None]
+        if not vals:
+            resumen_anual.append("  %d: sin observacion optica utilizable" % anio)
+            continue
         resumen_anual.append(
-            "  %d: pico %.2f · valle %.2f · amplitud %.2f"
-            % (anio, max(vals), min(vals), max(vals) - min(vals))
+            "  %d: pico %.2f · valle %.2f · amplitud %.2f · %d/%d meses medidos"
+            % (anio, max(vals), min(vals), amplitud_serie(medidos_anio),
+               len(vals), len(del_anio))
         )
 
     recientes = [p for p in puntos if p["fecha"] >= "2025-01"]
@@ -285,7 +418,7 @@ def construir_prompt(predio, serie, caida_regional):
 
 Productor:            {productor} ({tipo})
 Predio:               vereda {vereda}, {municipio}, {departamento}
-Cultivo:              {cultivo} ({variedad})
+Cultivo:              {cultivo} ({variedad}) — CULTIVO {tipo_cultivo_may}
 Años en el predio:    {anios}
 Crédito previo:       {previo}
 Activos declarados:   {activos} SMMLV  (tope de crédito ≈ {tope})
@@ -294,12 +427,22 @@ Destino:              {destino}
 
 VERIFICACIÓN SATELITAL DEL ÁREA
 Área declarada por el productor:                    {a_dec} ha
-Área con patrón de cultivo activo (Sentinel-2):     {a_det} ha   (desvío {desvio:+.1f}%)
+Área con actividad agrícola detectada (Sentinel-2): {a_det} ha   (desvío {desvio:+.1f}%)
 
-Nota de lectura: el área activa mide superficie con ciclo de cultivo detectable.
-Un predio cubierto de rastrojo tiene cobertura vegetal pero 0 ha activas.
+Nota de lectura: la medición parte el polígono declarado en una rejilla de 4x4 y
+descarga la serie NDVI de cada celda. Cuenta como agrícola la celda que está
+vegetada (mediana ≥ 0,30) Y tiene dinámica de manejo (amplitud ≥ 0,12). Una celda
+de bosque o rastrojo está verde pero no se mueve, y no cuenta. Es una estimación de
+PROPORCIÓN del predio con actividad, no una delimitación de linderos: eso le
+corresponde al IGAC, no a un satélite.
 
 SERIE NDVI — Copernicus Sentinel-2, mediana mensual, {desde} a {hasta} ({n} observaciones)
+Cobertura del dato: {medidos} de {totales} meses con observación óptica utilizable.
+Los {interpolados} meses restantes se interpolaron por nubosidad y NO entran en
+ninguno de los indicadores de abajo.
+
+COBERTURA DE LA VENTANA DE DECISIÓN (últimos 24 meses): {med24} de 24 meses medidos.
+{aviso_cobertura}
 
 Trayectoria anual (pico, valle y amplitud de cada año):
 {anual}
@@ -307,10 +450,19 @@ Trayectoria anual (pico, valle y amplitud de cada año):
 Últimos 12 meses, mes a mes:
 {reciente}
 
-INDICADORES CALCULADOS SOBRE LA SERIE
-- Ciclos de cosecha completos detectados en la década: {ciclos}
+INDICADORES CALCULADOS SOBRE LA SERIE (solo sobre meses medidos)
+
+Forma de la serie — cómo se mueve:
+- Ciclos completos detectados en los 9 años:           {ciclos}
 - Ciclos completos en los últimos 24 meses:            {ciclos24}
+- Amplitud histórica:                                  {amp_hist}
+- Amplitud de los últimos 24 meses:                    {amp_rec}
+- Pérdida de amplitud contra su propia historia:       {perdida}%
+
+Nivel de la serie — cuánto verde hay:
 - NDVI pico promedio:                                  {pico}
+
+Comportamiento climático:
 - Caída de vigor durante El Niño 2023-24:              {caida}%
 - Caída promedio regional en el mismo evento:          {caida_reg}%
 
@@ -318,6 +470,7 @@ RENDIMIENTO — comparación contra estadística oficial
 - Rendimiento estimado del predio:      {rend_est} t/ha   (estimación derivada del vigor satelital)
 - Rendimiento municipal del cultivo:    {rend_mun} t/ha   (dato oficial)
 - Fuente:                               {fuente_rend}
+{aviso_rendimiento}
 
 CONTROLES DE ORIGINACIÓN (resultado de la verificación)
 - RTDAF/RUPTA (Ley 1448 de 2011): {rtdaf}
@@ -330,6 +483,7 @@ Emite el dictamen de crédito.""".format(
         municipio=predio["municipio"],
         departamento=predio["departamento"],
         cultivo=predio["cultivo"],
+        tipo_cultivo_may=predio["tipo_cultivo"].upper(),
         variedad=predio.get("variedad", "no declarada"),
         anios=predio.get("anos_en_el_predio", "no declarado"),
         previo="sí" if predio.get("credito_previo") else "no (primer crédito formal)",
@@ -343,16 +497,25 @@ Emite el dictamen de crédito.""".format(
         desde=serie["desde"],
         hasta=serie["hasta"],
         n=len(puntos),
+        medidos=serie["cobertura_meses_medidos"],
+        totales=serie["cobertura_meses_totales"],
+        interpolados=serie["cobertura_meses_totales"] - serie["cobertura_meses_medidos"],
+        med24=med24,
+        aviso_cobertura=aviso_cobertura,
         anual="\n".join(resumen_anual),
         reciente=serie_reciente,
         ciclos=serie["ciclos_detectados"],
         ciclos24=serie["ciclos_ultimos_24m"],
+        amp_hist=serie["amplitud_historica"],
+        amp_rec=serie["amplitud_reciente_24m"],
+        perdida=serie["perdida_amplitud_pct"],
         pico=serie["ndvi_pico_promedio"],
         caida=serie["caida_enso_pct"],
         caida_reg=caida_regional,
         rend_est=serie["rendimiento_estimado_t_ha"],
         rend_mun=serie["rendimiento_municipal_eva_t_ha"],
         fuente_rend=serie["fuente_referencia"],
+        aviso_rendimiento=aviso_rendimiento,
         rtdaf=predio.get(
             "verificacion_rtdaf",
             "sin coincidencias — el predio no figura en el registro ni tiene medida de protección vigente",
@@ -430,6 +593,92 @@ def llamar_api(prompt_usuario, api_key):
     }
 
 
+LINEAS_OFICIALES = ("Inversión", "Capital de Trabajo", "Normalización de Cartera")
+
+
+def incoherencias(d, predio, serie=None):
+    """
+    Lo que structured outputs NO puede garantizar: que las cifras cuadren entre si.
+
+    El esquema asegura tipos y enums. No asegura que el puntaje de un eje quepa
+    dentro de su peso, que el total se derive de los ejes, ni que no se sugiera
+    mas plata de la solicitada. Todo eso son invariantes del contrato que se
+    comprueban aqui, y cuyo incumplimiento dispara un reintento.
+    """
+    fallas = []
+
+    # Cobertura insuficiente: el estado es obligatorio y va en bloque. Si el
+    # modelo emite un puntaje o un monto aqui, esta opinando sobre un predio que
+    # no pudo ver — que es exactamente lo que la regla existe para impedir.
+    if serie is not None and serie.get("cobertura_24m_medidos", 24) < 12:
+        med24 = serie["cobertura_24m_medidos"]
+        if d.get("decision") != "aplazar_por_verificacion":
+            fallas.append(
+                "con %d de 24 meses medidos no se puede emitir concepto: la decisión debe ser "
+                "«aplazar_por_verificacion», no «%s»" % (med24, d.get("decision")))
+        if d.get("banda_riesgo") != "sin_concepto":
+            fallas.append("con cobertura insuficiente la banda es «sin_concepto», no «%s»"
+                          % d.get("banda_riesgo"))
+        if d.get("puntaje", 0) != 0 or d.get("monto_sugerido_cop", 0) != 0:
+            fallas.append("con cobertura insuficiente el puntaje y el monto sugerido van en 0")
+        texto = " ".join([d.get("memorando", ""), d.get("recomendacion", "")]).lower()
+        if "rechaz" in texto and "no es un rechazo" not in texto and "no constituye" not in texto:
+            fallas.append(
+                "el dictamen usa lenguaje de rechazo sobre un caso de cobertura insuficiente: "
+                "aplazar por falta de dato NO es rechazar, y confundirlos castiga al productor")
+        return fallas          # el resto de invariantes no aplica a este estado
+
+    for e in d.get("ejes", []):
+        if e["puntaje"] > e["peso"]:
+            fallas.append(
+                "el eje «%s» puntúa %d sobre un peso de %d: el puntaje del eje va de 0 a "
+                "su peso, no sobre 100" % (e["eje"], e["puntaje"], e["peso"]))
+
+    suma = sum(e["puntaje"] for e in d.get("ejes", []))
+    if d.get("ejes") and abs(d["puntaje"] - suma * 10) > 5:
+        fallas.append(
+            "el puntaje total es %d pero los ejes suman %d, que escalado a 1000 da %d"
+            % (d["puntaje"], suma, suma * 10))
+
+    # La banda no es un juicio: es un tramo de la escala de criterios-de-credito §5.
+    # Un dictamen que dice 780 y lo llama "medio" se contradice en la misma pantalla,
+    # porque la app pinta el numero al lado de la etiqueta.
+    escala = [(700, "bajo"), (550, "medio"), (400, "alto"), (0, "rechazo")]
+    esperada = next(nombre for piso, nombre in escala if d.get("puntaje", 0) >= piso)
+    if d.get("banda_riesgo") != esperada:
+        fallas.append(
+            "con puntaje %d la banda es «%s», no «%s» (escala: 700+ bajo · 550-699 medio · "
+            "400-549 alto · 0-399 rechazo)"
+            % (d["puntaje"], esperada, d.get("banda_riesgo")))
+
+    solicitado = predio["monto_solicitado_cop"]
+    if d.get("monto_sugerido_cop", 0) > solicitado:
+        fallas.append("el monto sugerido (%d) supera al solicitado (%d)"
+                      % (d["monto_sugerido_cop"], solicitado))
+
+    if d.get("decision") == "rechazar" and d.get("monto_sugerido_cop", 0) != 0:
+        fallas.append("la decisión es rechazar pero el monto sugerido no es 0")
+
+    linea = d.get("linea_finagro", "")
+    if linea and not any(linea.startswith(x) for x in LINEAS_OFICIALES):
+        fallas.append(
+            "«%s» no es una denominación oficial de línea FINAGRO; las únicas son %s"
+            % (linea, ", ".join(LINEAS_OFICIALES)))
+
+    if predio["tipo_cultivo"] == "perenne":
+        texto = " ".join([d.get("memorando", ""), d.get("recomendacion", "")] +
+                         [e.get("texto", "") for e in d.get("evidencia", [])]).lower()
+        for frase in ("no se detectan ciclos", "sin ciclos de cosecha detectables",
+                      "ausencia de ciclos de cosecha constituye"):
+            if frase in texto:
+                fallas.append(
+                    "en un cultivo perenne no se puede presentar la ausencia de ciclos "
+                    "como hallazgo negativo: es el comportamiento normal del cultivo")
+                break
+
+    return fallas
+
+
 def main():
     argv = [a for a in sys.argv[1:] if not a.startswith("--")]
     dry_run = "--dry-run" in sys.argv
@@ -475,11 +724,33 @@ def main():
         sys.stdout.flush()
 
         prompt = construir_prompt(predio, series_doc["series"][pid], caida_regional)
-        dictamen, uso = llamar_api(prompt, api_key)
-        dictamenes[pid] = dictamen
+        # Structured outputs garantiza la FORMA del JSON, no su coherencia
+        # aritmetica. En la primera corrida el modelo puntuo los ejes sobre 100
+        # (78 sobre un peso de 40) y emitio un total que no se derivaba de sus
+        # propios ejes. El esquema lo acepto: es JSON valido. La app no: dibuja
+        # la barra como puntaje/peso y 78/40 se sale de la pantalla.
+        # Por eso se reintenta con el defecto senalado en vez de escribirlo.
+        for intento in range(1, 4):
+            dictamen, uso = llamar_api(prompt, api_key)
+            total_in += uso.get("input_tokens", 0)
+            total_out += uso.get("output_tokens", 0)
 
-        total_in += uso.get("input_tokens", 0)
-        total_out += uso.get("output_tokens", 0)
+            fallas = incoherencias(dictamen, predio, series_doc["series"][pid])
+            if not fallas:
+                break
+            print("\n    intento %d rechazado: %s" % (intento, "; ".join(fallas)))
+            prompt = (construir_prompt(predio, series_doc["series"][pid], caida_regional)
+                      + "\n\nCORRECCIÓN OBLIGATORIA — la salida anterior tuvo estos defectos:\n"
+                      + "\n".join("- " + f for f in fallas))
+            sys.stdout.write("· %-14s reintentando ... " % pid)
+            sys.stdout.flush()
+        else:
+            raise SystemExit(
+                "%s: 3 intentos y la salida sigue siendo incoherente. No se escribe "
+                "nada: es preferible quedarse con el dictamen anterior que publicar "
+                "uno que se contradice." % pid)
+
+        dictamenes[pid] = dictamen
         print("%s · puntaje %d · %s" % (
             dictamen["decision"].upper(), dictamen["puntaje"], dictamen["banda_riesgo"]))
 

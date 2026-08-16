@@ -1,0 +1,12 @@
+Buscando area inflada en granada — 25 poligonos de 4.0 ha, rejilla 4x4 cada uno
+  (3.4921, -73.7559)  12/16 celdas agricolas  75%  
+  (3.4921, -73.7309)   0/16 celdas agricolas  0%  
+  (3.4921, -73.7059)  16/16 celdas agricolas  100%  
+  (3.4921, -73.6809)  11/16 celdas agricolas  69%  
+  (3.4921, -73.6559)   2/16 celdas agricolas  12%  
+  (3.5171, -73.7559)  16/16 celdas agricolas  100%  
+  (3.5171, -73.7309)  16/16 celdas agricolas  100%  
+  (3.5171, -73.7059)   7/16 celdas agricolas  44%  ◀ AREA INFLADA
+  (3.5171, -73.6809)  16/16 celdas agricolas  100%  
+Statistical API respondio HTTP 429:
+{"error":{"status":429,"reason":"Too Many Requests","message":"You have exceeded your rate limit","code":"RATE_LIMIT_EXCEEDED"}}

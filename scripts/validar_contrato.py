@@ -36,8 +36,13 @@ RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(RAIZ, "data")
 
 TIPOS_PRODUCTOR = ("pequeño", "mediano", "grande")
-BANDAS = ("bajo", "medio", "alto", "rechazo")
-DECISIONES = ("aprobar", "aprobar_con_ajuste", "rechazar")
+# v1.3: "sin_concepto" y "aplazar_por_verificacion" son el estado en que el
+# sistema declara que NO PUEDE opinar, porque la nubosidad borro mas de la mitad
+# de la ventana de decision. No es una banda mala ni un rechazo: es la ausencia
+# de concepto. Existe porque un predio nublado y uno abandonado producen la misma
+# firma, y rechazar por lo primero es una negacion de credito sin causa.
+BANDAS = ("bajo", "medio", "alto", "rechazo", "sin_concepto")
+DECISIONES = ("aprobar", "aprobar_con_ajuste", "rechazar", "aplazar_por_verificacion")
 TIPOS_EVIDENCIA = ("favorable", "alerta", "critico")
 
 # Contrato v1.1 §3: nombres y pesos fijos, mapean uno a uno contra el SARC.

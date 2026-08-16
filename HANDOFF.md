@@ -1,11 +1,67 @@
 # HANDOFF — SEEDLLITE
 
 > **Léeme primero.** Estado real del proyecto al **15-ago-2026, 23:40**.
-> Cierre: **domingo 16, 09:00**. Subida objetivo: **08:00**. Quedan ~8 horas.
+> Cierre: **domingo 16, 09:00**. Subida objetivo: **08:00**.
 >
 > Este archivo lo escribe y lo actualiza quien esté operando el frente MOTOR.
 > Si algo aquí contradice a `PLAN-MAESTRO.md`, gana el plan salvo en los puntos
 > marcados **CAMBIO**, que son decisiones ya tomadas y comunicadas.
+
+---
+
+## 0. Lo que cambió en la sesión de las 23:00 — léelo antes que nada
+
+**El frente MOTOR está cerrado.** Los cuatro dictámenes son salida real de
+`claude-opus-5`, commiteada. `./verificar.sh` pasa en verde. Lo que queda es APP,
+capturas y video.
+
+| Problema del handoff anterior | Estado |
+|---|---|
+| **A** · el café se auto-rechazaba | ✅ **Resuelto.** La causal ahora depende de `tipo_cultivo` |
+| **B** · el rechazo sin evidencia | ✅ **Resuelto, pero cambió de causal.** Ver abajo |
+| **C** · dictámenes sin generar | ✅ **Los cuatro generados** con guarda de coherencia |
+| **D** · la app | ⚠️ **Sigue siendo el riesgo número uno** |
+
+### Los cuatro predios, con cifras reales
+
+| Predio | Declarada → medida | Puntaje | Decisión |
+|---|---|---|---|
+| `huila-cafe` | 2,4 → **2,25 ha** (94%) | **870** · bajo | aprobar con ajuste a $8.437.500 |
+| `tolima-arroz` | 6,1 → **6,10 ha** (100%) | **850** · bajo | aprobar $22.000.000 |
+| `boyaca-papa` | 1,8 → **1,80 ha** (100%) | **750** · bajo | aprobar con ajuste a $6.750.000 |
+| `meta-cacao` | 4,0 → **0,50 ha** (12%) | **240** · rechazo | **rechazar** |
+
+### El rechazo ya no es por abandono, es por área — y es mejor así
+
+Se buscó el cacaotal abandonado en cuatro zonas y no existe. Las tres candidatas
+que pasaron los filtros resultaron ser parcelas con la mitad de los últimos dos
+años sin observación óptica: **en el trópico andino la firma de abandono y la de
+nubosidad son indistinguibles.** El recorrido completo está en
+`scripts/exploracion/LEEME.md` y vale la pena leerlo antes del video.
+
+`meta-cacao` se reapuntó a `(3.4921, -73.6559)`, mismo municipio. De las 4 ha
+declaradas, la medición encuentra **0,5 con actividad agrícola**; las otras 3,5 son
+dosel de bosque cerrado. Dispara la **causal 2** —área bajo el 50%— con 38 puntos
+de margen.
+
+**Y conserva la frase del video intacta:** el NDVI de ese predio es el **más alto
+de los cuatro** (pico 0,88). Un modelo que mire cuánto verde hay lo aprueba sin
+dudarlo. Lo que no tiene es dinámica de manejo.
+
+### Dos bugs que se corrigieron y que conviene saber contar
+
+1. **`ciclos_ultimos_24m` se calculaba sobre datos interpolados** mientras
+   `ciclos_detectados` sí los excluía. Era la métrica que dispara el rechazo
+   automático: se negaba crédito a un productor por haber estado nublado sobre su
+   parcela. Ahora `criterios-de-credito.md` exige 12 meses medidos antes de dejar
+   operar la causal.
+2. **`area_detectada_ha` estaba escrita a mano** en los cuatro predios y ningún
+   script la calculaba. `scripts/medir_area.py` la mide con una rejilla 4×4. El
+   `0.0` de `meta-cacao` y el "12% menor" de `boyaca-papa` eran inventados; los dos
+   se cayeron.
+
+Los dos son buen material de video: **muestran un equipo que auditó su propio
+sistema y encontró cómo se equivocaba.**
 
 ---
 
@@ -28,7 +84,7 @@ impacto 25 · IA como núcleo 25 · demo funcional 20 · viabilidad 15 · ejecuc
 
 | Frente | Quién | Estado |
 |---|---|---|
-| **MOTOR** — datos + IA | Juan Torres | Series reales ✅ · validador ✅ · prompt ⚠️ sin correr |
+| **MOTOR** — datos + IA | Juan Torres | ✅ **CERRADO.** Series reales · áreas medidas · 4 dictámenes de opus-5 · verificar.sh verde |
 | **PRODUCTO** — criterio, docs, diseño | Laura | Criterios ✅ · dictamen-modelo ✅ · legal ✅ · README ✅ · design system v1.1 ✅ · mockups 🔄 |
 | **APP** — la pantalla | Juan Piedrahita | ⚠️ **Sin un solo commit suyo.** Ver §5 |
 | **VIDEO** | Juan Torres | **CAMBIO**: el video lo hace Torres, no Laura |
@@ -36,12 +92,17 @@ impacto 25 · IA como núcleo 25 · demo funcional 20 · viabilidad 15 · ejecuc
 ### Ramas
 
 ```
-main            integrada y al día — motor + docs de Laura
-motor           frente de datos e IA
-app-baseline    app navegable de referencia (la escribió Torres como red de seguridad)
+main            integrada y al día — MOTOR cerrado, docs actualizados
+app             frente APP, parte de app-baseline sobre main
+motor           histórico del frente de datos
+app-baseline    app navegable de referencia (red de seguridad, no borrar)
 ```
 
-No existe rama `app`. **Nadie ha construido la app salvo el `app-baseline`.**
+⚠️ **Dos agentes trabajando: reparte los worktrees.** El directorio principal
+`seedllite-ctw2026` está en la rama `app`. MOTOR trabajó desde un worktree aparte
+(`git worktree add ../seedllite-motor main`) precisamente porque dos agentes en el
+mismo directorio se cambian la rama el uno al otro sin avisar. Si retomas MOTOR,
+usa el worktree; si retomas APP, usa el directorio principal.
 
 ---
 
@@ -93,99 +154,28 @@ enero de 2017. En el video se dice **nueve años**, no diez.
 
 ---
 
-## 4. Problemas abiertos — en orden de urgencia
+## 4. Lo único que queda abierto
 
-### A · El café se auto-rechazaría ⚠️ BLOQUEANTE
+### A · La app — el riesgo número uno
 
-> Se resuelve junto con B. Lee los dos antes de tocar nada.
+Ver §5. No cambió: sigue sin haber commit de Piedrahita.
 
-`huila-cafe` da **0 ciclos en los últimos 24 meses**, porque el café es perenne y
-no dibuja cosechas en NDVI. La regla de rechazo automático de
-`docs/criterios-de-credito.md` dice *"sin ciclo detectable en los últimos 24
-meses → rechazar"*. Tal como está, **el caso insignia de aprobación se rechaza**.
+### B · Las capturas satelitales
 
-**Arreglo:** la regla tiene que ser consciente del tipo de cultivo. En transitorio
-(arroz, papa) la ausencia de ciclo significa que no se está produciendo. En
-perenne (café, cacao) el ciclo no es la señal; lo es el vigor sostenido.
+`predios.json` declara `imagenes_satelitales` con dos cortes por predio y **los
+archivos no existen todavía**. La app debe degradar con elegancia mientras tanto.
 
-Toca `docs/criterios-de-credito.md` y `docs/dictamen-modelo.md`, **ambos de
-Laura** — hay que pedírselo, no editarlos. El párrafo de capacidad de pago del
-dictamen modelo cita "9 ciclos de cosecha completos" y debe pasar a hablar de
-vigor sostenido. Es más correcto así, no menos.
+Para `meta-cacao` la captura importa más que en los otros tres: es donde se ve, sin
+entender NDVI, que el polígono declarado es bosque con un cuadro sembrado en una
+esquina. Coordenadas: `3.4921, -73.6559`.
 
-### B · El caso de rechazo no tiene evidencia real
+### C · Pendiente de Laura, no bloqueante
 
-`meta-cacao` es el que gana el video: *"un modelo que solo aprueba no es un
-modelo"*. Da 0 ciclos en 24 meses, que es lo que queremos — pero el matiz que el
-contrato exige mostrar (*el NDVI NO baja, hay rastrojo; lo que desaparece es el
-patrón*) **no está sostenido por el dato**. Lo que parecía "ciclaba y se aplanó"
-resultaron ser meses sueltos de nube en 2017-2022 que desaparecen al aplicar la
-mediana móvil.
-
-El barrido terminó: **147 candidatos en tres zonas (Espinal, Saldaña,
-Villavicencio) y CERO parcelas con firma de abandono.** Las salidas están
-versionadas en `scripts/exploracion/` — no lo vuelvas a correr, ya está resuelto
-en negativo.
-
-**La conclusión honesta es más dura de lo que parece:** ninguna de las cuatro
-parcelas reales sostiene un rechazo. Compara los dos casos perennes:
-
-| | pico | ciclos | 24m | rendimiento vs EVA |
-|---|---|---|---|---|
-| `huila-cafe` | 0,79 | 9 | 0 | 1,23 vs 1,14 — **encima** del municipal |
-| `meta-cacao` | 0,87 | 8 | 0 | 0,72 vs 0,60 — **encima** del municipal |
-
-Son indistinguibles, y ambos se ven sanos. Los problemas A y B son en realidad
-**el mismo problema**: no hay señal en el dato que separe un cafetal en manejo de
-un cacaotal abandonado, porque la parcela de cacao que encontramos no está
-abandonada.
-
-### RECOMENDACIÓN — opción 2, con rótulo preciso
-
-Dejar `meta-cacao` como **el único predio con serie construida**, rotulado como
-tal en el JSON y en la interfaz, y los otros tres con serie real descargada.
-
-Por qué es la salida correcta y no una rendición:
-
-1. El caso de rechazo carga el argumento central del producto —*un modelo que
-   solo aprueba no es un modelo de riesgo*— y sin él el video pierde su remate.
-2. La constitución III.1 **permite expresamente** el dato calibrado siempre que
-   se rotule. Rotular uno de cuatro, en un archivo donde los otros tres dicen
-   "descargada de Copernicus", es *más* honesto que el plan original, donde los
-   cuatro eran calibrados.
-3. Es defendible dicho en voz alta: *"tres de los cuatro predios son series
-   reales; el cuarto es un caso construido para mostrar el rechazo, y está
-   rotulado en pantalla."* Un jurado técnico premia eso.
-
-Para ejecutarlo: regenerar solo ese predio con el modelo fenológico viejo
-(`generar_series_ndvi.py` tiene el perfil `meta-cacao` con `abandono_desde`), y
-añadirle al bloque de la serie un campo `origen: "calibrada"` mientras los otros
-tres llevan `origen: "copernicus"`. La app puede pintar ese rótulo sin cambios de
-esquema.
-
-**Si prefieres cero dato construido**, la alternativa es mover el rechazo a
-`boyaca-papa` por área detectada 12% menor que la declarada — pero ojo: 12% no
-dispara la regla de rechazo (que exige menos del 50%), así que habría que
-degradar el caso a `aprobar_con_ajuste` y **quedarse sin ningún rechazo en el
-demo**. Es más limpio y más débil.
-
-### C · Los dictámenes reales no se han generado
-
-Se aplazó a propósito para no gastar dos rondas de prompt antes de cerrar A y B.
-
-```bash
-python3 scripts/generar_dictamen.py --dry-run        # revisar el prompt
-python3 scripts/generar_dictamen.py huila-cafe       # uno, para iterar
-python3 scripts/generar_dictamen.py                  # los cuatro
-python3 scripts/empaquetar_datos.py
-```
-
-La vara es `docs/dictamen-modelo.md` §2: siete propiedades que la salida debe
-reproducir. Se itera contra eso hasta que se parezcan.
-
-### D · La app
-
-Ver §5. Es el mayor riesgo del proyecto.
+- Visto bueno al cambio de la regla perenne vs. transitorio en
+  `docs/criterios-de-credito.md` §3 EJE A. Está marcado con 🔄 CAMBIO y explicado.
+- El tope de 20 SMMLV en Capital de Trabajo para pequeño productor: si aplica,
+  `tolima-arroz` a $22.000.000 lo excede. Es la única cifra del demo con una
+  advertencia sin resolver.
 
 ---
 
@@ -299,16 +289,23 @@ Lo que ahora se puede afirmar sin mentir, y que hace ocho horas no se podía:
 > descargadas de Copernicus. Enmascaradas de nubes con la clasificación de ESA.
 > Nueve años."*
 
-Y el matiz que demuestra que el equipo entendió el problema:
+Y el matiz que demuestra que el equipo entendió el problema — **ya se puede decir
+entero, y apoyado en medición:**
 
-> *"Un predio abandonado no tiene NDVI bajo: se llena de rastrojo y el verde
-> sigue ahí. Lo que desaparece es el patrón. Por eso el modelo lee la forma de la
-> serie, no su nivel."*
+> *"El predio que rechazamos no tiene NDVI bajo. Tiene el más alto de los cuatro:
+> 0,88. Está cubierto de verde. Lo que no tiene es una sola señal de manejo en nueve
+> años. De las cuatro hectáreas declaradas, medimos media con actividad agrícola. Un
+> modelo que mire cuánto verde hay aprueba ese crédito."*
 
-Ese segundo párrafo **solo se puede decir si se resuelve el problema B.** Si no se
-resuelve, se dice la versión honesta: que el predio dejó de mostrar ciclo
-detectable en 24 meses, que es cierta y sigue siendo suficiente.
+Y si sobran diez segundos, el remate que ningún otro equipo va a tener:
+
+> *"Encontramos un sesgo en nuestro propio sistema: rechazaba parcelas por haber
+> estado nubladas. Lo corregimos y lo dejamos escrito en el repositorio."*
+
+Eso último es verificable en `scripts/exploracion/LEEME.md` y en el commit que
+arregla `ciclos_ultimos_24m`. **Un jurado técnico premia más un equipo que auditó su
+propio modelo que uno que solo lo mostró funcionando.**
 
 ---
 
-*Actualizado 16-ago-2026, 00:05 · frente MOTOR*
+*Actualizado 15-ago-2026, 23:40 · frente MOTOR — motor cerrado, quedan APP, capturas y video*
