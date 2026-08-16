@@ -204,6 +204,18 @@
     }
 
     var dur = ms || 1500;
+
+    /* Cada banda climática se levanta en el instante en que el trazo llega a
+       ella: El Niño 2023-24 aparece cuando la línea entra en 2023, no antes.
+       El retardo sale de su propia posición en el eje, así que la sincronía se
+       mantiene sola si cambia la duración o el rango de la serie. */
+    var bandas = host.querySelectorAll(".banda-sequia, .banda-lluvia, .banda-texto");
+    for (var b = 0; b < bandas.length; b++) {
+      var bx = parseFloat(bandas[b].getAttribute("x")) || 0;
+      bandas[b].style.animationDelay =
+        (Math.max(0, bx / fin) * dur / 1000).toFixed(2) + "s";
+    }
+
     var t0 = new Date().getTime();
 
     /* Avance lineal: la serie es tiempo, y el tiempo no acelera. */

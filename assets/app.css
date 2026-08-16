@@ -864,12 +864,14 @@ p  { margin: 0 0 var(--e2); }
 /* --- la malla ------------------------------------------------------------ */
 
 .mapa .hex {
-  fill: var(--superficie-2);
-  stroke: var(--borde);
-  stroke-width: 0.7;
+  /* Sin borde y dibujada al 78% de su paso: la separación entre celdas es
+     hueco real, no una línea. Es lo que hace que se lean como puntos de una
+     superficie muestreada y no como un mosaico continuo. */
+  fill: var(--borde-fuerte);
+  stroke: none;
   transform-box: fill-box;
   transform-origin: center;
-  animation: hex-acomoda 0.4s cubic-bezier(0.2, 0.85, 0.3, 1.06) both;
+  animation: hex-acomoda 0.38s cubic-bezier(0.2, 0.85, 0.3, 1.06) both;
 }
 
 /* Cada celda entra girada y pequeña, y se asienta en su sitio. El retardo lo
@@ -947,4 +949,38 @@ p  { margin: 0 0 var(--e2); }
 @media (prefers-reduced-motion: reduce) {
   .mapa .hex,
   .mapa .aguja-onda { animation: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Bandas de eventos climáticos — se levantan al paso del trazo
+   El retardo de cada una lo pone 20-grafica-ndvi.js a partir de su posición en
+   el eje: la banda sube en el instante en que la línea de la serie llega a
+   ella. Así el fenómeno no está "puesto ahí" sino que aparece cuando toca.
+   -------------------------------------------------------------------------- */
+
+.banda-sequia,
+.banda-lluvia {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: banda-sube 0.55s cubic-bezier(0.2, 0.85, 0.25, 1) both;
+}
+
+@keyframes banda-sube {
+  from { transform: scaleY(0); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+
+.banda-texto {
+  animation: banda-texto-entra 0.45s ease-out both;
+}
+
+@keyframes banda-texto-entra {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banda-sequia,
+  .banda-lluvia,
+  .banda-texto { animation: none; }
 }

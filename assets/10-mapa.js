@@ -268,8 +268,12 @@
      es dato.
      ====================================================================== */
 
-  var HEX_R = 9;                 /* radio de la celda, en px del lienzo */
-  var MALLA_MS = 900;            /* cuanto tarda la malla en acomodarse */
+  /* Radio de la celda. A 4,6 px la malla pasa de ~400 a ~1.500 celdas: la
+     densidad es lo que la hace leerse como una superficie muestreada y no como
+     un mosaico decorativo. Es el mismo lenguaje de los mapas de puntos del
+     Economist o de Zeit. */
+  var HEX_R = 4.6;
+  var MALLA_MS = 1100;           /* cuanto tarda la malla en acomodarse */
 
   /* Hexagono de vertice plano a izquierda y derecha: teselan sin huecos con
      paso horizontal de 1,5·r y vertical de √3·r, desfasando columnas impares. */
@@ -339,7 +343,7 @@
     /* Se acomodan de norte a sur, con un desorden corto encima para que no se
        lea como un barrido mecanico. */
     celdas.forEach(function (c, i) {
-      var hex = svgEl("path", { d: rutaHex(c.x, c.y, HEX_R - 0.7), "class": "hex" });
+      var hex = svgEl("path", { d: rutaHex(c.x, c.y, HEX_R * 0.78), "class": "hex" });
       var avance = (c.y - MARGEN) / (ALTO - MARGEN * 2);
       hex.style.animationDelay =
         (avance * (MALLA_MS / 1000) * 0.75 + ruido(i) * 0.22).toFixed(3) + "s";
@@ -354,7 +358,52 @@
     });
 
     svg.appendChild(malla);
+    svg.__celdas = celdas;
     return celdas.length;
+  }
+
+  /**
+   * Onda que recorre la malla desde el punto de impacto de una aguja.
+   *
+   * Las celdas se encienden con el color de la decisión y vuelven a su tono en
+   * seguida. Es un efecto de animación, no una capa de datos: no queda nada
+   * pintado al terminar, justamente para que nadie lo lea como información
+   * sobre esas celdas. El impacto visual viene del movimiento y la densidad,
+   * no de colorear un dato que no tenemos.
+   *
+   * @param {Element} svg     lienzo con la malla ya construida
+   * @param {number}  cx, cy  punto de impacto, en coordenadas del lienzo
+   * @param {string}  color   color de la decisión del predio
+   */
+  function ondaEnMalla(svg, cx, cy, color) {
+    if (movimientoReducido()) { return; }
+
+    var celdas = svg.__celdas || [];
+    var ALCANCE = 150;      /* px: hasta dónde llega la onda */
+    var VELOCIDAD = 0.42;   /* px por ms: cómo de rápido viaja */
+
+    celdas.forEach(function (c) {
+      if (c.nodo.getAttribute("class").indexOf("hex-predio") >= 0) { return; }
+
+      var dx = c.x - cx, dy = c.y - cy;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist > ALCANCE) { return; }
+
+      /* La intensidad decae con la distancia: el frente de onda se apaga. */
+      var fuerza = 1 - dist / ALCANCE;
+
+      global.setTimeout(function () {
+        c.nodo.style.transition = "none";
+        c.nodo.style.fill = color;
+        c.nodo.style.fillOpacity = (0.15 + fuerza * 0.6).toFixed(2);
+
+        global.setTimeout(function () {
+          c.nodo.style.transition = "fill 700ms ease-out, fill-opacity 700ms ease-out";
+          c.nodo.style.fill = "";
+          c.nodo.style.fillOpacity = "";
+        }, 30);
+      }, dist / VELOCIDAD);
+    });
   }
 
   function render(svg, predios, dictamenes, seleccionado, alSeleccionar) {
@@ -421,12 +470,18 @@
       }));
 
       /* Onda de impacto: nace en la punta al clavarse y se desvanece. */
+      var impacto = TRAZO_MS + 150 + indice * 140 + 510;   /* ms hasta clavarse */
+
       var onda = svgEl("circle", {
         cx: xy[0], cy: xy[1], r: 3, fill: "none", stroke: color, "class": "aguja-onda"
       });
-      onda.style.animationDelay =
-        (TRAZO_MS / 1000 + 0.15 + indice * 0.14 + 0.42).toFixed(2) + "s";
+      onda.style.animationDelay = (impacto / 1000).toFixed(2) + "s";
       g.appendChild(onda);
+
+      /* Al clavarse, la onda se propaga por la malla desde la punta. */
+      global.setTimeout(function () {
+        ondaEnMalla(svg, xy[0], xy[1], color);
+      }, impacto);
 
       var t = svgEl("text", { x: xy[0] + 9, y: xy[1] - 24 });
       t.textContent = predio.municipio;
