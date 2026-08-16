@@ -31,32 +31,70 @@ personas** de un sistema que tiene capital disponible y garantía estatal de has
 
 ---
 
-## 2. 🔑 El hallazgo que reordena el modelo
+## 2. 🔑 El fundamento normativo — VERIFICADO contra fuente primaria
 
-Buscamos qué pesa de verdad en un comité de crédito colombiano. La respuesta no está en un
-manual de banco: está en **norma vinculante**.
+> ✅ **Verificación completada 15-ago-2026, 19:50** contra el texto de la
+> **Circular Básica Contable y Financiera (Circular Externa 100 de 1995) de la
+> Superintendencia Financiera de Colombia, Capítulo II — Reglas relativas a la gestión del
+> riesgo crediticio**, en su versión modificada por la Circular Externa 035 de 2005.
+> *(La versión que habíamos citado antes era la de Supersolidaria. El contenido es
+> equivalente, pero ahora citamos la que aplica a establecimientos de crédito.)*
 
-La **Circular Básica Contable y Financiera, Capítulo II — Sistema de Administración del Riesgo
-de Crédito (SARC)** obliga a todo establecimiento de crédito a evaluar, como mínimo:
+### Lo que la norma exige — literal c, "Capacidad de pago del deudor"
 
-| # | Criterio SARC | Texto |
+> *"La evaluación de la capacidad de pago esperada de un deudor o proyecto a financiar es
+> **fundamental** para determinar la probabilidad de incumplimiento del respectivo crédito."*
+
+Y enumera lo que la entidad **debe analizar como mínimo**:
+
+| | Elemento exigido (texto de la norma) | ¿Lo cubre SEEDLLITE? |
 |---|---|---|
-| 1 | **Capacidad de pago** | *"debe actualizarse y analizarse a través de información de flujos de ingresos y egresos del deudor o información del proyecto"* |
-| 2 | **Solvencia** | *"nivel de endeudamiento, calidad y composición de activos, pasivos y patrimonio"* |
-| 3 | **Garantías** | Idoneidad, liquidez y cobertura |
-| 4 | **Historial en centrales de riesgo** | Comportamiento crediticio previo |
-| 5 | **Variables sectoriales** | Riesgo del sector económico del deudor |
+| 1 | *"Los flujos de ingresos y egresos, así como el flujo de caja del deudor **y/o del proyecto financiado o a financiar**"* | ✅ **Eje A** — la cosecha es el flujo |
+| 2 | *"La solvencia del deudor, a través de variables como el nivel de endeudamiento y **la calidad y composición de los activos**…"* | ✅ **Eje B** — el predio verificado es el activo |
+| 3 | *"Información sobre el cumplimiento actual y pasado de las obligaciones… la historia financiera y crediticia, proveniente de centrales de riesgo"* | ❌ Del intermediario |
+| 4 | *"El número de veces que el crédito ha sido reestructurado"* | ❌ Del intermediario |
+| 5 | *"Los posibles efectos de los **riesgos** a los que está expuesto el flujo de caja del deudor y/o del proyecto… considerando distintos escenarios"* | ✅ **Eje C** — riesgo climático |
+| — | Literal **d** · *"Garantías que respaldan la operación"* | ❌ Lo aporta el FAG |
 
-> **La consecuencia para nosotros:** el criterio número uno **no** es el predio ni el papeleo.
-> Es **la capacidad de pago**. Y para un pequeño productor agropecuario, la capacidad de pago
-> **es la cosecha**. No hay otra fuente de flujo.
+**Corrección respecto de la versión anterior:** habíamos presentado "solvencia" y "garantías"
+como criterios independientes. En la norma, la solvencia es un **elemento dentro del análisis
+de capacidad de pago** (literal c) y las garantías son un literal aparte (literal d). El
+mapeo ya está corregido arriba.
+
+---
+
+## 2-bis. 🏆 EL HALLAZGO: la norma ya ordena construir lo que construimos
+
+Este es el párrafo más importante que hemos encontrado en todo el proyecto. Está en el mismo
+Capítulo II, cerrando el literal c:
+
+> *"En el caso de **microcréditos**, la entidad debe contar con una metodología que refleje de
+> forma adecuada el riesgo inherente al deudor y **cuyos elementos permitan compensar las
+> deficiencias de información del mismo, de acuerdo a sus características y grado de
+> informalidad**. La información requerida **podrá ser obtenida y documentada en el lugar donde
+> se desarrolla la actividad económica del deudor**."*
 >
-> Por eso el eje de historial productivo sube de 35 a **40**: no porque nos parezca, sino
-> porque es el que responde al criterio que la norma pone de primero.
+> — Circular Externa 100 de 1995, Cap. II, literal c, SFC
 
-Esto además nos da un argumento fuerte para el jurado: **cada eje de SEEDLLITE está anclado a
-un criterio que la Superintendencia Financiera ya exige.** No inventamos un scoring; traducimos
-uno obligatorio a datos que el pequeño productor sí puede acreditar.
+### Por qué esto lo cambia todo
+
+Veníamos diciendo: *"al campesino le piden un balance que no puede producir, nosotros lo
+reemplazamos con satélite"*. Eso sonaba a rodeo ingenioso.
+
+**La verdad es más fuerte:**
+
+| La norma dice | SEEDLLITE hace |
+|---|---|
+| La entidad **debe** contar con una metodología que **compense las deficiencias de información** del deudor informal | Exactamente eso: sustituye el balance ausente por evidencia satelital |
+| La información **podrá obtenerse y documentarse en el lugar donde se desarrolla la actividad económica** | Obtiene y documenta información **en la parcela**, que es el lugar donde se desarrolla la actividad |
+
+> **No estamos esquivando la regulación. Estamos construyendo la metodología que la regulación
+> lleva veinte años exigiendo, y que nadie construyó porque visitar cada finca no es rentable.**
+>
+> El satélite hace esa visita por $0. Ese es el negocio, y la norma lo estaba pidiendo.
+
+**Esta es la frase del video.** Ningún otro equipo del hackathon va a tener un argumento así,
+porque hay que ser abogado para encontrarlo.
 
 ---
 

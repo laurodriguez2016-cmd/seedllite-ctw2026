@@ -97,6 +97,21 @@ Colombia.
 Para un pequeño productor agropecuario, **la capacidad de pago es la cosecha**. No hay otra
 fuente de flujo. Por eso ese eje pesa más: porque es el criterio que la norma pone de primero.
 
+### 🏆 Y la norma no solo lo permite: lo ordena
+
+> *"En el caso de **microcréditos**, la entidad debe contar con una metodología que refleje de
+> forma adecuada el riesgo inherente al deudor y **cuyos elementos permitan compensar las
+> deficiencias de información del mismo, de acuerdo a sus características y grado de
+> informalidad**. La información requerida **podrá ser obtenida y documentada en el lugar donde
+> se desarrolla la actividad económica del deudor**."*
+>
+> — Circular Externa 100 de 1995, Cap. II, literal c · Superintendencia Financiera de Colombia
+
+**No estamos esquivando la regulación. Estamos construyendo la metodología que la regulación
+lleva veinte años exigiendo** — y que nadie construyó porque visitar cada finca no es rentable.
+
+El satélite hace esa visita por $0.
+
 ### Lo que SEEDLLITE explícitamente NO evalúa
 
 SEEDLLITE cubre **3 de los 5 criterios del SARC**. No reemplaza al comité de crédito: le
