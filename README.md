@@ -15,6 +15,35 @@
 
 ---
 
+<div align="center">
+
+## 🎬 El demo
+
+### ▶️ **[Ver el video — 1 minuto](video/seedllite-demo.mp4)**
+
+*Descárgalo o ábrelo desde el repositorio.*
+
+</div>
+
+**Lo que se ve, en orden:** el problema · el mapa de solicitudes · la serie NDVI de diez años
+con los dientes de sierra de cada cosecha · el análisis paso a paso · **el dictamen
+escribiéndose** · y el lote que SEEDLLITE **rechaza**, con la evidencia de por qué.
+
+### Y si prefieres probarlo tú
+
+```bash
+git clone https://github.com/laurodriguez2016-cmd/seedllite-ctw2026.git
+cd seedllite-ctw2026
+open index.html
+```
+
+**Sin instalar nada.** Sin `npm`, sin servidor, sin build: doble clic sobre `index.html`.
+
+> Para saltar directo a la toma que quieras:
+> `index.html#mapa` · `index.html#cartera` · `index.html#dictamen/meta-cacao` (el caso rechazado)
+
+---
+
 ## El problema, en un párrafo
 
 Para pedir crédito con recursos FINAGRO, el banco le exige al productor un **balance con fecha
