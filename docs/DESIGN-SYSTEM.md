@@ -291,10 +291,19 @@ Barra superior: "SEEDLLITE" y el subtítulo "Evaluación de riesgo crediticio
 agropecuario por análisis satelital".
 Pie: "Datos de demostración. Imágenes Copernicus Sentinel-2, licencia abierta."
 
-DATOS: lee data/predios.json, data/series_ndvi.json y data/dictamenes.json
-según el esquema de data/CONTRATO-DATOS.md. Si un archivo todavía no existe,
-genera datos de ejemplo con la MISMA estructura para poder construir — nunca
-dejes la pantalla rota ni una imagen quebrada.
+DATOS — REGLA CRÍTICA, lee docs/ARQUITECTURA.md §2 antes:
+NUNCA uses fetch(). Bajo el protocolo file:// (doble clic) el navegador bloquea
+fetch() y los ES modules por CORS, y la pantalla queda en blanco.
+
+Los datos ya están cargados en window.SEEDLLITE cuando arranca la app, porque
+index.html los trae con <script src="data/datos.js">. Ese archivo lo genera
+scripts/empaquetar_datos.py a partir de los tres JSON del contrato.
+
+Tampoco uses <script type="module"> ni import: tampoco funcionan con file://.
+Scripts clásicos, en orden de carga numerado.
+
+El esquema de los datos está en data/CONTRATO-DATOS.md. Si algo falta, muestra
+un estado vacío legible — nunca dejes la pantalla rota ni una imagen quebrada.
 
 REGLAS NO NEGOCIABLES:
 - font-variant-numeric: tabular-nums en TODOS los números
@@ -313,4 +322,17 @@ ni la animación del análisis: eso va en las tareas siguientes.
 
 ---
 
-*Versión 1.0 · 15-ago-2026 · Congelado. Cambios visuales se discuten, no se improvisan.*
+---
+
+## 9. ⚠️ Actualización 15-ago-2026, 20:30
+
+Dos cambios que llegaron después de escribir este documento:
+
+1. **Nada de `fetch()` ni de ES modules.** Ver `ARQUITECTURA.md` §2 — bajo `file://` fallan
+   por CORS y la pantalla queda en blanco. Los datos llegan por `window.SEEDLLITE`.
+2. **Ya existe un esqueleto de referencia** en la rama `app-baseline`, construido por el
+   frente MOTOR como **oferta, no imposición**. Trae `index.html`, `assets/app.css` y los
+   cuatro módulos JS numerados. Puedes partir de ahí o construir el tuyo — pero si construyes
+   el tuyo, respeta la regla 1.
+
+*Versión 1.1 · 15-ago-2026 · El sistema visual está congelado. Cambios visuales se discuten, no se improvisan.*

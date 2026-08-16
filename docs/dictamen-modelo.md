@@ -57,7 +57,7 @@ en cualquiera, el prompt está incompleto.
 |---|---|---|
 | 1 | **Cada afirmación trae su número** | "9 ciclos", "1,42 t/ha frente a 1,14", "caída de 18%". Ningún adjetivo suelto |
 | 2 | **Sigue el orden del SARC** | Clasificación → activo → capacidad de pago → riesgo sectorial → exclusiones → decisión |
-| 3 | **La alerta se dice aunque se apruebe** | La aptitud MEDIA aparece, se pondera y se explica por qué no bloquea |
+| 3 | **La alerta se dice aunque se apruebe** | La caída del 18% en El Niño aparece, se pondera y se explica por qué no bloquea |
 | 4 | **Explica el criterio, no solo el resultado** | *"la constancia del patrón productivo, y no su nivel puntual"* — el dictamen enseña cómo se leyó el dato |
 | 5 | **Deja constancia de lo verificado aunque salga favorable** | RTDAF, RUPTA y ambiental se mencionan incluso estando limpias |
 | 6 | **Tono de memorando interno** | Sin "excelente", sin "muy buena productora", sin signos de admiración |
@@ -92,6 +92,11 @@ en cualquiera, el prompt está incompleto.
    regional.
 6. Si bien la aptitud del suelo es un riesgo, es de evidenciar que es una productora resiliente
    y constante, y no hay evidencia de que no haya producido en los últimos 24 meses.
+
+> **Nota de verificación:** los puntos 5 y 6 del insumo original mencionaban el promedio
+> regional y la aptitud del suelo. Ninguno de los dos se pudo sustentar con fuente, así que
+> **no pasaron al dictamen final**. Se conservan aquí porque el razonamiento —ponderar la
+> alerta contra la evidencia de resiliencia— sí pasó, y es lo que hay que enseñarle al modelo.
 
 **En consecuencia**, y al tener un riesgo bajo, se está de acuerdo con otorgar el crédito por
 $9.000.000 en las condiciones detectadas.

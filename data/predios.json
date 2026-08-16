@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "generado": "2026-08-15T16:00:00-05:00",
-  "nota_datos": "Predios y productores FICTICIOS construidos para demostración. Las coordenadas corresponden a zonas productoras reales de cada cultivo; las personas y los montos no existen. Las imagenes satelitales son una secuencia temporal de al menos dos cortes por predio.",
+  "nota_datos": "Predios y productores FICTICIOS construidos para demostración. Las PARCELAS son reales: cada coordenada fue verificada descargando su serie NDVI de Copernicus Sentinel-2 y comprobando que la fenología observada corresponde al cultivo declarado. Las personas, los montos y los destinos del crédito no existen. Las imágenes satelitales son una secuencia temporal de al menos dos cortes por predio.",
   "predios": [
     {
       "id": "huila-cafe",
@@ -11,8 +11,8 @@
       "municipio": "Pitalito",
       "departamento": "Huila",
       "coordenadas": {
-        "lat": 1.8534,
-        "lon": -76.0521
+        "lat": 1.8834,
+        "lon": -76.0621
       },
       "cultivo": "Café",
       "variedad": "Castillo",
@@ -42,7 +42,7 @@
       "municipio": "El Espinal",
       "departamento": "Tolima",
       "coordenadas": {
-        "lat": 4.1489,
+        "lat": 4.1789,
         "lon": -74.8836
       },
       "cultivo": "Arroz",
@@ -73,8 +73,8 @@
       "municipio": "Ventaquemada",
       "departamento": "Boyacá",
       "coordenadas": {
-        "lat": 5.3672,
-        "lon": -73.5218
+        "lat": 5.3372,
+        "lon": -73.4918
       },
       "cultivo": "Papa",
       "variedad": "Pastusa Suprema",
@@ -104,8 +104,8 @@
       "municipio": "Granada",
       "departamento": "Meta",
       "coordenadas": {
-        "lat": 3.5421,
-        "lon": -73.7059
+        "lat": 3.5821,
+        "lon": -73.6859
       },
       "cultivo": "Cacao",
       "variedad": "CCN-51",
@@ -147,5 +147,6 @@
     "clima": "IDEAM — series históricas y alertas",
     "aptitud_suelo": "UPRA — aptitud por cultivo",
     "marco_credito": "Manual de Servicios FINAGRO v.26.21 (16-04-2026)"
-  }
+  },
+  "verificacion_parcelas": "Coordenadas seleccionadas por barrido sobre la Statistical API de Sentinel Hub (scripts/ingesta_sentinel.py). Criterio: cobertura de meses con observación válida, amplitud de la serie y número de ciclos detectados coherentes con el cultivo."
 }
