@@ -171,6 +171,62 @@
       ],
       "memorando": "Se somete a consideración del comité la solicitud de Blanca Cecilia Rojas por $7.500.000 sobre 1,8 ha de papa Pastusa Suprema en Ventaquemada, Boyacá. La serie Sentinel-2 confirma un predio en producción: 8 ciclos completos entre 2017 y 2025, área con actividad agrícola coincidente al 100% con la declarada y NDVI pico promedio de 0,64. El comportamiento climático es el punto más sólido del expediente: cero caída de vigor durante El Niño 2023-24 contra 2,0% de caída regional. La reserva es la dinámica reciente: un solo ciclo en 24 meses, amplitud 2025 de 0,09 y pérdida de 39,0% frente a su propia historia. No se activa causal de rechazo —hay ciclo detectable y el área coincide—, pero la intensidad de siembra observada sostiene aproximadamente un ciclo anual, no dos, y el rendimiento estimado equivale al 85% del municipal de EVA 2018. Por ello se recomienda ajustar el monto a $6.000.000 y desembolsar en dos tramos. Limitación del dictamen: 22 de 108 meses fueron interpolados por nubosidad y no alimentan los indicadores; la cobertura efectiva de 86 meses es suficiente pero no plena. SEEDLLITE no evalúa centrales de riesgo, garantías ni endeudamiento con otras entidades: corresponde al intermediario.",
       "recomendacion": "Aprobar con ajuste a $6.000.000 en línea de Capital de Trabajo — pequeño productor con FAG 80%, condicionando el segundo tramo del 40% a la verificación satelital de emergencia del cultivo a los 90 días."
+    },
+    "meta-cacao": {
+      "puntaje": 240,
+      "banda_riesgo": "rechazo",
+      "decision": "rechazar",
+      "monto_sugerido_cop": 0,
+      "linea_finagro": "",
+      "cobertura_fag_pct": 0,
+      "plazo_meses": 0,
+      "desembolso": "No aplica: la solicitud se rechaza, no hay desembolso que estructurar.",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 8
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 2
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 12
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 2
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "critico",
+          "texto": "Área con actividad agrícola detectada por Sentinel-2: 0.5 ha frente a 4.0 ha declaradas (12.5% del polígono, desvío -87.5%), por debajo del umbral del 50% que constituye causal de rechazo automático."
+        },
+        {
+          "tipo": "critico",
+          "texto": "La estimación de rendimiento (0.73 t/ha contra 0.6 t/ha del municipal oficial, EVA 2018 — GRANADA, META — CACAO) NO es interpretable en este expediente: se deriva del vigor NDVI y en 3.5 ha del polígono ese vigor corresponde a vegetación permanente sin dinámica de manejo. No se toma como hallazgo favorable."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "En 15 de las 16 celdas de la rejilla el NDVI se mantiene alto (pico promedio 0.88) con amplitud de apenas 0.092 en los últimos 24 meses: el patrón es el de cobertura vegetal estable —bosque o rastrojo— y no el de un cacaotal en manejo con poda y recolección."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Verificación RTDAF/RUPTA (Ley 1448 de 2011): sin coincidencias, el predio no figura en el registro ni presenta medida de protección vigente. Verificación ambiental: sin superposición con áreas protegidas ni frontera agrícola excluida."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Cobertura del dato satisfactoria: 96 de 108 meses con observación óptica utilizable (89%); los 12 meses interpolados por nubosidad quedaron excluidos de todos los indicadores, de modo que la conclusión de área no se apoya en relleno."
+        }
+      ],
+      "memorando": "Se recomienda al comité negar la solicitud por $18.000.000. La causal es objetiva y no admite compensación entre ejes: la verificación satelital identifica 0.5 ha con actividad agrícola dentro de un polígono declarado de 4.0 ha, es decir 12.5% del área, muy por debajo del umbral del 50%. El destino declarado —mantenimiento de cacaotal establecido— no es sostenible frente a esa medición: no hay activo productivo de la escala que respalda el monto. Se advierte expresamente que la pérdida de amplitud contra su propia historia es de solo 14.0% y que no hubo caída de vigor durante El Niño 2023-24 frente a 2.0% regional; ninguno de esos dos indicadores se lee como fortaleza, porque provienen de cobertura vegetal permanente y no de un cultivo en manejo. Por la misma razón la estimación de rendimiento de 0.73 t/ha no debe compararse con el municipal de EVA 2018 para Granada, Meta. Siendo cacao un perenne, la ausencia de ciclos de cosecha no se invoca como defecto. Los controles RTDAF/RUPTA y ambiental resultaron limpios, pero no subsanan la inconsistencia de área. Si el productor precisa el polígono efectivamente sembrado, SEEDLLITE puede reevaluar sobre el área corregida.",
+      "recomendacion": "Rechazar la solicitud por área con actividad agrícola detectada de 0.5 ha frente a 4.0 ha declaradas (12.5%), con reevaluación posible únicamente si el productor delimita nuevamente el polígono sembrado."
     }
   }
 }

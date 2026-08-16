@@ -27,7 +27,7 @@ fecha no mayor a 90 días** respecto del formulario de vinculación. Un campesin
 contabilidad formal no puede producirlo. **Ese solo requisito excluye a cientos de miles de
 personas** de un sistema que tiene capital disponible y garantía estatal de hasta el 80%.
 
-**SEEDLLITE sustituye ese balance por evidencia satelital de 10 años.**
+**SEEDLLITE sustituye ese balance por evidencia satelital de 9 años.**
 
 ---
 
@@ -100,7 +100,14 @@ porque hay que ser abogado para encontrarlo.
 
 ## 3. Los cuatro ejes — versión 2
 
-Cada eje se califica de 0 a 100. El puntaje final es la suma ponderada × 10, sobre **0 a 1000**.
+Cada eje se califica de 0 a 100 y **aporta al total en proporción a su peso**. El puntaje
+final es la suma de esos aportes × 10, sobre **0 a 1000**.
+
+> ⚠️ **Ojo con la distinción, porque ya produjo un error.** El campo `puntaje` de cada eje en
+> `data/dictamenes.json` **no es la nota de 0 a 100: es el aporte, que va de 0 al peso del eje.**
+> Un eje evaluado en 90% con peso 40 aporta **36**, no 90. La primera corrida del modelo emitió
+> 78 sobre un peso de 40 y la barra de la pantalla 4 se habría dibujado al 195% de su riel.
+> `incoherencias()` en `generar_dictamen.py` ahora lo rechaza y reintenta.
 
 | Eje | Peso | Responde al criterio SARC | Antes |
 |---|---|---|---|
@@ -627,19 +634,32 @@ nadie.
 
 ## 9. Aplicación a los cuatro predios del demo
 
+> **Actualizado 15-ago-2026, 23:20.** Esta tabla se escribió contra la serie calibrada y contra
+> áreas detectadas que estaban escritas a mano. Ahora las cuatro áreas se **miden**
+> (`scripts/medir_area.py`) y los cuatro puntajes son **salida real de `claude-opus-5`**,
+> commiteada en `data/dictamenes.json`. Dos casos cambiaron de sentido: `boyaca-papa` no tenía
+> el área 12% menor que se le atribuía —mide 100%— y `meta-cacao` no se rechaza por falta de
+> ciclos sino por área.
+
 | Predio | Puntaje | Banda | Decisión | Solicitado | Sugerido | Por qué |
 |---|---|---|---|---|---|---|
-| `huila-cafe` | **780** | Bajo | Aprobar | $9.000.000 | **$9.000.000** | Techo agronómico |
-| `tolima-arroz` | **640** | Medio | Aprobar | $22.000.000 | **$21.800.000** | Ajuste leve por área |
-| `boyaca-papa` | **590** | Medio | Aprobar con ajuste | $7.500.000 | **$6.600.000** | Área detectada 12% menor |
-| `meta-cacao` | **310** | Rechazo | **Rechazar** | $18.000.000 | **$0** | Causal 1: sin ciclo en 24 meses |
+| `huila-cafe` | **870** | Bajo | Aprobar con ajuste | $9.000.000 | **$8.437.500** | Área verificada 2,25 de 2,4 ha (94%) |
+| `tolima-arroz` | **850** | Bajo | Aprobar | $22.000.000 | **$22.000.000** | Área coincide al 100%; 14 ciclos en 9 años |
+| `boyaca-papa` | **750** | Bajo | Aprobar con ajuste | $7.500.000 | **$6.750.000** | Pierde 39% de amplitud y rinde 15% bajo el municipal |
+| `meta-cacao` | **240** | Rechazo | **Rechazar** | $18.000.000 | **$0** | Causal 2: 0,5 ha con actividad de 4,0 declaradas (12%) |
+
+> **Por qué el rechazo cambió de causal, y por qué el nuevo es más fuerte.** La causal 1 exigía
+> "sin ciclo en 24 meses", y sobre un perenne esa ausencia no significa nada: el café insignia
+> daba exactamente el mismo cero. La causal 2 se apoya en una medición sobre nueve años, donde
+> la nubosidad se promedia en vez de confundir, y es visible a simple vista en la imagen
+> satelital. Un rechazo que el comité puede ver, no solo leer.
 
 | Predio | Línea FINAGRO | FAG | Plazo | Condición |
 |---|---|---|---|---|
 | `huila-cafe` | **Inversión** · pequeño productor | 80% | 36 m | Dos tramos; el segundo condicionado a verificación satelital de siembra |
 | `tolima-arroz` | **Capital de Trabajo** · pequeño productor | 80% | 12 m | Desembolso único con monitoreo satelital mensual |
 | `boyaca-papa` | **Capital de Trabajo** · pequeño productor | 80% | 12 m | Monto ajustado al área verificada. Dos tramos |
-| `meta-cacao` | — | — | — | Reevaluable si acredita reactivación y se verifica un ciclo completo |
+| `meta-cacao` | — | — | — | Reevaluable únicamente si el productor delimita de nuevo el polígono efectivamente sembrado |
 
 ### ✅ Denominación de las líneas — verificada 15-ago-2026, 20:05
 
@@ -670,10 +690,11 @@ del crédito conforme a la Resolución 08 de 2023 CNCA, no como nombre de línea
 ## 10. Lo que el dictamen debe decir siempre
 
 1. **Cada afirmación con su dato.** Prohibido "el productor parece confiable". Obligatorio
-   "9 ciclos de cosecha completos entre 2016 y 2025, NDVI pico promedio 0,78".
+   "14 ciclos de cosecha completos entre 2017 y 2025, NDVI pico promedio 0,89".
 2. **Tono de memorando interno de banco.** Sobrio, técnico, sin adjetivos.
-3. **El rechazo se explica con precisión.** Para `meta-cacao`: **colapso del patrón cíclico**,
-   no "vegetación escasa" — el NDVI no es bajo.
+3. **El rechazo se explica con precisión.** Para `meta-cacao`: **el polígono declarado no
+   corresponde a un cacaotal en manejo**, no "vegetación escasa" — el NDVI es el más alto de
+   los cuatro predios. Lo que falta no es verde, es actividad: 0,5 ha de 4,0 declaradas.
 4. **Las alertas se dicen aunque se apruebe.**
 5. **Constancia expresa de la verificación ambiental**, incluso cuando sea favorable.
 6. **El descargo va siempre:**

@@ -326,6 +326,22 @@ def construir_prompt(predio, serie, caida_regional):
     tope_smmlv = predio["activos_declarados_smmlv"] * 0.70
     tope_cop = tope_smmlv * SMMLV_2026
 
+    # El rendimiento se estima escalando el vigor satelital contra la cifra
+    # municipal de EVA. Sobre un poligono sin actividad agricola esa estimacion
+    # no significa nada: el bosque en pie tiene NDVI altisimo y produce un
+    # "rendimiento" alto para un cultivo que no esta. Si el modelo lo cita como
+    # favorable, aprueba un credito sobre un bosque. Hay que decirselo.
+    sin_actividad = (serie["ciclos_detectados"] == 0
+                     or (area_dec and area_det / area_dec < 0.50))
+    aviso_rendimiento = ""
+    if sin_actividad:
+        aviso_rendimiento = (
+            "\n⚠ ESTA ESTIMACIÓN NO ES INTERPRETABLE EN ESTE EXPEDIENTE. El rendimiento se\n"
+            "  deriva escalando el vigor NDVI, y este polígono no muestra actividad agrícola\n"
+            "  suficiente. La vegetación permanente —bosque o rastrojo— tiene vigor alto y\n"
+            "  produce una cifra alta para un cultivo que no está sembrado. NO la cites como\n"
+            "  evidencia favorable. Si la mencionas, es para advertir que no aplica.")
+
     # Muestra anual de la serie: el modelo no necesita los 108 puntos crudos para
     # razonar sobre la forma, pero si necesita ver la trayectoria completa.
     # La amplitud anual se calcula con la MISMA funcion que el indicador agregado
@@ -405,6 +421,7 @@ RENDIMIENTO — comparación contra estadística oficial
 - Rendimiento estimado del predio:      {rend_est} t/ha   (estimación derivada del vigor satelital)
 - Rendimiento municipal del cultivo:    {rend_mun} t/ha   (dato oficial)
 - Fuente:                               {fuente_rend}
+{aviso_rendimiento}
 
 CONTROLES DE ORIGINACIÓN (resultado de la verificación)
 - RTDAF/RUPTA (Ley 1448 de 2011): {rtdaf}
@@ -447,6 +464,7 @@ Emite el dictamen de crédito.""".format(
         rend_est=serie["rendimiento_estimado_t_ha"],
         rend_mun=serie["rendimiento_municipal_eva_t_ha"],
         fuente_rend=serie["fuente_referencia"],
+        aviso_rendimiento=aviso_rendimiento,
         rtdaf=predio.get(
             "verificacion_rtdaf",
             "sin coincidencias — el predio no figura en el registro ni tiene medida de protección vigente",

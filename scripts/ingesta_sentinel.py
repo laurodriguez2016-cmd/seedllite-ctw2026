@@ -558,6 +558,16 @@ def main():
         fusion.update(series)
         documento["series"] = fusion
 
+        # La caida regional es el promedio de TODOS los predios, no de los que se
+        # acaben de regenerar. Sin esto, correr `ingesta_sentinel.py meta-cacao`
+        # reescribia el promedio regional con el valor de ese unico predio, y el
+        # dictamen pasaba a comparar cada predio contra si mismo — una linea base
+        # que siempre da "igual al promedio" y no significa nada. El fallo es
+        # silencioso: el archivo queda bien formado y el numero se ve plausible.
+        todas = {pid: s["caida_enso_pct"] for pid, s in fusion.items()}
+        caida_regional = round(sum(todas.values()) / len(todas), 1)
+        documento["caida_enso_regional_pct"] = caida_regional
+
     with open(SALIDA, "w", encoding="utf-8") as f:
         json.dump(documento, f, ensure_ascii=False, indent=2)
 

@@ -2019,61 +2019,61 @@
       "puntos": [
         {
           "fecha": "2017-01",
-          "ndvi": 0.837,
+          "ndvi": 0.853,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2017-02",
-          "ndvi": 0.811,
-          "nubosidad": 1.0,
-          "interpolado": true
+          "ndvi": 0.801,
+          "nubosidad": 0.0,
+          "interpolado": false
         },
         {
           "fecha": "2017-03",
-          "ndvi": 0.785,
-          "nubosidad": 0.26,
+          "ndvi": 0.813,
+          "nubosidad": 0.64,
           "interpolado": false
         },
         {
           "fecha": "2017-04",
-          "ndvi": 0.795,
+          "ndvi": 0.771,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2017-05",
-          "ndvi": 0.841,
+          "ndvi": 0.77,
           "nubosidad": 1.0,
           "interpolado": true
         },
         {
           "fecha": "2017-06",
-          "ndvi": 0.886,
-          "nubosidad": 0.0,
+          "ndvi": 0.768,
+          "nubosidad": 0.89,
           "interpolado": false
         },
         {
           "fecha": "2017-07",
-          "ndvi": 0.864,
-          "nubosidad": 0.13,
+          "ndvi": 0.441,
+          "nubosidad": 0.05,
           "interpolado": false
         },
         {
           "fecha": "2017-08",
-          "ndvi": 0.842,
+          "ndvi": 0.854,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2017-09",
-          "ndvi": 0.856,
+          "ndvi": 0.883,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2017-10",
-          "ndvi": 0.448,
+          "ndvi": 0.878,
           "nubosidad": 0.0,
           "interpolado": false
         },
@@ -2085,578 +2085,578 @@
         },
         {
           "fecha": "2017-12",
-          "ndvi": 0.845,
+          "ndvi": 0.83,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2018-01",
-          "ndvi": 0.838,
+          "ndvi": 0.852,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2018-02",
-          "ndvi": 0.806,
+          "ndvi": 0.819,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2018-03",
-          "ndvi": 0.733,
+          "ndvi": 0.764,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2018-04",
-          "ndvi": 0.667,
+          "ndvi": 0.81,
           "nubosidad": 1.0,
           "interpolado": true
         },
         {
           "fecha": "2018-05",
-          "ndvi": 0.602,
+          "ndvi": 0.857,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2018-06",
-          "ndvi": 0.61,
+          "ndvi": 0.73,
           "nubosidad": 1.0,
           "interpolado": true
         },
         {
           "fecha": "2018-07",
-          "ndvi": 0.618,
-          "nubosidad": 0.53,
+          "ndvi": 0.602,
+          "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2018-08",
-          "ndvi": 0.833,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2018-09",
-          "ndvi": 0.838,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2018-10",
-          "ndvi": 0.805,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2018-11",
-          "ndvi": 0.78,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2018-12",
-          "ndvi": 0.774,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2019-01",
-          "ndvi": 0.749,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2019-02",
-          "ndvi": 0.653,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2019-03",
-          "ndvi": 0.661,
-          "nubosidad": 1.0,
-          "interpolado": true
-        },
-        {
-          "fecha": "2019-04",
-          "ndvi": 0.668,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2019-05",
-          "ndvi": 0.758,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2019-06",
-          "ndvi": 0.859,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2019-07",
-          "ndvi": 0.487,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2019-08",
-          "ndvi": 0.755,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2019-09",
-          "ndvi": 0.794,
-          "nubosidad": 1.0,
-          "interpolado": true
-        },
-        {
-          "fecha": "2019-10",
-          "ndvi": 0.833,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2019-11",
-          "ndvi": 0.838,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2019-12",
-          "ndvi": 0.806,
-          "nubosidad": 1.0,
-          "interpolado": true
-        },
-        {
-          "fecha": "2020-01",
-          "ndvi": 0.774,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2020-02",
-          "ndvi": 0.784,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2020-03",
-          "ndvi": 0.637,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2020-04",
-          "ndvi": 0.603,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2020-05",
-          "ndvi": 0.718,
-          "nubosidad": 1.0,
-          "interpolado": true
-        },
-        {
-          "fecha": "2020-06",
-          "ndvi": 0.833,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2020-07",
-          "ndvi": 0.568,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2020-08",
-          "ndvi": 0.821,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2020-09",
-          "ndvi": 0.781,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2020-10",
-          "ndvi": 0.791,
-          "nubosidad": 1.0,
-          "interpolado": true
-        },
-        {
-          "fecha": "2020-11",
-          "ndvi": 0.801,
-          "nubosidad": 1.0,
-          "interpolado": true
-        },
-        {
-          "fecha": "2020-12",
-          "ndvi": 0.811,
-          "nubosidad": 1.0,
-          "interpolado": true
-        },
-        {
-          "fecha": "2021-01",
-          "ndvi": 0.821,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2021-02",
-          "ndvi": 0.786,
-          "nubosidad": 1.0,
-          "interpolado": true
-        },
-        {
-          "fecha": "2021-03",
-          "ndvi": 0.752,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2021-04",
-          "ndvi": 0.778,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2021-05",
-          "ndvi": 0.58,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2021-06",
-          "ndvi": 0.877,
-          "nubosidad": 0.25,
-          "interpolado": false
-        },
-        {
-          "fecha": "2021-07",
-          "ndvi": 0.619,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2021-08",
-          "ndvi": 0.676,
-          "nubosidad": 1.0,
-          "interpolado": true
-        },
-        {
-          "fecha": "2021-09",
-          "ndvi": 0.733,
-          "nubosidad": 1.0,
-          "interpolado": true
-        },
-        {
-          "fecha": "2021-10",
-          "ndvi": 0.79,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2021-11",
-          "ndvi": 0.711,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2021-12",
-          "ndvi": 0.822,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2022-01",
-          "ndvi": 0.832,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2022-02",
-          "ndvi": 0.792,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2022-03",
-          "ndvi": 0.327,
-          "nubosidad": 0.99,
-          "interpolado": false
-        },
-        {
-          "fecha": "2022-04",
-          "ndvi": 0.804,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2022-05",
-          "ndvi": 0.854,
-          "nubosidad": 0.63,
-          "interpolado": false
-        },
-        {
-          "fecha": "2022-06",
-          "ndvi": 0.888,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2022-07",
-          "ndvi": 0.504,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2022-08",
-          "ndvi": 0.724,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2022-09",
-          "ndvi": 0.853,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2022-10",
-          "ndvi": 0.859,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2022-11",
-          "ndvi": 0.435,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2022-12",
-          "ndvi": 0.836,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2023-01",
-          "ndvi": 0.84,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2023-02",
-          "ndvi": 0.797,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2023-03",
-          "ndvi": 0.812,
-          "nubosidad": 1.0,
-          "interpolado": true
-        },
-        {
-          "fecha": "2023-04",
-          "ndvi": 0.827,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2023-05",
-          "ndvi": 0.849,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2023-06",
-          "ndvi": 0.775,
-          "nubosidad": 0.0,
-          "interpolado": false
-        },
-        {
-          "fecha": "2023-07",
-          "ndvi": 0.818,
-          "nubosidad": 1.0,
-          "interpolado": true
-        },
-        {
-          "fecha": "2023-08",
           "ndvi": 0.86,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2023-09",
-          "ndvi": 0.824,
+          "fecha": "2018-09",
+          "ndvi": 0.855,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2023-10",
-          "ndvi": 0.88,
+          "fecha": "2018-10",
+          "ndvi": 0.865,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2023-11",
-          "ndvi": 0.85,
+          "fecha": "2018-11",
+          "ndvi": 0.846,
+          "nubosidad": 1.0,
+          "interpolado": true
+        },
+        {
+          "fecha": "2018-12",
+          "ndvi": 0.827,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2023-12",
-          "ndvi": 0.861,
+          "fecha": "2019-01",
+          "ndvi": 0.842,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2024-01",
-          "ndvi": 0.84,
+          "fecha": "2019-02",
+          "ndvi": 0.561,
+          "nubosidad": 1.0,
+          "interpolado": true
+        },
+        {
+          "fecha": "2019-03",
+          "ndvi": 0.281,
+          "nubosidad": 0.98,
+          "interpolado": false
+        },
+        {
+          "fecha": "2019-04",
+          "ndvi": 0.763,
+          "nubosidad": 0.06,
+          "interpolado": false
+        },
+        {
+          "fecha": "2019-05",
+          "ndvi": 0.807,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2024-02",
-          "ndvi": 0.796,
+          "fecha": "2019-06",
+          "ndvi": 0.888,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2024-03",
-          "ndvi": 0.404,
-          "nubosidad": 0.47,
+          "fecha": "2019-07",
+          "ndvi": 0.37,
+          "nubosidad": 0.76,
           "interpolado": false
         },
         {
-          "fecha": "2024-04",
-          "ndvi": 0.705,
+          "fecha": "2019-08",
+          "ndvi": 0.852,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2024-05",
+          "fecha": "2019-09",
+          "ndvi": 0.828,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2019-10",
+          "ndvi": 0.871,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2019-11",
           "ndvi": 0.856,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2024-06",
-          "ndvi": 0.897,
+          "fecha": "2019-12",
+          "ndvi": 0.843,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2024-07",
-          "ndvi": 0.875,
+          "fecha": "2020-01",
+          "ndvi": 0.8,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2020-02",
+          "ndvi": 0.82,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2020-03",
+          "ndvi": 0.7,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2020-04",
+          "ndvi": 0.699,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2020-05",
+          "ndvi": 0.83,
+          "nubosidad": 0.44,
+          "interpolado": false
+        },
+        {
+          "fecha": "2020-06",
+          "ndvi": 0.838,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2020-07",
+          "ndvi": 0.596,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2020-08",
+          "ndvi": 0.865,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2020-09",
+          "ndvi": 0.839,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2020-10",
+          "ndvi": 0.698,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2020-11",
+          "ndvi": 0.594,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2020-12",
+          "ndvi": 0.858,
+          "nubosidad": 0.5,
+          "interpolado": false
+        },
+        {
+          "fecha": "2021-01",
+          "ndvi": 0.853,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2021-02",
+          "ndvi": 0.861,
           "nubosidad": 1.0,
           "interpolado": true
         },
         {
-          "fecha": "2024-08",
-          "ndvi": 0.854,
+          "fecha": "2021-03",
+          "ndvi": 0.87,
+          "nubosidad": 1.0,
+          "interpolado": true
+        },
+        {
+          "fecha": "2021-04",
+          "ndvi": 0.878,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2024-09",
-          "ndvi": 0.835,
+          "fecha": "2021-05",
+          "ndvi": 0.909,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2024-10",
+          "fecha": "2021-06",
+          "ndvi": 0.883,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2021-07",
+          "ndvi": 0.765,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2021-08",
+          "ndvi": 0.844,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2021-09",
+          "ndvi": 0.853,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2021-10",
           "ndvi": 0.877,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
-          "fecha": "2024-11",
+          "fecha": "2021-11",
+          "ndvi": 0.821,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2021-12",
+          "ndvi": 0.86,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2022-01",
+          "ndvi": 0.839,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2022-02",
+          "ndvi": 0.832,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2022-03",
+          "ndvi": 0.332,
+          "nubosidad": 0.97,
+          "interpolado": false
+        },
+        {
+          "fecha": "2022-04",
+          "ndvi": 0.826,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2022-05",
+          "ndvi": 0.538,
+          "nubosidad": 0.99,
+          "interpolado": false
+        },
+        {
+          "fecha": "2022-06",
+          "ndvi": 0.416,
+          "nubosidad": 0.43,
+          "interpolado": false
+        },
+        {
+          "fecha": "2022-07",
+          "ndvi": 0.817,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2022-08",
+          "ndvi": 0.821,
+          "nubosidad": 1.0,
+          "interpolado": true
+        },
+        {
+          "fecha": "2022-09",
+          "ndvi": 0.826,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2022-10",
+          "ndvi": 0.864,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2022-11",
           "ndvi": 0.862,
+          "nubosidad": 0.33,
+          "interpolado": false
+        },
+        {
+          "fecha": "2022-12",
+          "ndvi": 0.546,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2023-01",
+          "ndvi": 0.848,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2023-02",
+          "ndvi": 0.816,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2023-03",
+          "ndvi": 0.821,
+          "nubosidad": 1.0,
+          "interpolado": true
+        },
+        {
+          "fecha": "2023-04",
+          "ndvi": 0.826,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2023-05",
+          "ndvi": 0.836,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2023-06",
+          "ndvi": 0.365,
+          "nubosidad": 0.59,
+          "interpolado": false
+        },
+        {
+          "fecha": "2023-07",
+          "ndvi": 0.609,
+          "nubosidad": 1.0,
+          "interpolado": true
+        },
+        {
+          "fecha": "2023-08",
+          "ndvi": 0.854,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2023-09",
+          "ndvi": 0.838,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2023-10",
+          "ndvi": 0.903,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2023-11",
+          "ndvi": 0.87,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2023-12",
+          "ndvi": 0.868,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2024-01",
+          "ndvi": 0.844,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2024-02",
+          "ndvi": 0.805,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2024-03",
+          "ndvi": 0.897,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2024-04",
+          "ndvi": 0.63,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2024-05",
+          "ndvi": 0.855,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2024-06",
+          "ndvi": 0.787,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2024-07",
+          "ndvi": 0.826,
+          "nubosidad": 1.0,
+          "interpolado": true
+        },
+        {
+          "fecha": "2024-08",
+          "ndvi": 0.864,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2024-09",
+          "ndvi": 0.834,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2024-10",
+          "ndvi": 0.875,
+          "nubosidad": 0.0,
+          "interpolado": false
+        },
+        {
+          "fecha": "2024-11",
+          "ndvi": 0.821,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2024-12",
-          "ndvi": 0.855,
+          "ndvi": 0.864,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2025-01",
-          "ndvi": 0.872,
-          "nubosidad": 0.0,
-          "interpolado": false
+          "ndvi": 0.818,
+          "nubosidad": 1.0,
+          "interpolado": true
         },
         {
           "fecha": "2025-02",
-          "ndvi": 0.746,
+          "ndvi": 0.772,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2025-03",
-          "ndvi": 0.752,
+          "ndvi": 0.737,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2025-04",
-          "ndvi": 0.792,
-          "nubosidad": 1.0,
-          "interpolado": true
+          "ndvi": 0.89,
+          "nubosidad": 0.38,
+          "interpolado": false
         },
         {
           "fecha": "2025-05",
-          "ndvi": 0.831,
-          "nubosidad": 1.0,
-          "interpolado": true
+          "ndvi": 0.499,
+          "nubosidad": 0.0,
+          "interpolado": false
         },
         {
           "fecha": "2025-06",
-          "ndvi": 0.871,
-          "nubosidad": 0.97,
+          "ndvi": 0.851,
+          "nubosidad": 0.93,
           "interpolado": false
         },
         {
           "fecha": "2025-07",
-          "ndvi": 0.855,
+          "ndvi": 0.866,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2025-08",
-          "ndvi": 0.859,
+          "ndvi": 0.861,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2025-09",
-          "ndvi": 0.794,
+          "ndvi": 0.82,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2025-10",
-          "ndvi": 0.846,
+          "ndvi": 0.81,
           "nubosidad": 0.0,
           "interpolado": false
         },
         {
           "fecha": "2025-11",
-          "ndvi": 0.479,
-          "nubosidad": 0.0,
+          "ndvi": 0.836,
+          "nubosidad": 0.77,
           "interpolado": false
         },
         {
@@ -2666,20 +2666,20 @@
           "interpolado": false
         }
       ],
-      "cobertura_meses_medidos": 89,
+      "cobertura_meses_medidos": 96,
       "cobertura_meses_totales": 108,
-      "ciclos_detectados": 8,
+      "ciclos_detectados": 0,
       "ciclos_ultimos_24m": 0,
-      "cobertura_24m_medidos": 21,
+      "cobertura_24m_medidos": 22,
       "cobertura_24m_totales": 24,
-      "ndvi_pico_promedio": 0.87,
-      "rendimiento_estimado_t_ha": 0.72,
+      "ndvi_pico_promedio": 0.88,
+      "rendimiento_estimado_t_ha": 0.73,
       "rendimiento_municipal_eva_t_ha": 0.6,
       "fuente_referencia": "EVA 2018 — GRANADA, META — CACAO",
       "caida_enso_pct": 0.0,
-      "amplitud_historica": 0.136,
-      "amplitud_reciente_24m": 0.119,
-      "perdida_amplitud_pct": 12.5
+      "amplitud_historica": 0.107,
+      "amplitud_reciente_24m": 0.092,
+      "perdida_amplitud_pct": 14.0
     }
   },
   "eventos_climaticos": [

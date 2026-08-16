@@ -205,12 +205,15 @@ Se calculan **solo sobre meses medidos**. La distinción que importa:
 
 ## Los 4 predios del demo
 
-| `id` | Depto. | Cultivo | Área | Puntaje | Decisión | Qué demuestra |
+Puntajes y decisiones **reales**, emitidas por `claude-opus-5` el 15-ago-2026 a las 23:20 y
+commiteadas en `data/dictamenes.json`. No son objetivos de diseño: son la salida del modelo.
+
+| `id` | Depto. | Cultivo | Declarada → detectada | Puntaje | Decisión | Qué demuestra |
 |---|---|---|---|---|---|---|
-| `huila-cafe` | Huila | Café | 2,4 ha | **780** | aprobar | El caso ideal: 9 ciclos completos, resistió El Niño |
-| `tolima-arroz` | Tolima | Arroz | 6,1 ha | **640** | aprobar | Buen productor, alta exposición climática |
-| `boyaca-papa` | Boyacá | Papa | 1,8 ha | **590** | aprobar_con_ajuste | Área real 12% menor a la declarada → se recorta monto |
-| `meta-cacao` | Meta | Cacao | 4,0 ha | **310** | **rechazar** | Sin ciclos de cosecha detectables en 2 años |
+| `huila-cafe` | Huila | Café (perenne) | 2,4 → **2,25 ha** (94%) | **870** | aprobar_con_ajuste | Perenne sano: el ciclo no aplica, manda el vigor sostenido |
+| `tolima-arroz` | Tolima | Arroz (transitorio) | 6,1 → **6,10 ha** (100%) | **850** | aprobar | 14 ciclos en 9 años y el único que resistió El Niño medido |
+| `boyaca-papa` | Boyacá | Papa (transitorio) | 1,8 → **1,80 ha** (100%) | **750** | aprobar_con_ajuste | Pierde 39% de su propio ritmo y rinde bajo el municipal |
+| `meta-cacao` | Meta | Cacao (perenne) | 4,0 → **0,50 ha** (12%) | **240** | **rechazar** | Causal 2: el polígono declarado es bosque, no cacaotal |
 
 ### ⭐ El predio `meta-cacao` es el que gana el video
 
@@ -218,13 +221,25 @@ Un modelo que solo aprueba no es un modelo. Mostrar que SEEDLLITE **dice que no*
 evidencia satelital de por qué, es lo que convence al jurado de que esto es evaluación de
 riesgo real y no un adorno.
 
-> **Matiz técnico que hay que mostrar:** en el predio abandonado el NDVI **no es bajo** — hay
-> rastrojo y maleza creciendo, el verde sigue ahí. Lo que desaparece es el **patrón cíclico**
-> de siembra y cosecha. La serie se aplana.
+> **Matiz técnico que hay que mostrar:** el NDVI de ese predio **no es bajo — es altísimo.**
+> Pico promedio de 0,88, más alto que el de los tres predios que sí se aprueban. Un modelo
+> que mire cuánto verde hay lo aprueba sin dudarlo.
 >
-> Por eso hace falta un modelo que lea la **forma** de la serie, no su nivel. Ese matiz, dicho
-> en el video, demuestra que el equipo entendió el problema de verdad — y es exactamente el
-> tipo de detalle que separa un ganador de un proyecto bonito.
+> Lo que no tiene es **dinámica de manejo**: 15 de las 16 celdas de la rejilla se mantienen
+> planas, con amplitud de 0,09 durante nueve años. Eso no es un cacaotal con poda y
+> recolección: es **cobertura vegetal permanente**. De las 4 ha declaradas, la medición
+> encuentra 0,5 con actividad agrícola.
+>
+> Por eso hace falta un modelo que lea la **forma** del dato, no su nivel. Ese matiz, dicho en
+> el video, demuestra que el equipo entendió el problema — y es exactamente el tipo de detalle
+> que separa un ganador de un proyecto bonito.
+
+> **De dónde salió este caso.** Se buscó primero un cacaotal abandonado y luego un transitorio
+> que dejara de ciclar. Cuatro zonas barridas, cero hallazgos: en el trópico andino la firma de
+> abandono y la de nubosidad son indistinguibles, y los únicos dos candidatos que pasaron el
+> detector resultaron ser parcelas con la mitad de los últimos 24 meses sin observación. El
+> recorrido completo, con sus falsos positivos, está en `scripts/exploracion/LEEME.md`. La
+> causal de área no tiene ese problema: se mide sobre nueve años, no sobre una ventana de dos.
 
 ---
 

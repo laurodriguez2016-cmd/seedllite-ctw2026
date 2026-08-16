@@ -103,18 +103,18 @@
       "id": "meta-cacao",
       "productor": "Jorge Eliécer Ramírez",
       "tipo_productor": "pequeño",
-      "vereda": "Los Naranjos",
+      "vereda": "La Esmeralda",
       "municipio": "Granada",
       "departamento": "Meta",
       "coordenadas": {
-        "lat": 3.5821,
-        "lon": -73.6859
+        "lat": 3.4921,
+        "lon": -73.6559
       },
       "cultivo": "Cacao",
       "tipo_cultivo": "perenne",
       "variedad": "CCN-51",
       "area_declarada_ha": 4.0,
-      "area_detectada_ha": 3.75,
+      "area_detectada_ha": 0.5,
       "monto_solicitado_cop": 18000000,
       "destino": "Mantenimiento de cacaotal establecido",
       "activos_declarados_smmlv": 112,

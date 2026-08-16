@@ -42,14 +42,15 @@ declarado del crédito.
 protección vigente en RUPTA. **No presenta restricción ambiental**: no se ubica en Parque
 Nacional Natural, páramo delimitado ni reserva forestal de Ley 2ª de 1959.
 
-**Puntaje: 780 / 1000 — riesgo bajo.**
+**Puntaje: 870 / 1000 — riesgo bajo.**
 
 ### RECOMENDACIÓN
 
-**Aprobar** por **$9.000.000** —el monto solicitado completo—. El área declarada coincide con la
-verificada y el monto es proporcional al costo documentado del cultivo. Línea de inversión para pequeño productor, con **cobertura FAG del 80%** y plazo de
-**36 meses**. Desembolso en **dos tramos**, el segundo condicionado a verificación satelital de
-la siembra efectiva.
+**Aprobar con ajuste** por **$8.437.500** de los $9.000.000 solicitados. El recorte no es una
+reserva sobre la solicitante: es la proporción del área que la medición satelital verifica
+—2,25 de 2,4 ha—, y así se le explica. Línea **Inversión** para pequeño productor, con
+**cobertura FAG del 80%** y plazo de **48 meses**. Desembolso en **dos tramos**, el segundo
+condicionado a verificación satelital de la siembra efectiva.
 
 ---
 
@@ -72,11 +73,11 @@ regla de perenne vs. transitorio.
 | 2 | **Sigue el orden del SARC** | Clasificación → activo → capacidad de pago → riesgo sectorial → exclusiones → decisión |
 | 3 | **La alerta se dice aunque se apruebe** | La pérdida de amplitud del 27,6% aparece, se pondera y se explica por qué no bloquea |
 | 4 | **Explica el criterio, no solo el resultado** | *"tratándose de un cultivo perenne, la evaluación no se apoya en el conteo de cosechas"* — el dictamen enseña cómo se leyó el dato |
-| 8 | **Distingue perenne de transitorio** | En un perenne no se cita "0 ciclos" como defecto: es el comportamiento normal del cultivo. Citarlo delata que el modelo no entiende lo que mide |
-| 9 | **Declara la cobertura del dato** | Cuántos de los 108 meses son medición y cuántos relleno. Un dictamen que no dice cuánto vio no se puede auditar |
 | 5 | **Deja constancia de lo verificado aunque salga favorable** | RTDAF, RUPTA y ambiental se mencionan incluso estando limpias |
 | 6 | **Tono de memorando interno** | Sin "excelente", sin "muy buena productora", sin signos de admiración |
 | 7 | **La recomendación es operativa** | Monto, línea, cobertura, plazo y condición de desembolso. Un comité puede firmar sobre esto |
+| 8 | **Distingue perenne de transitorio** | En un perenne no se cita "0 ciclos" como defecto: es el comportamiento normal del cultivo. Citarlo delata que el modelo no entiende lo que mide |
+| 9 | **Declara la cobertura del dato** | Cuántos de los 108 meses son medición y cuántos relleno. Un dictamen que no dice cuánto vio no se puede auditar |
 
 ### Lo que NO puede aparecer nunca
 
@@ -128,8 +129,10 @@ $9.000.000 en las condiciones detectadas.
 temporal** de al menos dos cortes.
 
 Razón: el NDVI es una abstracción que exige explicación. **Dos fotos del mismo pedazo de tierra
-con diez años de diferencia no exigen ninguna.** Para `meta-cacao` la secuencia muestra hileras
-de cacao ordenadas en 2020 y rastrojo en 2025 — el abandono se ve con los ojos.
+con nueve años de diferencia no exigen ninguna.** Para `meta-cacao` la imagen muestra dosel de
+bosque cerrado ocupando casi todo el polígono declarado, con un cuadro sembrado en una esquina
+—las 0,5 ha que la medición detecta—. La inconsistencia entre lo declarado y lo que hay se ve
+con los ojos, sin entender qué es el NDVI.
 
 Especificación en `data/CONTRATO-DATOS.md` y en la tarea 3 de Torres.
 
