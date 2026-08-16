@@ -1,0 +1,17 @@
+file 'cuadros/plano-01.png'
+duration 5
+file 'cuadros/plano-02.png'
+duration 6
+file 'cuadros/plano-03.png'
+duration 10
+file 'cuadros/plano-04.png'
+duration 7
+file 'cuadros/plano-05.png'
+duration 7
+file 'cuadros/plano-06.png'
+duration 8
+file 'cuadros/plano-07.png'
+duration 8
+file 'cuadros/plano-08.png'
+duration 6
+file 'cuadros/plano-08.png'
