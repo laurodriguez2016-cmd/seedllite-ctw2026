@@ -32,13 +32,134 @@ window.SEEDLLITE_DATOS = {
     "imagenes_satelitales": [
      {
       "anio": 2017,
-      "ruta": "assets/satelite/huila-cafe-2017.jpg"
+      "ruta": "assets/satelite/huila-cafe-2017.svg"
      },
      {
       "anio": 2025,
-      "ruta": "assets/satelite/huila-cafe-2025.jpg"
+      "ruta": "assets/satelite/huila-cafe-2025.svg"
      }
-    ]
+    ],
+    "medicion_area": {
+     "metodo": "rejilla 4x4 sobre el polígono declarado",
+     "celdas_agricolas": 15,
+     "celdas_evaluadas": 16,
+     "umbral_ndvi_vegetada": 0.3,
+     "umbral_amplitud_manejo": 0.12,
+     "rejilla": [
+      {
+       "lat": 1.882878,
+       "lon": -76.062622,
+       "ndvi_mediana": 0.7,
+       "amplitud": 0.163,
+       "agricola": true
+      },
+      {
+       "lat": 1.882878,
+       "lon": -76.062274,
+       "ndvi_mediana": 0.7,
+       "amplitud": 0.173,
+       "agricola": true
+      },
+      {
+       "lat": 1.882878,
+       "lon": -76.061926,
+       "ndvi_mediana": 0.7,
+       "amplitud": 0.167,
+       "agricola": true
+      },
+      {
+       "lat": 1.882878,
+       "lon": -76.061578,
+       "ndvi_mediana": 0.71,
+       "amplitud": 0.104,
+       "agricola": false
+      },
+      {
+       "lat": 1.883226,
+       "lon": -76.062622,
+       "ndvi_mediana": 0.73,
+       "amplitud": 0.199,
+       "agricola": true
+      },
+      {
+       "lat": 1.883226,
+       "lon": -76.062274,
+       "ndvi_mediana": 0.71,
+       "amplitud": 0.194,
+       "agricola": true
+      },
+      {
+       "lat": 1.883226,
+       "lon": -76.061926,
+       "ndvi_mediana": 0.71,
+       "amplitud": 0.159,
+       "agricola": true
+      },
+      {
+       "lat": 1.883226,
+       "lon": -76.061578,
+       "ndvi_mediana": 0.69,
+       "amplitud": 0.165,
+       "agricola": true
+      },
+      {
+       "lat": 1.883574,
+       "lon": -76.062622,
+       "ndvi_mediana": 0.7,
+       "amplitud": 0.185,
+       "agricola": true
+      },
+      {
+       "lat": 1.883574,
+       "lon": -76.062274,
+       "ndvi_mediana": 0.73,
+       "amplitud": 0.198,
+       "agricola": true
+      },
+      {
+       "lat": 1.883574,
+       "lon": -76.061926,
+       "ndvi_mediana": 0.7,
+       "amplitud": 0.152,
+       "agricola": true
+      },
+      {
+       "lat": 1.883574,
+       "lon": -76.061578,
+       "ndvi_mediana": 0.68,
+       "amplitud": 0.182,
+       "agricola": true
+      },
+      {
+       "lat": 1.883922,
+       "lon": -76.062622,
+       "ndvi_mediana": 0.73,
+       "amplitud": 0.17,
+       "agricola": true
+      },
+      {
+       "lat": 1.883922,
+       "lon": -76.062274,
+       "ndvi_mediana": 0.74,
+       "amplitud": 0.209,
+       "agricola": true
+      },
+      {
+       "lat": 1.883922,
+       "lon": -76.061926,
+       "ndvi_mediana": 0.73,
+       "amplitud": 0.191,
+       "agricola": true
+      },
+      {
+       "lat": 1.883922,
+       "lon": -76.061578,
+       "ndvi_mediana": 0.71,
+       "amplitud": 0.155,
+       "agricola": true
+      }
+     ]
+    }
    },
    {
     "id": "tolima-arroz",
@@ -64,13 +185,134 @@ window.SEEDLLITE_DATOS = {
     "imagenes_satelitales": [
      {
       "anio": 2017,
-      "ruta": "assets/satelite/tolima-arroz-2017.jpg"
+      "ruta": "assets/satelite/tolima-arroz-2017.svg"
      },
      {
       "anio": 2025,
-      "ruta": "assets/satelite/tolima-arroz-2025.jpg"
+      "ruta": "assets/satelite/tolima-arroz-2025.svg"
      }
-    ]
+    ],
+    "medicion_area": {
+     "metodo": "rejilla 4x4 sobre el polígono declarado",
+     "celdas_agricolas": 16,
+     "celdas_evaluadas": 16,
+     "umbral_ndvi_vegetada": 0.3,
+     "umbral_amplitud_manejo": 0.12,
+     "rejilla": [
+      {
+       "lat": 4.178068,
+       "lon": -74.884434,
+       "ndvi_mediana": 0.4,
+       "amplitud": 0.814,
+       "agricola": true
+      },
+      {
+       "lat": 4.178068,
+       "lon": -74.883878,
+       "ndvi_mediana": 0.43,
+       "amplitud": 0.801,
+       "agricola": true
+      },
+      {
+       "lat": 4.178068,
+       "lon": -74.883322,
+       "ndvi_mediana": 0.45,
+       "amplitud": 0.807,
+       "agricola": true
+      },
+      {
+       "lat": 4.178068,
+       "lon": -74.882766,
+       "ndvi_mediana": 0.48,
+       "amplitud": 0.799,
+       "agricola": true
+      },
+      {
+       "lat": 4.178623,
+       "lon": -74.884434,
+       "ndvi_mediana": 0.54,
+       "amplitud": 0.711,
+       "agricola": true
+      },
+      {
+       "lat": 4.178623,
+       "lon": -74.883878,
+       "ndvi_mediana": 0.53,
+       "amplitud": 0.719,
+       "agricola": true
+      },
+      {
+       "lat": 4.178623,
+       "lon": -74.883322,
+       "ndvi_mediana": 0.5,
+       "amplitud": 0.718,
+       "agricola": true
+      },
+      {
+       "lat": 4.178623,
+       "lon": -74.882766,
+       "ndvi_mediana": 0.5,
+       "amplitud": 0.76,
+       "agricola": true
+      },
+      {
+       "lat": 4.179177,
+       "lon": -74.884434,
+       "ndvi_mediana": 0.49,
+       "amplitud": 0.772,
+       "agricola": true
+      },
+      {
+       "lat": 4.179177,
+       "lon": -74.883878,
+       "ndvi_mediana": 0.51,
+       "amplitud": 0.761,
+       "agricola": true
+      },
+      {
+       "lat": 4.179177,
+       "lon": -74.883322,
+       "ndvi_mediana": 0.49,
+       "amplitud": 0.765,
+       "agricola": true
+      },
+      {
+       "lat": 4.179177,
+       "lon": -74.882766,
+       "ndvi_mediana": 0.43,
+       "amplitud": 0.78,
+       "agricola": true
+      },
+      {
+       "lat": 4.179732,
+       "lon": -74.884434,
+       "ndvi_mediana": 0.51,
+       "amplitud": 0.784,
+       "agricola": true
+      },
+      {
+       "lat": 4.179732,
+       "lon": -74.883878,
+       "ndvi_mediana": 0.54,
+       "amplitud": 0.781,
+       "agricola": true
+      },
+      {
+       "lat": 4.179732,
+       "lon": -74.883322,
+       "ndvi_mediana": 0.48,
+       "amplitud": 0.771,
+       "agricola": true
+      },
+      {
+       "lat": 4.179732,
+       "lon": -74.882766,
+       "ndvi_mediana": 0.47,
+       "amplitud": 0.781,
+       "agricola": true
+      }
+     ]
+    }
    },
    {
     "id": "boyaca-papa",
@@ -96,13 +338,134 @@ window.SEEDLLITE_DATOS = {
     "imagenes_satelitales": [
      {
       "anio": 2017,
-      "ruta": "assets/satelite/boyaca-papa-2017.jpg"
+      "ruta": "assets/satelite/boyaca-papa-2017.svg"
      },
      {
       "anio": 2025,
-      "ruta": "assets/satelite/boyaca-papa-2025.jpg"
+      "ruta": "assets/satelite/boyaca-papa-2025.svg"
      }
-    ]
+    ],
+    "medicion_area": {
+     "metodo": "rejilla 4x4 sobre el polígono declarado",
+     "celdas_agricolas": 16,
+     "celdas_evaluadas": 16,
+     "umbral_ndvi_vegetada": 0.3,
+     "umbral_amplitud_manejo": 0.12,
+     "rejilla": [
+      {
+       "lat": 5.336748,
+       "lon": -73.492254,
+       "ndvi_mediana": 0.49,
+       "amplitud": 0.341,
+       "agricola": true
+      },
+      {
+       "lat": 5.336748,
+       "lon": -73.491951,
+       "ndvi_mediana": 0.49,
+       "amplitud": 0.225,
+       "agricola": true
+      },
+      {
+       "lat": 5.336748,
+       "lon": -73.491649,
+       "ndvi_mediana": 0.61,
+       "amplitud": 0.208,
+       "agricola": true
+      },
+      {
+       "lat": 5.336748,
+       "lon": -73.491346,
+       "ndvi_mediana": 0.56,
+       "amplitud": 0.267,
+       "agricola": true
+      },
+      {
+       "lat": 5.337049,
+       "lon": -73.492254,
+       "ndvi_mediana": 0.45,
+       "amplitud": 0.372,
+       "agricola": true
+      },
+      {
+       "lat": 5.337049,
+       "lon": -73.491951,
+       "ndvi_mediana": 0.45,
+       "amplitud": 0.336,
+       "agricola": true
+      },
+      {
+       "lat": 5.337049,
+       "lon": -73.491649,
+       "ndvi_mediana": 0.5,
+       "amplitud": 0.321,
+       "agricola": true
+      },
+      {
+       "lat": 5.337049,
+       "lon": -73.491346,
+       "ndvi_mediana": 0.42,
+       "amplitud": 0.309,
+       "agricola": true
+      },
+      {
+       "lat": 5.337351,
+       "lon": -73.492254,
+       "ndvi_mediana": 0.46,
+       "amplitud": 0.366,
+       "agricola": true
+      },
+      {
+       "lat": 5.337351,
+       "lon": -73.491951,
+       "ndvi_mediana": 0.43,
+       "amplitud": 0.312,
+       "agricola": true
+      },
+      {
+       "lat": 5.337351,
+       "lon": -73.491649,
+       "ndvi_mediana": 0.5,
+       "amplitud": 0.365,
+       "agricola": true
+      },
+      {
+       "lat": 5.337351,
+       "lon": -73.491346,
+       "ndvi_mediana": 0.41,
+       "amplitud": 0.393,
+       "agricola": true
+      },
+      {
+       "lat": 5.337652,
+       "lon": -73.492254,
+       "ndvi_mediana": 0.41,
+       "amplitud": 0.392,
+       "agricola": true
+      },
+      {
+       "lat": 5.337652,
+       "lon": -73.491951,
+       "ndvi_mediana": 0.4,
+       "amplitud": 0.407,
+       "agricola": true
+      },
+      {
+       "lat": 5.337652,
+       "lon": -73.491649,
+       "ndvi_mediana": 0.5,
+       "amplitud": 0.324,
+       "agricola": true
+      },
+      {
+       "lat": 5.337652,
+       "lon": -73.491346,
+       "ndvi_mediana": 0.4,
+       "amplitud": 0.375,
+       "agricola": true
+      }
+     ]
+    }
    },
    {
     "id": "meta-cacao",
@@ -127,14 +490,135 @@ window.SEEDLLITE_DATOS = {
     "credito_previo": false,
     "imagenes_satelitales": [
      {
-      "anio": 2020,
-      "ruta": "assets/satelite/meta-cacao-2020.jpg"
+      "anio": 2017,
+      "ruta": "assets/satelite/meta-cacao-2017.svg"
      },
      {
       "anio": 2025,
-      "ruta": "assets/satelite/meta-cacao-2025.jpg"
+      "ruta": "assets/satelite/meta-cacao-2025.svg"
      }
-    ]
+    ],
+    "medicion_area": {
+     "metodo": "rejilla 4x4 sobre el polígono declarado",
+     "celdas_agricolas": 2,
+     "celdas_evaluadas": 16,
+     "umbral_ndvi_vegetada": 0.3,
+     "umbral_amplitud_manejo": 0.12,
+     "rejilla": [
+      {
+       "lat": 3.491426,
+       "lon": -73.656575,
+       "ndvi_mediana": 0.83,
+       "amplitud": 0.097,
+       "agricola": false
+      },
+      {
+       "lat": 3.491426,
+       "lon": -73.656125,
+       "ndvi_mediana": 0.82,
+       "amplitud": 0.108,
+       "agricola": false
+      },
+      {
+       "lat": 3.491426,
+       "lon": -73.655675,
+       "ndvi_mediana": 0.83,
+       "amplitud": 0.107,
+       "agricola": false
+      },
+      {
+       "lat": 3.491426,
+       "lon": -73.655225,
+       "ndvi_mediana": 0.84,
+       "amplitud": 0.09,
+       "agricola": false
+      },
+      {
+       "lat": 3.491875,
+       "lon": -73.656575,
+       "ndvi_mediana": 0.85,
+       "amplitud": 0.092,
+       "agricola": false
+      },
+      {
+       "lat": 3.491875,
+       "lon": -73.656125,
+       "ndvi_mediana": 0.83,
+       "amplitud": 0.094,
+       "agricola": false
+      },
+      {
+       "lat": 3.491875,
+       "lon": -73.655675,
+       "ndvi_mediana": 0.83,
+       "amplitud": 0.085,
+       "agricola": false
+      },
+      {
+       "lat": 3.491875,
+       "lon": -73.655225,
+       "ndvi_mediana": 0.83,
+       "amplitud": 0.09,
+       "agricola": false
+      },
+      {
+       "lat": 3.492325,
+       "lon": -73.656575,
+       "ndvi_mediana": 0.86,
+       "amplitud": 0.08,
+       "agricola": false
+      },
+      {
+       "lat": 3.492325,
+       "lon": -73.656125,
+       "ndvi_mediana": 0.85,
+       "amplitud": 0.08,
+       "agricola": false
+      },
+      {
+       "lat": 3.492325,
+       "lon": -73.655675,
+       "ndvi_mediana": 0.83,
+       "amplitud": 0.084,
+       "agricola": false
+      },
+      {
+       "lat": 3.492325,
+       "lon": -73.655225,
+       "ndvi_mediana": 0.74,
+       "amplitud": 0.158,
+       "agricola": true
+      },
+      {
+       "lat": 3.492774,
+       "lon": -73.656575,
+       "ndvi_mediana": 0.85,
+       "amplitud": 0.086,
+       "agricola": false
+      },
+      {
+       "lat": 3.492774,
+       "lon": -73.656125,
+       "ndvi_mediana": 0.84,
+       "amplitud": 0.084,
+       "agricola": false
+      },
+      {
+       "lat": 3.492774,
+       "lon": -73.655675,
+       "ndvi_mediana": 0.82,
+       "amplitud": 0.099,
+       "agricola": false
+      },
+      {
+       "lat": 3.492774,
+       "lon": -73.655225,
+       "ndvi_mediana": 0.76,
+       "amplitud": 0.164,
+       "agricola": true
+      }
+     ]
+    }
    }
   ],
   "eventos_climaticos": [

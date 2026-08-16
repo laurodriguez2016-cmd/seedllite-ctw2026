@@ -61,7 +61,12 @@ MODELO = "anthropic/claude-opus-5"
 # Con holgura para que no trunque el dictamen a mitad de una frase.
 MAX_TOKENS = 16000
 
-SMMLV_2026 = 1_623_500     # SUPUESTO: verificar contra decreto de salarios 2026
+# VERIFICADO 15-ago-2026: Decreto 1469 de 2025 fija el salario minimo de 2026 en
+# $1.750.905 (+23,7% sobre los $1.423.500 de 2025). Estaba en 1_623_500 como
+# supuesto sin verificar, un 7,3% por debajo. Importa porque de aqui salen dos
+# cifras normativas: el tope de credito del pequeno productor (70% de sus activos)
+# y el contraste contra el tope de 20 SMMLV de Capital de Trabajo.
+SMMLV_2026 = 1_750_905
 
 
 # ===========================================================================

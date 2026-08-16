@@ -679,11 +679,36 @@ por resolución cada año.
 llama simplemente **Inversión**; el destino específico (renovación de cafetal) va como destino
 del crédito conforme a la Resolución 08 de 2023 CNCA, no como nombre de línea.
 
-> ⚠️ **Pendiente de verificar contra el Manual v.26.21:** una fuente indica un tope de
-> **20 SMMLV** en Capital de Trabajo para pequeño productor y 50 SMMLV para mediano. Si ese
-> tope está vigente, hay que contrastarlo con el monto de `tolima-arroz` ($21.280.000). **Laura:
-> esto sí conviene confirmarlo, porque si el tope aplica y lo excedemos, un jurado con
-> experiencia en el sector lo nota.**
+### ✅ El tope de 20 SMMLV — verificado 15-ago-2026, 23:45. **No nos afecta.**
+
+Quedaba abierto si el tope de **20 SMMLV** en Capital de Trabajo para pequeño productor (50 para
+mediano) chocaba con el monto de `tolima-arroz`. Se verificó y la respuesta es que no, por dos
+razones independientes:
+
+**Primera: la aritmética.** El SMMLV de 2026 es **$1.750.905** ([Decreto 1469 de
+2025](https://www.alcaldiabogota.gov.co/sisjur/normas/Norma1.jsp?i=192181&dt=S)), así que
+20 SMMLV son **$35.018.100**. Ningún predio del demo se acerca:
+
+| Predio | Solicita | En SMMLV | Tope 70% de activos |
+|---|---|---|---|
+| `huila-cafe` | $9.000.000 | 5,1 | $50.250.973 |
+| `tolima-arroz` | $22.000.000 | **12,6** | $242.675.433 |
+| `boyaca-papa` | $7.500.000 | 4,3 | $40.445.905 |
+| `meta-cacao` | $18.000.000 | 10,3 | $137.270.951 |
+
+**Segunda: el tope es de una sublínea distinta.** En el Manual de Servicios el límite de 20/50
+SMMLV aparece asociado a **Capital de Trabajo — Unidad Productiva Campesina**, que es una
+sublínea con destinación propia, no al Capital de Trabajo general. Aun si aplicara al general,
+la primera razón ya lo resuelve.
+
+> 🔧 **Y el chequeo destapó un error nuestro.** `generar_dictamen.py` tenía
+> `SMMLV_2026 = 1_623_500` marcado como supuesto sin verificar — un **7,3% por debajo** del
+> valor real. De esa constante sale el tope de crédito del pequeño productor que va en el
+> expediente que lee el modelo. Ya está corregida.
+
+**Lo que queda pendiente y no es bloqueante:** contrastar contra la versión vigente del Manual
+(v.26.21). El PDF de FINAGRO no es extraíble por texto; la verificación de arriba se apoya en
+versiones publicadas del mismo Manual y en el decreto de salarios, que sí es fuente primaria.
 
 ---
 

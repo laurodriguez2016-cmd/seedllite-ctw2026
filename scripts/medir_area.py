@@ -101,6 +101,7 @@ def medir(token, predio):
     declarada = predio["area_declarada_ha"]
 
     agricolas, evaluadas = 0, 0
+    rejilla = []
     for clat, clon, area_celda in celdas(lat, lon, declarada):
         es, med, amp = clasificar(token, clat, clon, area_celda)
         if es is None:
@@ -108,6 +109,11 @@ def medir(token, predio):
         evaluadas += 1
         if es:
             agricolas += 1
+        # Se guarda celda por celda: es lo que `capturar_predio.py` dibuja encima
+        # de la imagen satelital. Sin esto, la medicion es un numero que hay que
+        # creer; con esto, es un numero que se puede ver sobre la foto.
+        rejilla.append({"lat": clat, "lon": clon, "ndvi_mediana": round(med, 2),
+                        "amplitud": round(amp, 3), "agricola": bool(es)})
         sys.stdout.write("    celda (%.5f, %.5f)  ndvi %.2f  amp %.3f  %s\n"
                          % (clat, clon, med, amp, "AGRICOLA" if es else "—"))
         sys.stdout.flush()
@@ -122,6 +128,7 @@ def medir(token, predio):
         "fraccion": round(fraccion, 3),
         "area_detectada_ha": round(declarada * fraccion, 2),
         "area_declarada_ha": declarada,
+        "rejilla": rejilla,
     }
 
 
@@ -152,6 +159,14 @@ def main():
 
         if escribir:
             predio["area_detectada_ha"] = r["area_detectada_ha"]
+            predio["medicion_area"] = {
+                "metodo": "rejilla %dx%d sobre el polígono declarado" % (REJILLA, REJILLA),
+                "celdas_agricolas": r["celdas_agricolas"],
+                "celdas_evaluadas": r["celdas_evaluadas"],
+                "umbral_ndvi_vegetada": NDVI_VEGETADA,
+                "umbral_amplitud_manejo": AMPLITUD_MANEJO,
+                "rejilla": r["rejilla"],
+            }
 
     if escribir:
         doc["nota_area"] = (
