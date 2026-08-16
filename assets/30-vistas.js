@@ -95,7 +95,13 @@
   function rotuloOrigen(serie, datos) {
     var origen = texto(serie && serie.origen, "").toLowerCase();
     var nota = texto(datos && datos.series && datos.series.nota_datos, "").toLowerCase();
-    if (/calibrada|construida|construido/.test(origen + " " + nota)) {
+    if (/calibrada|construida|construido/.test(origen)) {
+      return '<span class="origen origen-construido">Serie construida · caso rotulado</span>';
+    }
+    if (/copernicus|real/.test(origen)) {
+      return '<span class="origen">Serie real · Copernicus Sentinel-2</span>';
+    }
+    if (/calibrada|construida|construido/.test(nota)) {
       return '<span class="origen origen-construido">Serie construida · caso rotulado</span>';
     }
     return '<span class="origen">Serie real · Copernicus Sentinel-2</span>';
@@ -257,6 +263,7 @@
             '<div class="tarjeta-cab"><span class="etiqueta">Solicitud de crédito</span></div>' +
             '<div class="tarjeta-cuerpo"><table class="datos">' +
               fila("Tipo de productor", esc(texto(predio.tipo_productor))) +
+              fila("Tipo de cultivo", esc(texto(predio.tipo_cultivo))) +
               fila("Cultivo", esc(cultivo)) +
               fila("Años en el predio", esNumero(predio.anos_en_el_predio) ? entero(predio.anos_en_el_predio) : "Sin dato") +
               fila("Crédito previo", predio.credito_previo === true ? "Sí" : (predio.credito_previo === false ? "No" : "Sin dato")) +

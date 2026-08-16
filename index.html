@@ -37,14 +37,8 @@
 <!--
   ORDEN DE CARGA — importa, no hay bundler.
   El prefijo numérico de cada archivo ES su posición en esta lista.
-
-  NO convertir estos scripts en módulos ES ni usar declaraciones de importación:
-  quedan sujetos a CORS y NO cargan bajo file://, lo que rompe el requisito de
-  abrir con doble clic (constitución V.4). Por la misma razón los datos entran
-  por etiqueta <script> y no por petición asíncrona. Ver ARQUITECTURA.md §2.
-
-  Redactado sin las cadenas literales que verificar.sh §3 busca: el guardián
-  hacía saltar la alarma con este mismo comentario que lo explica.
+  Se usan scripts clásicos y el paquete global de datos para conservar la
+  apertura directa por file://. Ver ARQUITECTURA.md §2.
 -->
 <script src="data/datos.js"></script>
 <script src="assets/10-mapa.js"></script>
