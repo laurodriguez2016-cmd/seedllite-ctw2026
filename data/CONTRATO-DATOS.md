@@ -42,7 +42,10 @@ Identidad y contexto de cada predio del demo. **4 predios.**
       "monto_solicitado_cop": 9000000,       // integer
       "destino": "Renovación de cafetal y compra de insumos",
       "activos_declarados_smmlv": 41,        // integer — para clasificar productor
-      "imagen_satelital": "assets/satelite/huila-cafe.jpg"  // ruta relativa
+      "imagenes_satelitales": [                // SECUENCIA temporal, minimo 2 cortes
+        { "anio": 2016, "ruta": "assets/satelite/huila-cafe-2016.jpg" },
+        { "anio": 2025, "ruta": "assets/satelite/huila-cafe-2025.jpg" }
+      ]
     }
   ]
 }
@@ -52,6 +55,9 @@ Identidad y contexto de cada predio del demo. **4 predios.**
 - `id` es la llave primaria. Aparece igual en los tres archivos.
 - `tipo_productor` se deriva de `activos_declarados_smmlv`: **pequeño ≤ 284 SMMLV**.
 - Las coordenadas son reales (ubicaciones plausibles); los productores son **ficticios**.
+- `imagenes_satelitales` es una **secuencia**, no una imagen. Mínimo dos cortes (uno temprano,
+  uno reciente) para que el cambio del predio se vea a simple vista. **En `meta-cacao` es
+  obligatorio** — es donde el abandono se ve sin necesidad de entender el NDVI.
 
 ---
 

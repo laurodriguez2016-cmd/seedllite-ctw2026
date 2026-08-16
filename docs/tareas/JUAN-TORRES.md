@@ -200,7 +200,16 @@ git add . && git commit -m "motor: pipeline real de ingesta Sentinel-2 — traza
 
 3. Selecciona **Sentinel-2 L2A**, una fecha con poca nube, visualización *True Color*
 4. Acércate hasta que se vea el paisaje agrícola
-5. Descarga la imagen y guárdala como `assets/satelite/{id}.jpg`
+5. Descarga **al menos dos cortes por predio** y guárdalos como
+   `assets/satelite/{id}-{año}.jpg` — uno temprano (2016-2018) y uno reciente (2025)
+
+### ⭐ `meta-cacao` es el prioritario
+
+Busca un corte de **~2020** (cacaotal establecido, hileras ordenadas) y uno de **2025**
+(abandonado, rastrojo). **Esa pareja de imágenes es la toma que gana el video:** el abandono
+se ve con los ojos, sin que el jurado tenga que entender qué es un NDVI.
+
+Si el tiempo aprieta, saca la secuencia de `meta-cacao` primero y el resto después.
 
 **Que se vea el parcelado agrícola.** Si sale toda verde y uniforme, aléjate o cambia de fecha.
 
