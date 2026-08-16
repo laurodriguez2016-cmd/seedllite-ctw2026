@@ -165,7 +165,11 @@
             '<div class="tarjeta-cab"><span class="etiqueta">Indicadores calculados sobre la serie</span></div>' +
             '<div class="tarjeta-cuerpo">' +
               '<table class="datos">' +
-                fila("Ciclos completos en la década", serie.ciclos_detectados) +
+                /* El rango se lee de la serie, no se escribe a mano: decia "en la
+                   década" cuando el dato real va de 2017 a 2025 — nueve años. */
+                fila("Ciclos completos (" + String(serie.desde).slice(0, 4) +
+                     "–" + String(serie.hasta).slice(0, 4) + ")",
+                     serie.ciclos_detectados) +
                 fila("Ciclos en los últimos 24 meses",
                   '<span style="color:' + (serie.ciclos_ultimos_24m === 0 ? "var(--critico)" : "var(--favorable)") +
                   '">' + serie.ciclos_ultimos_24m + "</span>") +
