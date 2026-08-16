@@ -590,3 +590,117 @@ p  { margin: 0 0 var(--e2); }
 
 /* "Aprobar con ajuste" se partía en tres líneas y desbordaba su celda. */
 .datos-lista .marca-riesgo { white-space: nowrap; }
+
+/* ==========================================================================
+   PULIDO v2 — que las cosas ocurran en pantalla en vez de aparecer ya hechas
+   ========================================================================== */
+
+/* --- pantalla 1: los pines caen sobre el mapa ---------------------------- */
+
+/* El país entra primero para que los pines aterricen sobre algo dibujado. */
+.mapa .pais {
+  animation: pais-entra 0.45s ease-out both;
+}
+
+@keyframes pais-entra {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* La caída: desde arriba, pequeño, y con un rebote corto al asentarse. El
+   retardo de cada pin lo pone 10-mapa.js según su posición en la lista. */
+.mapa .pin {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: pin-cae 0.62s cubic-bezier(0.22, 0.9, 0.28, 1.28) both;
+}
+
+@keyframes pin-cae {
+  0%   { opacity: 0; transform: translateY(-52px) scale(0.65); }
+  55%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* --- pantalla 3: los pasos entran encadenados ---------------------------- */
+
+.paso {
+  animation: paso-entra 0.26s ease-out both;
+}
+
+@keyframes paso-entra {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Cursor de escritura del memorando. Va como ::after de la clase y no como
+   nodo dentro del texto, así el contenido sigue entrando por textContent. */
+.escribiendo::after {
+  content: "▍";
+  margin-left: 1px;
+  color: var(--acento);
+  animation: cursor-parpadea 1s steps(1, end) infinite;
+}
+
+@keyframes cursor-parpadea {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* --- pantalla 4: las barras crecen -------------------------------------- */
+
+.eje-barra {
+  transition: width 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* El puntaje en versalitas tabulares: al contar, los dígitos no bailan. */
+.puntaje { font-variant-numeric: tabular-nums; }
+
+/* --- estados de interacción --------------------------------------------- */
+
+.predio-item {
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.predio-item:hover,
+.predio-item:focus-visible {
+  background: var(--superficie-2);
+  outline: none;
+}
+
+.mapa .pin { cursor: pointer; }
+
+.mapa .pin circle {
+  transition: r 0.15s ease, filter 0.15s ease;
+}
+
+.mapa .pin:hover circle,
+.mapa .pin:focus-visible circle {
+  r: 8;
+  filter: brightness(1.25);
+}
+
+.mapa .pin:focus-visible { outline: none; }
+.mapa .pin:focus-visible text { text-decoration: underline; }
+
+.datos-lista tbody tr,
+.datos-lista tr {
+  transition: background 0.15s ease;
+}
+
+.datos-lista tr:hover { background: var(--superficie-2); }
+
+.boton {
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+}
+
+.boton:active { transform: translateY(1px); }
+
+/* --- accesibilidad ------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .mapa .pin,
+  .mapa .pais,
+  .paso { animation: none; }
+  .eje-barra { transition: none; }
+  .escribiendo::after { animation: none; }
+}

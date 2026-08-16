@@ -92,7 +92,7 @@
 
     svg.appendChild(svgEl("path", { d: d, "class": "pais" }));
 
-    predios.forEach(function (predio) {
+    predios.forEach(function (predio, indice) {
       var xy = proyectar(predio.coordenadas.lon, predio.coordenadas.lat);
       var dict = dictamenes && dictamenes[predio.id];
       var color = dict ? (COLOR_DECISION[dict.decision] || "var(--acento)") : "var(--acento)";
@@ -104,6 +104,13 @@
         role: "button",
         "aria-label": predio.municipio + ", " + predio.departamento + " — " + predio.cultivo
       });
+
+      /* Los pines caen sobre el mapa, uno detrás de otro. El contorno del país
+         entra primero (0,25 s) para que aterricen sobre algo ya dibujado; el
+         escalonado de 0,11 s hace que se lean como cuatro solicitudes que van
+         llegando, no como una lámina que aparece de golpe. Es la primera imagen
+         del video. */
+      g.style.animationDelay = (0.25 + indice * 0.11).toFixed(2) + "s";
 
       g.appendChild(svgEl("circle", { cx: xy[0], cy: xy[1], r: 6, fill: color }));
 

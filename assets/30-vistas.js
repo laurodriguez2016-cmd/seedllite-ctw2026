@@ -375,8 +375,13 @@
     var salto = Math.max(1, Math.ceil(texto.length / (MEMO_MS / tick)));
     var n = 0;
 
+    /* El cursor es un ::after de la clase, no un nodo en el texto: asi el
+       contenido sigue entrando por textContent y no hay forma de que el
+       memorando del modelo se interprete como HTML. */
+    destino.classList.add("escribiendo");
+
     (function teclear() {
-      if (yo.cancelada) { return; }
+      if (yo.cancelada) { destino.classList.remove("escribiendo"); return; }
       if (n < texto.length) {
         n = Math.min(texto.length, n + salto);
         destino.textContent = texto.slice(0, n);
@@ -384,6 +389,7 @@
         return;
       }
       destino.textContent = texto;
+      destino.classList.remove("escribiendo");
       rematar(host, p, yo);
     })();
   }
@@ -442,8 +448,8 @@
       return '<div class="eje">' +
         '<div class="eje-fila"><span class="eje-nombre">' + esc(e.eje) + "</span>" +
         '<span class="eje-cifra">' + esc(e.puntaje) + " / " + esc(peso) + "</span></div>" +
-        '<div class="eje-riel"><div class="eje-barra" style="width:' +
-          pct.toFixed(0) + '%"></div></div></div>';
+        '<div class="eje-riel"><div class="eje-barra" data-ancho="' +
+          pct.toFixed(0) + '" style="width:0"></div></div></div>';
     }).join("") ||
       '<div class="vacio" style="font-size:12px">Ejes de evaluaci\u00f3n pendientes.</div>';
 
@@ -563,6 +569,31 @@
           "</div>" +
         "</div>" +
       "</div>";
+
+    /* El veredicto se construye en pantalla en vez de aparecer ya hecho: el
+       puntaje cuenta y las barras crecen desde cero. Es el remate del video y
+       hasta ahora era la unica pantalla donde no pasaba nada. */
+    var barras = host.querySelectorAll(".eje-barra");
+    requestAnimationFrame(function () {
+      for (var k = 0; k < barras.length; k++) {
+        barras[k].style.width = barras[k].getAttribute("data-ancho") + "%";
+      }
+    });
+
+    animarPuntaje(host.querySelector(".puntaje"), d.puntaje, 700);
+  }
+
+  /* Cuenta hasta el puntaje con desaceleracion: arranca rapido y se asienta.
+     Un conteo lineal parece un contador roto; este parece un resultado. */
+  function animarPuntaje(el, valor, ms) {
+    if (!el || !valor) { return; }
+    var t0 = new Date().getTime();
+    (function tic() {
+      var a = Math.min(1, (new Date().getTime() - t0) / ms);
+      el.textContent = Math.round(valor * (1 - Math.pow(1 - a, 3)));
+      if (a < 1) { setTimeout(tic, 32); return; }
+      el.textContent = valor;
+    })();
   }
 
   /* ======================================================================
