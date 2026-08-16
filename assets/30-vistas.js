@@ -136,7 +136,7 @@
             '<span class="etiqueta" style="margin-left:auto">Colombia</span>' +
           "</div>" +
           '<div class="tarjeta-cuerpo" style="display:flex;justify-content:center">' +
-            '<svg id="svg-mapa" style="max-width:420px"></svg>' +
+            '<svg id="svg-mapa" style="max-width:520px"></svg>' +
           "</div>" +
         "</div>" +
       "</div>";
