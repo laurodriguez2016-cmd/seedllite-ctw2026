@@ -71,7 +71,7 @@ por medio.**
 
 | Sin IA | Con IA |
 |---|---|
-| `ndvi_pico = 0.78` | *"9 ciclos de cosecha completos entre 2016 y 2025, con rendimiento estimado de 1,9 t/ha frente a 1,6 t/ha del promedio municipal. La constancia del patrón productivo —y no su nivel puntual— sustenta la proyección de flujo."* |
+| `ndvi_pico = 0.78` | *"9 ciclos de cosecha completos entre 2016 y 2025, con rendimiento estimado de 1,42 t/ha frente a 1,14 t/ha del promedio municipal. La constancia del patrón productivo —y no su nivel puntual— sustenta la proyección de flujo."* |
 | Un número | Una decisión que un analista puede firmar y un productor puede apelar |
 
 Si se le quita la IA a SEEDLLITE, no queda producto: queda una gráfica que nadie sabe leer.

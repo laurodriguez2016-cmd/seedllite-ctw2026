@@ -1,0 +1,60 @@
+{
+  "fuente": "Evaluaciones Agropecuarias Municipales (EVA) — UPRA / MinAgricultura",
+  "recurso": "https://www.datos.gov.co/resource/2pnw-mmge.json",
+  "licencia": "Datos abiertos — datos.gov.co",
+  "nota": "Este recurso llega hasta 2018. Las cifras se citan con su año, nunca como dato actual.",
+  "referencias": {
+    "huila-cafe": {
+      "municipio": "PITALITO",
+      "departamento": "HUILA",
+      "cultivo": "CAFE",
+      "ciclo_de_cultivo": "PERMANENTE",
+      "anio_referencia": "2018",
+      "rendimiento_municipal_t_ha": 1.14,
+      "rendimiento_promedio_historico_t_ha": 1.16,
+      "area_sembrada_ha": 18319.0,
+      "area_cosechada_ha": 15150.0,
+      "series_disponibles": 12,
+      "cita": "EVA 2018 — PITALITO, HUILA — CAFE"
+    },
+    "tolima-arroz": {
+      "municipio": "ESPINAL",
+      "departamento": "TOLIMA",
+      "cultivo": "ARROZ",
+      "ciclo_de_cultivo": "TRANSITORIO",
+      "anio_referencia": "2018",
+      "rendimiento_municipal_t_ha": 7.69,
+      "rendimiento_promedio_historico_t_ha": 7.13,
+      "area_sembrada_ha": 5300.0,
+      "area_cosechada_ha": 5300.0,
+      "series_disponibles": 24,
+      "cita": "EVA 2018 — ESPINAL, TOLIMA — ARROZ"
+    },
+    "boyaca-papa": {
+      "municipio": "VENTAQUEMADA",
+      "departamento": "BOYACA",
+      "cultivo": "PAPA",
+      "ciclo_de_cultivo": "TRANSITORIO",
+      "anio_referencia": "2018",
+      "rendimiento_municipal_t_ha": 30.0,
+      "rendimiento_promedio_historico_t_ha": 17.57,
+      "area_sembrada_ha": 1700.0,
+      "area_cosechada_ha": 1700.0,
+      "series_disponibles": 40,
+      "cita": "EVA 2018 — VENTAQUEMADA, BOYACA — PAPA"
+    },
+    "meta-cacao": {
+      "municipio": "GRANADA",
+      "departamento": "META",
+      "cultivo": "CACAO",
+      "ciclo_de_cultivo": "PERMANENTE",
+      "anio_referencia": "2018",
+      "rendimiento_municipal_t_ha": 0.6,
+      "rendimiento_promedio_historico_t_ha": 0.62,
+      "area_sembrada_ha": 1077.0,
+      "area_cosechada_ha": 724.0,
+      "series_disponibles": 12,
+      "cita": "EVA 2018 — GRANADA, META — CACAO"
+    }
+  }
+}

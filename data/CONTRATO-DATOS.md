@@ -84,9 +84,9 @@ La serie temporal satelital. **El corazón del producto.**
       ],
       "ciclos_detectados": 9,
       "ndvi_pico_promedio": 0.78,
-      "rendimiento_estimado_t_ha": 1.9,
-      "rendimiento_municipal_eva_t_ha": 1.6,
-      "fuente_referencia": "EVA 2024 — Pitalito, Huila — Café"
+      "rendimiento_estimado_t_ha": 1.42,
+      "rendimiento_municipal_eva_t_ha": 1.14,
+      "fuente_referencia": "EVA 2018 — Pitalito, Huila — Café"
     }
   },
   "eventos_climaticos": [
@@ -135,7 +135,7 @@ La serie temporal satelital. **El corazón del producto.**
 
       "evidencia": [                          // lo que sustenta la decisión
         { "tipo": "favorable", "texto": "9 ciclos de cosecha completos detectados entre 2016 y 2025" },
-        { "tipo": "favorable", "texto": "Rendimiento estimado 1,9 t/ha frente a 1,6 t/ha del promedio municipal de Pitalito (EVA 2024)" },
+        { "tipo": "favorable", "texto": "Rendimiento estimado 1,42 t/ha frente a 1,14 t/ha del promedio municipal de Pitalito (EVA 2018)" },
         { "tipo": "favorable", "texto": "Sobrevivió El Niño 2023-24 con caída de vigor de 18% frente al 34% promedio regional" },
         { "tipo": "alerta",    "texto": "Aptitud UPRA del suelo para el cultivo declarado: MEDIA" },
         { "tipo": "favorable", "texto": "Verificación RTDAF/RUPTA: el predio no figura en el Registro de Tierras Despojadas ni tiene medida de protección vigente" }

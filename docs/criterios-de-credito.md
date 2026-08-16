@@ -383,8 +383,8 @@ los otros tres.
 
 A esto:
 
-> ✅ *"Rendimiento estimado 1,9 t/ha frente a 1,6 t/ha del promedio municipal de Pitalito
-> reportado en EVA"* → verificable en `datos.gov.co`
+> ✅ *"Rendimiento estimado 1,42 t/ha frente a 1,14 t/ha del promedio municipal de Pitalito
+> reportado en EVA 2018"* → verificable en `datos.gov.co`
 
 **El costo honesto del cambio:** el municipio es una comparación **más gruesa** que la vereda.
 Un predio bueno dentro de un municipio malo se ve mejor de lo que es. Lo asumimos por dos
@@ -396,12 +396,30 @@ verificable vale más que una cifra fina inventada.**
 En `series_ndvi.json` el campo `percentil_vereda` se reemplaza por:
 
 ```jsonc
-"rendimiento_estimado_t_ha": 1.9,      // derivado de la serie NDVI
-"rendimiento_municipal_eva_t_ha": 1.6, // EVA, municipio y cultivo
-"fuente_referencia": "EVA 2024 — Pitalito, Huila — Café"
+"rendimiento_estimado_t_ha": 1.42,      // derivado de la serie NDVI
+"rendimiento_municipal_eva_t_ha": 1.14, // EVA, municipio y cultivo
+"fuente_referencia": "EVA 2018 — Pitalito, Huila — Café"
 ```
 
 ⚠️ **Torres: este es el único cambio al contrato congelado. Avísale a Piedrahita.**
+
+### ✅ Cifras EVA reales ya descargadas (15-ago-2026, 18:40)
+
+Ejecutamos [`scripts/consultar_eva.py`](../scripts/consultar_eva.py) contra la API de datos
+abiertos. **Estas ya no son cifras inventadas** — están en [`data/eva_referencia.json`](../data/eva_referencia.json)
+y cualquiera puede reproducir la consulta:
+
+| Predio | Municipio · Cultivo | Rendimiento municipal | Fuente |
+|---|---|---|---|
+| `huila-cafe` | Pitalito, Huila · Café | **1,14 t/ha** | EVA 2018 |
+| `tolima-arroz` | Espinal, Tolima · Arroz | **7,69 t/ha** | EVA 2018 |
+| `boyaca-papa` | Ventaquemada, Boyacá · Papa | **30,0 t/ha** | EVA 2018 |
+| `meta-cacao` | Granada, Meta · Cacao | **0,60 t/ha** | EVA 2018 |
+
+⚠️ **Límite declarado:** este recurso de EVA llega hasta **2018**. Se cita siempre como
+"EVA 2018", nunca como dato actual. Decirlo nos protege de una pregunta del jurado.
+
+---
 
 `SUPUESTO:` los costos de referencia por hectárea que usa el demo (café $3,5M, arroz $3,7M,
 papa $4,5M) siguen siendo estimación del equipo. **No se citan como dato en el video.** Si

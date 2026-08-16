@@ -23,8 +23,8 @@ No se trata de un predio fantasma. El área detectada por análisis satelital �
 con el área declarada, sin inconsistencias frente a la información catastral disponible.
 
 **Capacidad de pago.** Se detectan **9 ciclos de cosecha completos en 10 años**, con rendimiento
-estimado de **1,9 t/ha** frente a **1,6 t/ha** del promedio municipal de Pitalito reportado en
-EVA. Es la constancia del patrón productivo —y no su nivel puntual— la que sustenta la
+estimado de **1,42 t/ha** frente a **1,14 t/ha** del promedio municipal de Pitalito reportado
+en EVA 2018. Es la constancia del patrón productivo —y no su nivel puntual— la que sustenta la
 proyección de flujo. La solicitante acredita capacidad y solvencia para responder por la
 obligación.
 
@@ -55,7 +55,7 @@ en cualquiera, el prompt está incompleto.
 
 | # | Propiedad | Cómo se ve |
 |---|---|---|
-| 1 | **Cada afirmación trae su número** | "9 ciclos", "1,9 t/ha frente a 1,6", "cayó 18% frente a 34%". Ningún adjetivo suelto |
+| 1 | **Cada afirmación trae su número** | "9 ciclos", "1,42 t/ha frente a 1,14", "cayó 18% frente a 34%". Ningún adjetivo suelto |
 | 2 | **Sigue el orden del SARC** | Clasificación → activo → capacidad de pago → riesgo sectorial → exclusiones → decisión |
 | 3 | **La alerta se dice aunque se apruebe** | La aptitud MEDIA aparece, se pondera y se explica por qué no bloquea |
 | 4 | **Explica el criterio, no solo el resultado** | *"la constancia del patrón productivo, y no su nivel puntual"* — el dictamen enseña cómo se leyó el dato |
