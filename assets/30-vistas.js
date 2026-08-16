@@ -483,7 +483,7 @@
         '<a href="#ficha/' + esc(p.id) + '">Ficha</a><span>/</span><span>Dictamen</span></div>' +
 
       '<div class="rejilla">' +
-        '<div class="tarjeta">' +
+        '<div class="tarjeta dict-veredicto">' +
           '<div class="tarjeta-cab"><span class="etiqueta">Puntaje SEEDLLITE</span></div>' +
           '<div class="tarjeta-cuerpo">' +
 

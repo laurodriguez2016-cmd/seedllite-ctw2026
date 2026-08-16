@@ -526,3 +526,38 @@ p  { margin: 0 0 var(--e2); }
 
 .delta-baja  { color: var(--alerta); }
 .delta-igual { color: var(--texto-3); }
+
+/* --------------------------------------------------------------------------
+   PULIDO — TAREA 6
+   -------------------------------------------------------------------------- */
+
+/* Transición de entrada entre pantallas.
+   No hace falta tocar el router: éste reemplaza el contenido de #vista, así que
+   sus hijos directos son nodos nuevos en cada pintado y la animación se dispara
+   sola. 180 ms — se percibe como continuidad sin hacer esperar al video. */
+#vista > * {
+  animation: vista-entra 0.18s ease-out both;
+}
+
+@keyframes vista-entra {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* El veredicto queda fijo al desplazar.
+   En la toma del video se baja por la evidencia y el memorando; sin esto, el
+   puntaje —que es el elemento más importante de la pantalla— se pierde por
+   arriba justo cuando se está leyendo aquello que lo sustenta. */
+.dict-veredicto {
+  position: sticky;
+  top: var(--e3);
+}
+
+@media (max-width: 900px) {
+  .dict-veredicto { position: static; }
+}
+
+/* Quien haya pedido menos movimiento al sistema, no lo recibe. */
+@media (prefers-reduced-motion: reduce) {
+  #vista > * { animation: none; }
+}
