@@ -173,19 +173,22 @@ a $5/MTok entrada y $25/MTok salida, con ~30 corridas de 4 dictámenes,
 **el orden de magnitud es un dólar.** El costo no es una variable de decisión
 aquí; la calidad del dictamen sí. Se usa el modelo más capaz.
 
-### Llamada: `urllib.request`, sin SDK
+### Llamada: `urllib.request`, sin SDK, vía OpenRouter
 
-La constitución prohíbe dependencias. La API de Claude es HTTP + JSON, así que
-la llamada completa son ~25 líneas de `urllib`. Además tiene una ventaja para
-este proyecto en particular: **el jurado puede leer el archivo completo y ver
-exactamente qué se le pidió al modelo y qué headers se mandaron**, sin tener que
-confiar en el comportamiento de un SDK que no está en el repo.
+La constitución prohíbe dependencias. La API es HTTP + JSON, así que la llamada
+completa son ~25 líneas de `urllib`. Además tiene una ventaja para este proyecto
+en particular: **el jurado puede leer el archivo completo y ver exactamente qué
+se le pidió al modelo y qué headers se mandaron**, sin tener que confiar en el
+comportamiento de un SDK que no está en el repo.
+
+Se usa **OpenRouter** como pasarela. La tarifa de `claude-opus-5` a través suyo
+es la misma que contra la API directa (US$5 por millón de entrada, US$25 de
+salida), así que la elección no cambia el costo estimado del proyecto.
 
 ```
-POST https://api.anthropic.com/v1/messages
-  content-type: application/json
-  x-api-key: $ANTHROPIC_API_KEY        ← variable de entorno, nunca commiteada
-  anthropic-version: 2023-06-01
+POST https://openrouter.ai/api/v1/chat/completions
+  Content-Type: application/json
+  Authorization: Bearer $OPENROUTER_API_KEY   ← variable de entorno, nunca commiteada
 ```
 
 ### Salida forzada por esquema (structured outputs)
@@ -194,8 +197,16 @@ El riesgo obvio de "pedirle JSON a un modelo" es que devuelva JSON que no encaje
 con `CONTRATO-DATOS.md` y la APP explote. Se elimina el riesgo de raíz:
 
 ```python
-"output_config": {"format": {"type": "json_schema", "schema": ESQUEMA_DICTAMEN}}
+"response_format": {
+    "type": "json_schema",
+    "json_schema": {"name": "dictamen_credito", "strict": True,
+                    "schema": ESQUEMA_DICTAMEN},
+}
 ```
+
+`strict: true` obliga a que la salida valide contra el esquema completo; por eso
+`ESQUEMA_DICTAMEN` lleva `additionalProperties: false` y `required` exhaustivo
+en todos sus niveles.
 
 El esquema en `generar_dictamen.py` es **la traducción literal del contrato de
 datos**: `puntaje` entero, `banda_riesgo` con enum de 4 valores, `ejes` con sus
@@ -212,15 +223,80 @@ forma. Si el contrato cambia, cambia el esquema — en un solo lugar.
 
 ### Secretos
 
-`.env` está en `.gitignore`. El script lee `os.environ["ANTHROPIC_API_KEY"]` y
-falla con un mensaje claro si no está. El demo **no** necesita la clave: lee el
-JSON ya commiteado.
+`.env` está en `.gitignore`. Los scripts leen `OPENROUTER_API_KEY` y
+`CDSE_CLIENT_ID` / `CDSE_CLIENT_SECRET` del entorno, y fallan con un mensaje
+claro si faltan. El demo **no** necesita ninguna credencial: lee los JSON ya
+commiteados. `verificar.sh` comprueba en cada integración que no se haya colado
+ninguna clave al índice de git.
 
 ---
 
-## 6. Generación de las series NDVI (`generar_series_ndvi.py`)
+## 5-bis. La puerta de calidad del contrato (`validar_contrato.py`)
 
-No son números aleatorios. Cada cultivo tiene un modelo fenológico explícito:
+El contrato cambió una vez durante el desarrollo (v1.0 → v1.1, se eliminó
+`percentil_vereda`). Los archivos que no se regeneraron quedaron **mudos-rotos**:
+el empaquetador los aceptó sin protestar, `datos.js` se generó igual, y la app
+pintó `undefined` en pantalla **sin un solo error en consola**.
+
+Ese es el peor fallo posible aquí: silencioso, y se descubre a las 5am. Por eso
+`empaquetar_datos.py` ahora corre el validador **antes** de emitir nada, y si el
+contrato no se cumple **no regenera `datos.js`** — la app sigue mostrando lo
+último bueno en vez de romperse.
+
+Qué comprueba, más allá de que el JSON esté bien formado: enums (`banda_riesgo`,
+`decision`, `tipo` de evidencia), rangos (NDVI, nubosidad, puntaje, FAG), que los
+tres archivos hablen del mismo conjunto de `id`, que los ejes sean exactamente
+los cuatro del contrato v1.1 y sumen 100, que ningún dictamen sugiera más plata
+de la solicitada, que toda evidencia incluya la verificación RTDAF/RUPTA, y que
+`percentil_vereda` no reaparezca. Los incumplimientos de archivos de
+`data/_ejemplo/` se degradan a **aviso**, para no bloquear al frente APP.
+
+---
+
+## 6. Las series NDVI son datos reales (`ingesta_sentinel.py`)
+
+> **Cambio del 15-ago a las 22:30.** La serie dejó de ser calibrada y pasó a ser
+> **descargada de Copernicus**. `generar_series_ndvi.py` queda como referencia del
+> modelo fenológico; el archivo que consume la app lo produce `ingesta_sentinel.py`.
+
+Una petición por predio a la Statistical API de Sentinel Hub devuelve la mediana
+mensual de NDVI sobre el polígono, 108 meses (2017-01 a 2025-12), en unos tres
+segundos. No se descarga ninguna imagen: el cálculo ocurre del lado de Copernicus.
+
+**Dos trampas de esa API que costaron encontrar y que están comentadas en el script:**
+
+1. **Con CRS84 la resolución va en grados, no en metros.** Poner `resx: 10`
+   pensando en metros pide 10 *grados* y la API devuelve **un solo píxel por
+   mes** — sin error, sin advertencia, solo con `sampleCount: 1`. El valor
+   correcto es `10/111320`.
+2. **Un mes enteramente enmascarado vuelve como la cadena `"NaN"`**, no como
+   `null`. Hay que compararlo, no operarlo, o el script revienta a mitad de serie.
+
+**Los huecos son el dato más honesto del archivo.** En el trópico andino entre 19
+y 33 de los 108 meses no tienen observación óptica utilizable. Se interpolan
+linealmente, se marcan con `"interpolado": true` y `nubosidad: 1.0`, y **quedan
+fuera de todos los agregados**. Como la app ya atenúa los puntos con nubosidad
+alta, un mes interpolado se distingue en pantalla sin cambiar una línea del
+frente APP.
+
+**Por qué 2017 y no 2016:** Sentinel-2 L2A solo tiene cobertura global sistemática
+desde enero de 2017. Pedir 2016 devolvería huecos que no son nubes sino ausencia
+de producto. Nueve años medidos valen más que diez con uno inventado.
+
+**Las coordenadas se eligieron contra el dato, no en un mapa.** Las originales
+eran "ubicaciones plausibles" inventadas y tres de las cuatro no caían sobre
+parcelas agrícolas: NDVI plano entre 0,13 y 0,28 durante nueve años, o sea suelo
+desnudo. Se barrió una rejilla sobre cada zona productora corriendo la serie real
+de cada candidato, y se eligieron las que muestran la fenología del cultivo
+declarado.
+
+---
+
+## 6-bis. El modelo fenológico de referencia (`generar_series_ndvi.py`)
+
+Se conserva porque documenta qué forma *debería* tener cada cultivo, y sirve de
+contraste contra lo que el satélite realmente ve. Cada cultivo tiene un modelo
+explícito:
 
 | Cultivo | Ciclos/año | NDVI base | Pico | Comportamiento |
 |---|---|---|---|---|
