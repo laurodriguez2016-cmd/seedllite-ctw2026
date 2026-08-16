@@ -90,10 +90,17 @@
   var TEXTO_DECISION = {
     aprobar: "Aprobar",
     aprobar_con_ajuste: "Aprobar con ajuste",
-    rechazar: "Rechazar"
+    rechazar: "Rechazar",
+    // Cuarto estado del contrato v1.3: la nubosidad borro mas de la mitad de la
+    // ventana de 24 meses y el sistema NO puede emitir concepto. No es un
+    // rechazo suave — es la ausencia de concepto.
+    aplazar_por_verificacion: "Aplazar por verificación"
   };
 
   function marcaRiesgo(dict) {
+    if (dict.banda_riesgo === "sin_concepto") {
+      return '<span class="marca-riesgo riesgo-sin_concepto">Sin concepto</span>';
+    }
     return '<span class="marca-riesgo riesgo-' + esc(dict.banda_riesgo) + '">' +
            esc(TEXTO_DECISION[dict.decision] || dict.decision) + "</span>";
   }
@@ -552,14 +559,30 @@
         '<span style="color:var(--alerta);font-weight:600">' + cop(sugerido) + "</span>" +
         '<span class="delta delta-baja">\u2212' + cop(recorte) +
           " \u00b7 " + pctRecorte + "% menos</span>";
+    } else if (d.decision === "aplazar_por_verificacion") {
+      // Sin concepto no es "monto completo": es que no hay monto que sugerir.
+      // Pintarlo de verde diciendo "completo, sin recorte" contradice al
+      // propio dictamen, que dice que el expediente queda abierto.
+      celdaSugerido =
+        '<span style="color:var(--aplazar);font-weight:600">Sin monto</span>' +
+        '<span class="delta delta-igual">no hay concepto que emitir</span>';
     } else {
       celdaSugerido =
         '<span style="color:var(--favorable);font-weight:600">' + cop(sugerido) + "</span>" +
         '<span class="delta delta-igual">Completo, sin recorte</span>';
     }
 
-    var claseDecision = "decision-" + (rechazado ? "rechazar"
-                      : (d.decision === "aprobar_con_ajuste" ? "ajuste" : "aprobar"));
+    // Cada decision tiene su clase explicita. Antes esto era un ternario que
+    // caia en "aprobar" por defecto, asi que una decision desconocida —como
+    // aplazar_por_verificacion— se pintaba de verde: un predio que el sistema
+    // no pudo evaluar aparecia aprobado. Silencioso, sin error en consola.
+    var CLASE_DECISION = {
+      rechazar: "rechazar",
+      aplazar_por_verificacion: "aplazar",
+      aprobar_con_ajuste: "ajuste",
+      aprobar: "aprobar"
+    };
+    var claseDecision = "decision-" + (CLASE_DECISION[d.decision] || "aprobar");
 
     host.innerHTML =
       '<div class="migas"><a href="#mapa">\u2190 Mapa</a><span>/</span>' +
@@ -574,13 +597,19 @@
                que leerse en la toma del video. */
             '<div class="dict-cab">' +
               "<div>" +
-                '<div class="puntaje" style="color:' +
-                  (rechazado ? "var(--critico)" : "var(--texto)") + '">' +
-                  esc(d.puntaje) + "</div>" +
-                '<div class="puntaje-sub">de 1000</div>' +
+                (d.banda_riesgo === "sin_concepto"
+                  ? '<div class="puntaje" style="color:var(--aplazar);font-size:0.5em;' +
+                      'line-height:1.25">Sin<br>puntaje</div>' +
+                    '<div class="puntaje-sub">el dato no alcanza para evaluar</div>'
+                  : '<div class="puntaje" style="color:' +
+                      (rechazado ? "var(--critico)" : "var(--texto)") + '">' +
+                      esc(d.puntaje) + "</div>" +
+                    '<div class="puntaje-sub">de 1000</div>') +
               "</div>" +
-              '<span class="marca-riesgo riesgo-' + esc(d.banda_riesgo) + '">Riesgo ' +
-                esc(d.banda_riesgo) + "</span>" +
+              '<span class="marca-riesgo riesgo-' + esc(d.banda_riesgo) + '">' +
+                (d.banda_riesgo === "sin_concepto"
+                   ? "Sin concepto"
+                   : "Riesgo " + esc(d.banda_riesgo)) + "</span>" +
             "</div>" +
 
             '<div class="decision ' + claseDecision + '">' +
@@ -690,7 +719,11 @@
       evaluados += 1;
       totalSolicitado += p.monto_solicitado_cop || 0;
       totalSugerido += d.monto_sugerido_cop || 0;
-      if (d.decision !== "rechazar") { favorables += 1; }
+      // Un expediente aplazado NO es una recomendacion favorable: no hay
+      // recomendacion. Antes solo se excluia el rechazo, asi que el KPI
+      // contaba como favorable un predio que el sistema no pudo evaluar.
+      if (d.decision !== "rechazar" &&
+          d.decision !== "aplazar_por_verificacion") { favorables += 1; }
     });
 
     var filas = lista.map(function (p) {
@@ -726,10 +759,16 @@
         /* area medida */
         '<td class="num mono">' + cifraViva(p.area_detectada_ha, "ha") + "</td>" +
 
-        /* ciclos: cero es la senal que sustenta un rechazo */
+        /* Ciclos. Cero sustenta un rechazo SOLO si el dato alcanza: cuando la
+           cobertura es insuficiente ese mismo cero lo produce la nubosidad, y
+           el dictamen dice expresamente que no debe leerse como senal. Pintarlo
+           de rojo ahi seria contradecir en la tabla lo que dice el memorando. */
         '<td class="num mono">' +
-          '<span style="color:' + (sinCiclo ? "var(--critico)" : "var(--favorable)") +
-            ';font-weight:700">' + cifraViva(s.ciclos_ultimos_24m, "ent") + "</span>" +
+          '<span style="color:' +
+            (d.banda_riesgo === "sin_concepto" ? "var(--texto-3)"
+              : (sinCiclo ? "var(--critico)" : "var(--favorable)")) +
+            ';font-weight:700">' + cifraViva(s.ciclos_ultimos_24m, "ent") +
+            (d.banda_riesgo === "sin_concepto" ? "*" : "") + "</span>" +
         "</td>" +
 
         /* puntaje con su barra */
@@ -744,6 +783,9 @@
         '<td class="num mono">' +
           (rechazado
             ? '<span style="color:var(--critico)">Sin desembolso</span>'
+            : d.decision === "aplazar_por_verificacion"
+            ? '<span style="color:var(--aplazar)">Sin monto</span>' +
+              '<div class="cart-meta">pendiente de visita</div>'
             : cifraViva(d.monto_sugerido_cop, "cop") +
               (d.monto_sugerido_cop && p.monto_solicitado_cop &&
                d.monto_sugerido_cop !== p.monto_solicitado_cop
