@@ -86,16 +86,26 @@ a{color:inherit; text-decoration:none}
 .menu-movil a{display:block; font-family:var(--mono); font-size:14px; letter-spacing:.2em;
   text-transform:uppercase; margin-bottom:1.4rem}
 
+/* El fondo del hero es la lamina del predio: la placa Sentinel-2 con su reticula
+   de medicion y la serie NDVI trazada al lado. Ocupa la mitad derecha del
+   encuadre porque el tercio izquierdo es donde va el titular — la imagen esta
+   compuesta para eso, no recortada a la fuerza.
+
+   La reticula de 46 px se conserva por debajo: es la trama del sistema Industry
+   y cose la imagen con el resto de la pagina en vez de dejarla flotando. */
 .hero-fondo{position:absolute; inset:0; z-index:0; pointer-events:none; opacity:0;
   transition:opacity 1.8s var(--sal);
   background:
-    radial-gradient(58% 48% at 76% 44%, rgba(89,128,166,.15), transparent 70%),
     repeating-linear-gradient(0deg, rgba(17,17,17,.045) 0 1px, transparent 1px 46px),
     repeating-linear-gradient(90deg, rgba(17,17,17,.045) 0 1px, transparent 1px 46px)}
 .hero-fondo.visible{opacity:1}
-.hero-serie{position:absolute; right:0; bottom:13%; width:64%; height:34%; opacity:.55}
-.hero-serie path{fill:none; stroke:var(--acero); stroke-width:1.4; stroke-dasharray:2600;
-  stroke-dashoffset:2600; animation:traza 5.5s var(--sal) 2.2s forwards}
+.hero-lamina{position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; object-position:72% 50%; z-index:-1;
+  -webkit-mask-image:linear-gradient(100deg,transparent 6%,#000 42%);
+  mask-image:linear-gradient(100deg,transparent 6%,#000 42%)}
+/* En vertical la imagen se va casi entera: el titular necesita el ancho y la
+   placa no sobrevive al recorte sin volverse una mancha. */
+@media(max-width:767px){.hero-lamina{object-position:78% 50%; opacity:.42}}
 @keyframes traza{to{stroke-dashoffset:0}}
 
 .hero-cuerpo{position:relative; z-index:10; flex:1; display:flex; justify-content:space-between;
@@ -308,7 +318,6 @@ a{color:inherit; text-decoration:none}
   .rev,.hero-fondo{opacity:1; transform:none}
   .s3-img{opacity:.5; transform:translate(6%,-28%)}
   .marca-svg .glifo{transform:none; opacity:1}
-  .hero-serie path{stroke-dashoffset:0}
   html{scroll-behavior:auto}
 }
 </style>
@@ -317,11 +326,8 @@ a{color:inherit; text-decoration:none}
 
 <div class="hero">
   <div class="hero-fondo" id="fondo">
-    <svg class="hero-serie" viewBox="0 0 800 200" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,150 L33,60 L66,155 L100,52 L133,150 L166,58 L200,148 L233,54 L266,152 L300,60
-               L333,146 L366,56 L400,150 L433,62 L466,148 L500,58 L533,152 L566,64 L600,146
-               L633,60 L666,150 L700,56 L733,148 L766,62 L800,150"/>
-    </svg>
+    <img class="hero-lamina" src="hero-predio.jpg" alt="" aria-hidden="true"
+         fetchpriority="high" decoding="async">
   </div>
 
   <div class="hero-top">
@@ -347,7 +353,6 @@ a{color:inherit; text-decoration:none}
       <nav class="subnav-col subnav-der">
         <a href="#problema">Problema</a>
         <a href="#cartera">Cartera</a>
-    <a href="#modelo">Modelo</a>
         <a href="#modelo">Modelo</a>
         <a href="/app/">Aplicación</a>
       </nav>
@@ -358,6 +363,7 @@ a{color:inherit; text-decoration:none}
   <div class="menu-movil" id="menu">
     <a href="#problema">Problema</a>
     <a href="#cartera">Cartera</a>
+    <a href="#modelo">Modelo</a>
     <a href="/app/">Aplicación</a>
   </div>
 
