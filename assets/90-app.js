@@ -38,15 +38,24 @@
 
   /* --- tema claro/oscuro ------------------------------------------------ */
 
+  function temaOscuroActivo() {
+    var actual = document.documentElement.getAttribute("data-tema");
+    if (actual) return actual === "oscuro";
+    return Boolean(global.matchMedia && global.matchMedia("(prefers-color-scheme: dark)").matches);
+  }
+
+  function sincronizarControlTema() {
+    var boton = document.getElementById("tema");
+    if (!boton) return;
+    var oscuro = temaOscuroActivo();
+    boton.setAttribute("aria-pressed", oscuro ? "true" : "false");
+    boton.textContent = oscuro ? "Oscuro" : "Claro";
+  }
+
   function alternarTema() {
     var raiz = document.documentElement;
-    var actual = raiz.getAttribute("data-tema");
-    if (!actual) {
-      var oscuroPorSistema =
-        global.matchMedia && global.matchMedia("(prefers-color-scheme: dark)").matches;
-      actual = oscuroPorSistema ? "oscuro" : "claro";
-    }
-    raiz.setAttribute("data-tema", actual === "oscuro" ? "claro" : "oscuro");
+    raiz.setAttribute("data-tema", temaOscuroActivo() ? "claro" : "oscuro");
+    sincronizarControlTema();
   }
 
   /* --- router ----------------------------------------------------------- */
@@ -68,15 +77,12 @@
     host.innerHTML = "";
     S.vistas[estado.vista](host, datos, estado);
 
-    // Enlaces internos declarativos: data-ir="#dictamen/xxx"
-    host.querySelectorAll("[data-ir]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        location.hash = b.getAttribute("data-ir");
-      });
-    });
-
     document.querySelectorAll("[data-nav]").forEach(function (b) {
-      b.setAttribute("aria-current", b.getAttribute("data-nav") === estado.vista);
+      if (b.getAttribute("data-nav") === estado.vista) {
+        b.setAttribute("aria-current", "page");
+      } else {
+        b.removeAttribute("aria-current");
+      }
     });
 
     global.scrollTo(0, 0);
@@ -107,7 +113,25 @@
       document.body.insertBefore(aviso, document.getElementById("vista"));
     }
 
+    var host = document.getElementById("vista");
+    host.addEventListener("click", function (evento) {
+      var control = evento.target.closest("[data-ir]");
+      if (!control || !host.contains(control)) return;
+      location.hash = control.getAttribute("data-ir");
+    });
+
     document.getElementById("tema").addEventListener("click", alternarTema);
+    sincronizarControlTema();
+
+    if (global.matchMedia) {
+      var preferenciaTema = global.matchMedia("(prefers-color-scheme: dark)");
+      if (preferenciaTema.addEventListener) {
+        preferenciaTema.addEventListener("change", function () {
+          if (!document.documentElement.hasAttribute("data-tema")) sincronizarControlTema();
+        });
+      }
+    }
+
     document.querySelectorAll("[data-nav]").forEach(function (b) {
       b.addEventListener("click", function () {
         location.hash = "#" + b.getAttribute("data-nav");
