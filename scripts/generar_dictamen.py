@@ -80,6 +80,8 @@ ESQUEMA_DICTAMEN = {
         "puntaje", "banda_riesgo", "decision", "monto_sugerido_cop",
         "linea_finagro", "cobertura_fag_pct", "plazo_meses", "desembolso",
         "ejes", "evidencia", "memorando", "recomendacion",
+        "resumen_ejecutivo", "analisis_estadistico", "escenarios",
+        "limitaciones", "condiciones_operativas",
     ],
     "properties": {
         "puntaje": {
@@ -178,6 +180,91 @@ ESQUEMA_DICTAMEN = {
         "recomendacion": {
             "type": "string",
             "description": "Una sola frase que cierra: la decisión y su condición principal.",
+        },
+
+        # --- Secciones que convierten la ficha en un memorando de firma -------
+        "resumen_ejecutivo": {
+            "type": "string",
+            "description": (
+                "TREINTA SEGUNDOS DE LECTURA, máximo 45 palabras. Lo que un miembro del "
+                "comité necesita para votar sin leer el resto: qué se decide, por qué, y "
+                "cuál es la única cosa que podría cambiarlo. Sin preámbulo."
+            ),
+        },
+        "analisis_estadistico": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["incertidumbre", "robustez", "cobertura"],
+            "properties": {
+                "incertidumbre": {
+                    "type": "string",
+                    "description": (
+                        "Qué tan precisas son las cifras que sustentan la decisión. Cita los "
+                        "intervalos de confianza del expediente con sus números. Explica en "
+                        "lenguaje llano qué significa un intervalo: que el valor real está "
+                        "dentro de ese rango con 95% de confianza, no que la cifra sea dudosa."
+                    ),
+                },
+                "robustez": {
+                    "type": "string",
+                    "description": (
+                        "Cuánto tendría que moverse cada cifra para que la decisión cambiara, "
+                        "usando los márgenes del expediente. Un dictamen robusto no se da "
+                        "vuelta con un empujón pequeño, y decir cuánto aguanta es información "
+                        "que el comité usa."
+                    ),
+                },
+                "cobertura": {
+                    "type": "string",
+                    "description": (
+                        "Cuántos meses se midieron de verdad y qué probabilidad hay de haber "
+                        "pasado por alto un ciclo real. Cita la probabilidad de falso negativo "
+                        "del expediente."
+                    ),
+                },
+            },
+        },
+        "escenarios": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "description": (
+                "Qué haría cambiar esta decisión. Son condicionales concretos y verificables, "
+                "no especulación: cada uno nombra la cifra que tendría que moverse y hasta "
+                "dónde. Sirven para que el comité sepa qué vigilar y para que el productor "
+                "sepa qué acreditar."
+            ),
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["supuesto", "efecto"],
+                "properties": {
+                    "supuesto": {"type": "string", "description": "La condición, con su cifra."},
+                    "efecto": {"type": "string", "description": "Qué pasaría con la decisión."},
+                },
+            },
+        },
+        "limitaciones": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "description": (
+                "Qué NO puede afirmar este dictamen. El satélite ve la tierra, no el contrato: "
+                "no detecta arrendamiento ni aparcería, no sustituye visita técnica cuando el "
+                "intermediario la exige, y no evalúa centrales de riesgo. Declarar los límites "
+                "es lo que hace creíble el resto."
+            ),
+            "items": {"type": "string"},
+        },
+        "condiciones_operativas": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "description": (
+                "Condiciones concretas de desembolso y seguimiento que el intermediario puede "
+                "ejecutar y verificar. Cada una con su cifra y su momento."
+            ),
+            "items": {"type": "string"},
         },
     },
 }
@@ -377,6 +464,38 @@ def construir_prompt(predio, serie, caida_regional):
         "  banda sin_concepto, puntaje 0, ejes en 0, monto 0, y remitir a visita técnica."
         % med24)
 
+    # La incertidumbre la calcula scripts/calcular_incertidumbre.py y viene en la
+    # serie. Si el modelo no la recibe, no puede citarla, y el analisis
+    # estadistico del dictamen seria palabreria sobre numeros que no vio.
+    inc = serie.get("incertidumbre") or {}
+    def _ic(v, pct=False):
+        if not v:
+            return "no calculable"
+        return ("[%.1f%% – %.1f%%]" % (v[0] * 100, v[1] * 100)) if pct else \
+               ("[%.3f – %.3f]" % (v[0], v[1]))
+
+    lineas = [
+        "- Amplitud histórica %.3f, intervalo 95%%: %s" % (
+            serie["amplitud_historica"], _ic(inc.get("amplitud_ic95"))),
+        "- Amplitud reciente %.3f, intervalo 95%%: %s" % (
+            serie["amplitud_reciente_24m"], _ic(inc.get("amplitud_reciente_ic95"))),
+        "- Área con actividad, intervalo 95%% sobre las celdas: %s" % (
+            _ic(inc.get("area_ic95"), pct=True)),
+        "- Probabilidad de haber pasado por alto un ciclo real dada la cobertura: %.1f%%" % (
+            (inc.get("prob_falso_negativo") or 0.0) * 100),
+    ]
+    if inc.get("area_techo_cruza_umbral"):
+        lineas.append(
+            "  ⚠ EL TECHO DEL INTERVALO DE ÁREA CRUZA EL UMBRAL DEL 50%. No se puede\n"
+            "    afirmar que el predio esté por debajo, así que la causal de área NO\n"
+            "    opera por más que la estimación puntual quede bajo el umbral. Negar un\n"
+            "    crédito exige que la duda razonable no favorezca la negación.")
+    for nombre, m in (inc.get("margenes") or {}).items():
+        if m:
+            lineas.append("- Margen %s: valor %.3f contra umbral %.3f, distancia %.1f%%"
+                          % (nombre, m["valor"], m["umbral"], m["distancia_relativa_pct"]))
+    bloque_incertidumbre = "\n".join(lineas)
+
     sin_actividad = (serie["ciclos_detectados"] == 0
                      or (area_dec and area_det / area_dec < 0.50))
     aviso_rendimiento = ""
@@ -472,6 +591,9 @@ RENDIMIENTO — comparación contra estadística oficial
 - Fuente:                               {fuente_rend}
 {aviso_rendimiento}
 
+INCERTIDUMBRE DE LAS CIFRAS — calculada, no estimada a ojo
+{bloque_incertidumbre}
+
 CONTROLES DE ORIGINACIÓN (resultado de la verificación)
 - RTDAF/RUPTA (Ley 1448 de 2011): {rtdaf}
 - Verificación ambiental del polígono: {ambiental}
@@ -502,6 +624,7 @@ Emite el dictamen de crédito.""".format(
         interpolados=serie["cobertura_meses_totales"] - serie["cobertura_meses_medidos"],
         med24=med24,
         aviso_cobertura=aviso_cobertura,
+        bloque_incertidumbre=bloque_incertidumbre,
         anual="\n".join(resumen_anual),
         reciente=serie_reciente,
         ciclos=serie["ciclos_detectados"],

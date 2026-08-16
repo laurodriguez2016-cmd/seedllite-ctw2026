@@ -220,7 +220,32 @@ nombre del cultivo dentro del prompt sería pedirle al modelo que adivine algo q
 | Área detectada vs. área declarada | Sentinel-2 |
 | Coincidencia con cartografía catastral | IGAC |
 
-**Rechazo automático:** área detectada menor al **50%** de la declarada.
+**Rechazo automático:** área detectada menor al **50%** de la declarada, **y que el
+límite superior de su intervalo de confianza al 95% también esté por debajo del 50%**.
+
+#### 🔄 CAMBIO 16-ago-2026, 01:55 — la causal exige que la incertidumbre acompañe
+
+El área detectada no es un hecho exacto: es una proporción estimada sobre una rejilla de
+16 celdas. Con una muestra así de chica, la estimación puntual puede estar lejos del valor
+real, y el intervalo de Wilson lo cuantifica.
+
+**Esto cambió una decisión nuestra.** `meta-cacao-vigor-bajo` mide 7 de 16 celdas agrícolas
+—43,8%, por debajo del umbral— pero su intervalo al 95% va de **23,1% a 66,8%**. El techo
+cruza el 50%, así que **no se puede afirmar que el predio esté bajo el umbral**. Ese rechazo
+se cae.
+
+| Predio | Celdas | Estimación | IC 95% | ¿Causal opera? |
+|---|---|---|---|---|
+| `meta-cacao` | 2/16 | 12,5% | **[3,5% – 36,0%]** | **Sí.** El techo queda 14 puntos bajo el umbral |
+| `meta-cacao-vigor-bajo` | 7/16 | 43,8% | [23,1% – 66,8%] | **No.** El techo lo cruza |
+
+> Negar un crédito es un acto grave y quien lo recibe rara vez tiene cómo apelarlo. Si la
+> medición no alcanza para sostener el rechazo con holgura, el rechazo no procede. La regla
+> no exige certeza absoluta: exige que la duda razonable no favorezca la negación.
+
+Para subir la precisión y poder decidir sobre un caso así basta con densificar la rejilla:
+pasar de 4×4 a 8×8 lleva la muestra de 16 a 64 celdas y estrecha el intervalo a la mitad.
+Cuesta cuatro veces más peticiones a Copernicus y unos minutos.
 
 ---
 

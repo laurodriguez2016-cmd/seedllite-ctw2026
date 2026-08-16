@@ -1,0 +1,29 @@
+# Lo que NO se publica. El despliegue sirve el repositorio completo salvo esto.
+#
+# La landing y la app son públicas a propósito; el resto del repositorio no.
+# Sin este archivo, el dominio expone documentos internos que un competidor o un
+# jurado descargan con solo adivinar la ruta: precios y unit economics, la
+# estructura del vehículo de fondeo, el reparto de tareas del equipo y el estado
+# interno del proyecto. Nada de eso es secreto de Estado, pero publicarlo sin
+# querer es distinto de publicarlo a propósito.
+
+docs/modelo-de-negocio.md
+docs/modelo-tokenizacion-y-colocacion.md
+docs/estructura-legal.md
+docs/estructura-del-dictamen.md
+docs/tareas/
+docs/design-system/
+HANDOFF.md
+PLAN-MAESTRO.md
+ARQUITECTURA.md
+CLAUDE.md
+AUDITORIA-CODEX.md
+.claude/
+.specify/
+scripts/exploracion/
+verificar.sh
+probar-app.sh
+output/
+
+# El código del motor SÍ queda público: es lo que hace creíble el proyecto y el
+# jurado debe poder leer el prompt y el pipeline. Lo que no queda es el negocio.
