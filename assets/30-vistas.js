@@ -207,6 +207,63 @@
       ? ((p.area_detectada_ha - p.area_declarada_ha) / p.area_declarada_ha * 100)
       : 0;
 
+    /* La rejilla de medición del área, celda por celda.
+       Es el otro extremo del zoom que arranca en el mapa: allá el país era una
+       malla de celdas, aquí la parcela es una malla de 16. Y a diferencia de la
+       malla del mapa, ESTA sí lleva color de dato, porque el dato existe:
+       predios.json trae el NDVI mediano y la amplitud medidos en cada celda, y
+       la bandera de si califica como agrícola con los umbrales declarados.
+       En meta-cacao son 2 celdas de 16 sobre 4 hectáreas declaradas. */
+    var med = p.medicion_area;
+    var rejilla = "";
+
+    if (med && med.rejilla && med.rejilla.length) {
+      var celdas = med.rejilla.slice().sort(function (a, b) {
+        /* norte arriba: latitud descendente por filas, longitud ascendente
+           por columnas. Así la rejilla en pantalla coincide con el terreno. */
+        return (b.lat - a.lat) || (a.lon - b.lon);
+      });
+      var lado = Math.round(Math.sqrt(celdas.length)) || 1;
+
+      rejilla = celdas.map(function (c, i) {
+        return '<div class="rej-celda ' + (c.agricola ? "rej-si" : "rej-no") +
+                 '" style="animation-delay:' + (i * 0.035).toFixed(3) + 's"' +
+                 ' title="NDVI mediano ' + numero(c.ndvi_mediana, 2) +
+                 ' · amplitud ' + numero(c.amplitud, 3) +
+                 (c.agricola ? " · con actividad agrícola" : " · sin actividad agrícola") + '">' +
+                 '<span class="rej-cifra">' + numero(c.ndvi_mediana, 2) + "</span>" +
+               "</div>";
+      }).join("");
+
+      rejilla =
+        '<div class="tarjeta" style="margin-bottom:var(--e3)">' +
+          '<div class="tarjeta-cab">' +
+            '<span class="etiqueta">Rejilla de medición del área</span>' +
+            '<span class="etiqueta" style="margin-left:auto">' +
+              esc(med.celdas_agricolas) + " de " + esc(med.celdas_evaluadas) +
+              " celdas con actividad" +
+            "</span>" +
+          "</div>" +
+          '<div class="tarjeta-cuerpo rej-cuerpo">' +
+            '<div class="rejilla-med" style="grid-template-columns:repeat(' +
+              lado + ',1fr)">' + rejilla + "</div>" +
+            '<div class="rej-lectura">' +
+              "<p><strong>Qué se está midiendo.</strong> El polígono declarado se " +
+              "divide en " + esc(med.celdas_evaluadas) + " celdas y cada una se " +
+              "evalúa por separado. Una celda cuenta como agrícola cuando su NDVI " +
+              "mediano supera " + numero(med.umbral_ndvi_vegetada, 2) + " —hay " +
+              "vegetación— <em>y además</em> su amplitud supera " +
+              numero(med.umbral_amplitud_manejo, 2) + ", que es la huella de que " +
+              "alguien la siembra y la cosecha.</p>" +
+              "<p>Vegetación sin amplitud es monte, no cultivo. Por eso un predio " +
+              "puede estar completamente verde y aun así medir casi nada de área " +
+              "productiva.</p>" +
+              '<p class="etiqueta" style="margin:0">Método: ' + esc(med.metodo) + "</p>" +
+            "</div>" +
+          "</div>" +
+        "</div>";
+    }
+
     var imagenes = (p.imagenes_satelitales || []).map(function (im) {
       return '<figure class="satelite-corte">' +
         '<img src="' + esc(im.ruta) + '" alt="Imagen Sentinel-2 del predio en ' +
@@ -312,6 +369,11 @@
                 "</div>" +
               "</div>"
             : "") +
+
+          /* El fotograma final de la secuencia que arranca en el mapa: la
+             parcela, ya no como imagen, sino como las 16 celdas que el motor
+             midió una por una. */
+          rejilla +
 
           '<div class="aviso" style="margin-top:var(--e3)">' +
             esc(datos.series.nota_datos) +

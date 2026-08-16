@@ -1049,3 +1049,76 @@ p  { margin: 0 0 var(--e2); }
   color: var(--texto-2);
   text-align: center;
 }
+
+/* ==========================================================================
+   REJILLA DE MEDICIÓN DEL ÁREA
+   El otro extremo del zoom que arranca en el mapa: allá el país era una malla
+   de celdas, aquí la parcela es una malla de 16.
+   Y a diferencia de la malla del mapa, ESTA sí lleva color de dato — porque el
+   dato existe: NDVI mediano y amplitud medidos celda por celda, con umbrales
+   declarados en el propio JSON.
+   ========================================================================== */
+
+.rej-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(190px, 260px) 1fr;
+  gap: var(--e4);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .rej-cuerpo { grid-template-columns: 1fr; }
+}
+
+.rejilla-med {
+  display: grid;
+  gap: 3px;
+}
+
+.rej-celda {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  cursor: default;
+  animation: rej-entra 0.3s cubic-bezier(0.2, 0.85, 0.3, 1.05) both;
+}
+
+/* Celda con actividad agrícola: NDVI sobre el umbral de vegetación Y amplitud
+   sobre el umbral de manejo. Las dos condiciones, no una. */
+.rej-si {
+  background: var(--favorable-bg);
+  color: var(--favorable);
+  box-shadow: inset 0 0 0 1px var(--favorable);
+}
+
+/* Sin actividad. Puede estar verde: verde sin amplitud es monte, no cultivo. */
+.rej-no {
+  background: var(--superficie-2);
+  color: var(--texto-3);
+  box-shadow: inset 0 0 0 1px var(--borde);
+}
+
+@keyframes rej-entra {
+  from { opacity: 0; transform: scale(0.55); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.rej-lectura p {
+  margin: 0 0 var(--e2);
+  max-width: 60ch;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--texto-2);
+}
+
+.rej-lectura strong { color: var(--texto); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rej-celda { animation: none; }
+}
