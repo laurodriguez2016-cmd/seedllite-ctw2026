@@ -406,6 +406,58 @@
     });
   }
 
+  /**
+   * Zoom de salida: la cámara se mete hacia la celda del predio elegido.
+   *
+   * No es un adorno de transición. Es el argumento del producto contado con el
+   * encuadre: el país es una malla de celdas, se entra a UNA de ellas, y del
+   * otro lado está la parcela con su rejilla de medición de 10 m. País →
+   * celda → predio, sin corte.
+   *
+   * La curva es de entrada (acelera) porque una cámara que se lanza hacia algo
+   * no frena al llegar; frenar se leería como aterrizaje suave, no como
+   * inmersión.
+   *
+   * @param {Element}  svg        el lienzo del mapa
+   * @param {number}   cx, cy     destino, en coordenadas del lienzo
+   * @param {Function} alTerminar se llama cuando la cámara llegó
+   */
+  function zoomA(svg, cx, cy, alTerminar) {
+    if (!svg || movimientoReducido()) { alTerminar(); return; }
+
+    var DUR = 620;
+    var CIERRE = 0.13;              /* fracción del lienzo a la que se entra */
+
+    var v0 = [0, 0, ANCHO, ALTO];
+    var w1 = ANCHO * CIERRE, h1 = ALTO * CIERRE;
+    var v1 = [cx - w1 / 2, cy - h1 / 2, w1, h1];
+
+    var malla = svg.querySelector(".malla");
+    var pais = svg.querySelector(".pais");
+    var t0 = new Date().getTime();
+
+    (function paso() {
+      var a = Math.min(1, (new Date().getTime() - t0) / DUR);
+      var e = a * a * a;            /* aceleración cúbica */
+
+      svg.setAttribute("viewBox", [
+        v0[0] + (v1[0] - v0[0]) * e,
+        v0[1] + (v1[1] - v0[1]) * e,
+        v0[2] + (v1[2] - v0[2]) * e,
+        v0[3] + (v1[3] - v0[3]) * e
+      ].map(function (n) { return n.toFixed(1); }).join(" "));
+
+      /* La malla y el contorno se disuelven mientras se entra: al final solo
+         queda la celda de destino, que es la que se convierte en la parcela. */
+      if (malla) { malla.style.opacity = (1 - a * 0.92).toFixed(2); }
+      if (pais) { pais.style.opacity = (1 - a).toFixed(2); }
+      svg.style.opacity = (1 - Math.max(0, (a - 0.6) / 0.4)).toFixed(2);
+
+      if (a < 1) { global.requestAnimationFrame(paso); return; }
+      alTerminar();
+    })();
+  }
+
   function render(svg, predios, dictamenes, seleccionado, alSeleccionar) {
     svg.setAttribute("viewBox", "0 0 " + ANCHO + " " + ALTO);
     svg.setAttribute("class", "mapa");
@@ -487,7 +539,11 @@
       t.textContent = predio.municipio;
       g.appendChild(t);
 
-      function activar() { alSeleccionar(predio.id); }
+      /* Al elegir, la cámara se mete hacia la celda antes de cambiar de
+         pantalla: el paso al predio es un movimiento, no un corte. */
+      function activar() {
+        zoomA(svg, xy[0], xy[1], function () { alSeleccionar(predio.id); });
+      }
       g.addEventListener("click", activar);
       g.addEventListener("keydown", function (e) {
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activar(); }
@@ -498,5 +554,5 @@
   }
 
   global.SEEDLLITE = global.SEEDLLITE || {};
-  global.SEEDLLITE.mapa = { render: render, proyectar: proyectar };
+  global.SEEDLLITE.mapa = { render: render, proyectar: proyectar, zoomA: zoomA };
 })(window);

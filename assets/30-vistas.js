@@ -171,9 +171,21 @@
       function (id) { location.hash = "#ficha/" + id; }
     );
 
+    /* Las tarjetas de la lista entran por el mismo movimiento que los pines:
+       la cámara se mete hacia la celda del predio y solo entonces cambia la
+       pantalla. Elegir por la lista o por el mapa se ve igual. */
+    var lienzo = host.querySelector("#svg-mapa");
+
     host.querySelectorAll("[data-predio]").forEach(function (b) {
       b.addEventListener("click", function () {
-        location.hash = "#ficha/" + b.getAttribute("data-predio");
+        var id = b.getAttribute("data-predio");
+        var p = S.estado.predio(id);
+        if (!p || !S.mapa.zoomA) { location.hash = "#ficha/" + id; return; }
+
+        var xy = S.mapa.proyectar(p.coordenadas.lon, p.coordenadas.lat);
+        S.mapa.zoomA(lienzo, xy[0], xy[1], function () {
+          location.hash = "#ficha/" + id;
+        });
       });
     });
 
