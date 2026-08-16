@@ -18,7 +18,7 @@ CHROME="/c/Program Files/Google/Chrome/Application/chrome.exe"
 [ -x "$CHROME" ] || CHROME="/c/Program Files (x86)/Google/Chrome/Application/chrome.exe"
 RAIZ="file:///$(pwd | sed 's|^/\([a-z]\)|\1:|')/index.html"
 
-PREDIOS="huila-cafe tolima-arroz boyaca-papa meta-cacao"
+PREDIOS="huila-cafe tolima-arroz boyaca-papa meta-cacao boyaca-papa-nubes          meta-cacao-productivo meta-cacao-sin-manejo boyaca-papa-media          meta-cacao-vigor-bajo"
 FALLOS=0
 
 verde() { printf '\033[32m ✓\033[0m %s\n' "$1"; }
@@ -41,7 +41,7 @@ comprobar() {
   if [ -n "$faltan" ]; then rojo "$desc — falta:$faltan"; else verde "$desc"; fi
 }
 
-echo "── Barrido de las 14 rutas ──────────────────────────────────"
+echo "── Barrido de todas las rutas ──────────────────────────────────"
 
 comprobar "#mapa" "1 · mapa" "Predios evaluados" "Cartera en evaluación" "Pitalito"
 
@@ -58,14 +58,31 @@ done
 
 for p in $PREDIOS; do
   comprobar "#dictamen/$p" "4 · dictamen $p" \
-    "Puntaje SEEDLLITE" "Evaluar otro predio" "de 1000" "intermediario financiero vigilado"
+    "Puntaje SEEDLLITE" "Evaluar otro predio" "intermediario financiero vigilado"
 done
 
 comprobar "#cartera" "5 · cartera" "Cartera evaluada" "Ciclos 24m" "Decisión"
 
+echo "── Contrato v1.2 · el estado sin concepto ──────────────────────"
+
+# boyaca-papa-nubes es el predio que el sistema declara que no puede evaluar.
+# Si algún día vuelve a caer al else de la decisión, se pinta de verde y se
+# lee como aprobado: un predio no evaluado presentado como aprobación.
+dom=$(render "#dictamen/boyaca-papa-nubes")
+
+echo "$dom" | grep -qF "decision-aplazar"   && verde "no evaluado va en tono neutro"   || rojo  "no evaluado NO lleva la clase decision-aplazar"
+
+echo "$dom" | grep -qF "decision-aprobar"   && rojo  "PELIGRO: un predio sin concepto se está pintando como aprobado"   || verde "no se pinta como aprobación"
+
+echo "$dom" | grep -qF "Sin concepto"   && verde "muestra «Sin concepto» en vez del cero"   || rojo  "muestra el puntaje 0 en vez de «Sin concepto»"
+
+echo "── Capturas satelitales ────────────────────────────────────────"
+
+comprobar "#ficha/meta-cacao" "imagenes en la ficha"   "assets/satelite/meta-cacao-2017.svg" "assets/satelite/meta-cacao-2025.svg"
+
 echo "── Resultado ────────────────────────────────────────────────"
 if [ "$FALLOS" -eq 0 ]; then
-  printf '\033[32m LAS 14 RUTAS SE ARMAN COMPLETAS\033[0m\n'
+  printf '\033[32m TODAS LAS RUTAS SE ARMAN COMPLETAS\033[0m\n'
 else
   printf '\033[31m %d RUTA(S) INCOMPLETAS\033[0m\n' "$FALLOS"
   exit 1

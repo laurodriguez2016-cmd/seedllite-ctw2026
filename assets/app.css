@@ -984,3 +984,68 @@ p  { margin: 0 0 var(--e2); }
   .banda-lluvia,
   .banda-texto { animation: none; }
 }
+
+/* ==========================================================================
+   CONTRATO v1.2 — el estado "sin concepto"
+   No es un rechazo ni una aprobación: es la ausencia de concepto. Va en tono
+   neutro deliberadamente. Pintarlo de rojo sería cometer justo el error que la
+   regla existe para evitar — leer "no pude evaluar" como "no".
+   ========================================================================== */
+
+.decision-aplazar {
+  color: var(--texto-2);
+  background: var(--superficie-2);
+}
+
+.riesgo-sin_concepto {
+  background: var(--superficie-2);
+  color: var(--texto-2);
+}
+
+/* El puntaje 0 no se muestra: un 0 gigante se lee como el peor puntaje
+   posible, y es lo contrario — no hay puntaje porque no hay con qué. */
+.puntaje-nulo {
+  font-family: var(--sans);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--texto-2);
+}
+
+.cart-nulo {
+  color: var(--texto-2);
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* --------------------------------------------------------------------------
+   Capturas satelitales — secuencia temporal del predio
+   Los SVG traen la foto de Copernicus embebida más el polígono declarado y la
+   rejilla de medición dibujados encima.
+   -------------------------------------------------------------------------- */
+
+.satelite {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--e2);
+}
+
+.satelite-corte { margin: 0; }
+
+.satelite-corte img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--borde);
+  border-radius: var(--r);
+  background: var(--superficie-2);
+}
+
+.satelite-corte figcaption {
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--texto-2);
+  text-align: center;
+}

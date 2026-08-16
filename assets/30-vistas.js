@@ -90,8 +90,27 @@
   var TEXTO_DECISION = {
     aprobar: "Aprobar",
     aprobar_con_ajuste: "Aprobar con ajuste",
-    rechazar: "Rechazar"
+    rechazar: "Rechazar",
+    /* Contrato v1.2: el sistema declara que no puede emitir concepto. No es un
+       rechazo. Cuando menos de 12 de los últimos 24 meses tienen observación
+       óptica, la interpolación aplana la serie y produce la misma firma que un
+       predio abandonado de verdad. Negarle el crédito a ese productor sería
+       castigarlo porque estuvo nublado sobre su parcela. */
+    aplazar_por_verificacion: "Aplazar por verificación"
   };
+
+  /* La clase de la decisión. Un enum nuevo NO puede caer al else: si cae,
+     "no puedo evaluar" se pinta de verde y se lee como aprobación. */
+  function claseDecision(decision) {
+    return "decision-" + (
+      decision === "rechazar" ? "rechazar" :
+      decision === "aplazar_por_verificacion" ? "aplazar" :
+      decision === "aprobar_con_ajuste" ? "ajuste" : "aprobar");
+  }
+
+  function sinConcepto(dict) {
+    return !!dict && dict.banda_riesgo === "sin_concepto";
+  }
 
   function marcaRiesgo(dict) {
     return '<span class="marca-riesgo riesgo-' + esc(dict.banda_riesgo) + '">' +
@@ -107,8 +126,11 @@
              'aria-current="' + (p.id === seleccionado) + '">' +
                '<div class="fila">' +
                  '<span class="nombre">' + esc(p.productor) + "</span>" +
-                 (dict ? '<span class="mono cifra">' +
-                           cifraViva(dict.puntaje, "ent") + "</span>" : "") +
+                 (!dict ? ""
+                   : sinConcepto(dict)
+                     ? '<span class="cifra cart-nulo">Sin concepto</span>'
+                     : '<span class="mono cifra">' +
+                         cifraViva(dict.puntaje, "ent") + "</span>") +
                "</div>" +
                '<div class="fila">' +
                  '<span class="meta">' + esc(p.cultivo) + " · " + esc(p.municipio) +
@@ -173,6 +195,14 @@
       ? ((p.area_detectada_ha - p.area_declarada_ha) / p.area_declarada_ha * 100)
       : 0;
 
+    var imagenes = (p.imagenes_satelitales || []).map(function (im) {
+      return '<figure class="satelite-corte">' +
+        '<img src="' + esc(im.ruta) + '" alt="Imagen Sentinel-2 del predio en ' +
+          esc(im.anio) + '" loading="lazy">' +
+        "<figcaption>" + esc(im.anio) + "</figcaption>" +
+      "</figure>";
+    }).join("");
+
     host.innerHTML =
       '<div class="migas"><a href="#mapa">← Mapa</a><span>/</span><span>' +
         esc(p.municipio) + ", " + esc(p.departamento) + "</span></div>" +
@@ -209,6 +239,26 @@
               "</table>" +
             "</div>" +
           "</div>" +
+
+          /* Las capturas Copernicus, en secuencia temporal. Son SVG con la foto
+             real embebida más el polígono declarado y la rejilla de medición
+             dibujados encima, así que se usan como cualquier imagen y funcionan
+             bajo file://. En meta-cacao se ve a simple vista por qué se
+             rechaza: el polígono cae sobre dosel de bosque. */
+          (imagenes.length
+            ? '<div class="tarjeta" style="margin-bottom:var(--e3)">' +
+                '<div class="tarjeta-cab">' +
+                  '<span class="etiqueta">Copernicus Sentinel-2 · el predio en el tiempo</span>' +
+                "</div>" +
+                '<div class="tarjeta-cuerpo">' +
+                  '<div class="satelite">' + imagenes + "</div>" +
+                  '<p class="etiqueta" style="margin:var(--e2) 0 0">' +
+                    "Polígono declarado y rejilla de medición sobre la imagen. " +
+                    "Contiene datos Copernicus Sentinel modificados." +
+                  "</p>" +
+                "</div>" +
+              "</div>"
+            : "") +
 
           '<button class="boton boton-primario" style="width:100%;padding:11px" ' +
             'data-ir="#analisis/' + esc(p.id) + '">Evaluar con SEEDLLITE</button>' +
@@ -507,6 +557,7 @@
     }
 
     var rechazado = d.decision === "rechazar";
+    var sinDictamen = sinConcepto(d);
 
     /* Defensas ante el dictamen real. Los que hay ahora son de relleno; entre
        las 00:30 y las 02:00 los reemplaza la salida del modelo y cualquier
@@ -545,7 +596,12 @@
                    ? Math.round(Math.abs(recorte) / solicitado * 100) : 0;
 
     var celdaSugerido;
-    if (rechazado) {
+    if (sinDictamen) {
+      /* Ni "sin desembolso" ni un monto: no hay concepto que sostenga
+         ninguna de las dos cosas. */
+      celdaSugerido = '<span style="color:var(--texto-2);font-weight:600">' +
+        "Pendiente de verificación</span>";
+    } else if (rechazado) {
       celdaSugerido = '<span style="color:var(--critico);font-weight:600">Sin desembolso</span>';
     } else if (recorte > 0) {
       celdaSugerido =
@@ -557,9 +613,6 @@
         '<span style="color:var(--favorable);font-weight:600">' + cop(sugerido) + "</span>" +
         '<span class="delta delta-igual">Completo, sin recorte</span>';
     }
-
-    var claseDecision = "decision-" + (rechazado ? "rechazar"
-                      : (d.decision === "aprobar_con_ajuste" ? "ajuste" : "aprobar"));
 
     host.innerHTML =
       '<div class="migas"><a href="#mapa">\u2190 Mapa</a><span>/</span>' +
@@ -574,16 +627,21 @@
                que leerse en la toma del video. */
             '<div class="dict-cab">' +
               "<div>" +
-                '<div class="puntaje" style="color:' +
-                  (rechazado ? "var(--critico)" : "var(--texto)") + '">' +
-                  esc(d.puntaje) + "</div>" +
-                '<div class="puntaje-sub">de 1000</div>' +
+                (sinDictamen
+                  /* Un 0 gigante se leería como el peor puntaje posible, y es
+                     lo contrario: no hay puntaje porque no hay con qué. */
+                  ? '<div class="puntaje puntaje-nulo">Sin concepto</div>'
+                  : '<div class="puntaje" style="color:' +
+                      (rechazado ? "var(--critico)" : "var(--texto)") + '">' +
+                      esc(d.puntaje) + "</div>" +
+                    '<div class="puntaje-sub">de 1000</div>') +
               "</div>" +
-              '<span class="marca-riesgo riesgo-' + esc(d.banda_riesgo) + '">Riesgo ' +
-                esc(d.banda_riesgo) + "</span>" +
+              '<span class="marca-riesgo riesgo-' + esc(d.banda_riesgo) + '">' +
+                (sinDictamen ? "Sin concepto" : "Riesgo " + esc(d.banda_riesgo)) +
+              "</span>" +
             "</div>" +
 
-            '<div class="decision ' + claseDecision + '">' +
+            '<div class="decision ' + claseDecision(d.decision) + '">' +
               esc(TEXTO_DECISION[d.decision] || d.decision) + "</div>" +
 
             ejes +
@@ -690,7 +748,12 @@
       evaluados += 1;
       totalSolicitado += p.monto_solicitado_cop || 0;
       totalSugerido += d.monto_sugerido_cop || 0;
-      if (d.decision !== "rechazar") { favorables += 1; }
+      /* Aplazar no es favorable NI desfavorable: no hay concepto. Contarlo
+         como favorable inflaría la tasa de aprobación con casos que el
+         sistema declaró que no podía evaluar. */
+      if (d.decision === "aprobar" || d.decision === "aprobar_con_ajuste") {
+        favorables += 1;
+      }
     });
 
     var filas = lista.map(function (p) {
@@ -699,15 +762,16 @@
       if (!d) { return ""; }
 
       var rechazado = d.decision === "rechazar";
+      var nulo = sinConcepto(d);
       var pct = Math.max(0, Math.min(100, (d.puntaje || 0) / 10));
 
-      /* El conteo de ciclos se colorea según la DECISIÓN, no según sea cero.
-         Colorear el cero de rojo hacía que la tabla se contradijera: el café de
-         Pitalito da cero ciclos —es perenne, no dibuja cosechas en NDVI— y aun
-         así se aprueba con 780. Ese es el problema A del HANDOFF, que toca los
-         criterios de Laura; mientras no se cierre, la pantalla no puede
-         afirmar que cero ciclos equivale a rechazo. */
-      var sinCiclo = rechazado;
+      /* El cero de ciclos solo es señal de alarma en cultivo TRANSITORIO. En
+         perenne el ciclo no existe como firma —la planta no se cosecha
+         entera— y pintarlo de rojo haría que la tabla se contradijera: el café
+         de Pitalito da cero ciclos y se aprueba. Ahora el dato lo resuelve:
+         predios.json trae tipo_cultivo. */
+      var transitorio = p.tipo_cultivo === "transitorio";
+      var sinCiclo = transitorio && s.ciclos_ultimos_24m === 0;
 
       return '<tr class="fila-' + esc(d.banda_riesgo) + '">' +
 
@@ -734,15 +798,19 @@
 
         /* puntaje con su barra */
         '<td class="num">' +
-          '<div class="cart-puntaje mono">' + cifraViva(d.puntaje, "ent") + "</div>" +
-          '<div class="cart-riel"><div class="cart-barra riesgo-barra-' +
-            esc(d.banda_riesgo) + '" data-ancho="' + pct.toFixed(0) +
-            '" style="width:0"></div></div>' +
+          (nulo
+            ? '<div class="cart-nulo">Sin concepto</div>'
+            : '<div class="cart-puntaje mono">' + cifraViva(d.puntaje, "ent") + "</div>" +
+              '<div class="cart-riel"><div class="cart-barra riesgo-barra-' +
+                esc(d.banda_riesgo) + '" data-ancho="' + pct.toFixed(0) +
+                '" style="width:0"></div></div>') +
         "</td>" +
 
         /* monto y su recorte */
         '<td class="num mono">' +
-          (rechazado
+          (nulo
+            ? '<span class="cart-nulo">Pendiente de verificación</span>'
+            : rechazado
             ? '<span style="color:var(--critico)">Sin desembolso</span>'
             : cifraViva(d.monto_sugerido_cop, "cop") +
               (d.monto_sugerido_cop && p.monto_solicitado_cop &&
@@ -817,6 +885,15 @@
             "la planta no se cosecha entera. Y en ning\u00fan caso la se\u00f1al es un NDVI " +
             "bajo: un predio abandonado se llena de rastrojo y sigue verde. Lo que " +
             "desaparece es el patr\u00f3n." +
+          "</p>" +
+
+          '<p class="cart-nota" style="border-top:0;margin-top:var(--e2);padding-top:0">' +
+            "<strong>Sin concepto</strong> no es un rechazo. Cuando menos de la mitad " +
+            "de los \u00faltimos veinticuatro meses tienen observaci\u00f3n \u00f3ptica utilizable, " +
+            "la nube borra la se\u00f1al y la interpolaci\u00f3n aplana la serie hasta producir " +
+            "la misma firma que un predio realmente abandonado. SEEDLLITE se niega a " +
+            "opinar en ese caso: emitir un no ser\u00eda castigar al productor por el clima " +
+            "sobre su parcela, y es la clase de error que nadie ve porque parece t\u00e9cnico." +
           "</p>" +
 
         "</div>" +
