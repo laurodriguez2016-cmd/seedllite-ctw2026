@@ -700,7 +700,14 @@
 
       var rechazado = d.decision === "rechazar";
       var pct = Math.max(0, Math.min(100, (d.puntaje || 0) / 10));
-      var sinCiclo = s.ciclos_ultimos_24m === 0;
+
+      /* El conteo de ciclos se colorea según la DECISIÓN, no según sea cero.
+         Colorear el cero de rojo hacía que la tabla se contradijera: el café de
+         Pitalito da cero ciclos —es perenne, no dibuja cosechas en NDVI— y aun
+         así se aprueba con 780. Ese es el problema A del HANDOFF, que toca los
+         criterios de Laura; mientras no se cierre, la pantalla no puede
+         afirmar que cero ciclos equivale a rechazo. */
+      var sinCiclo = rechazado;
 
       return '<tr class="fila-' + esc(d.banda_riesgo) + '">' +
 
@@ -803,10 +810,13 @@
           '<p class="cart-nota">' +
             "<strong>C\u00f3mo se lee.</strong> El \u00e1rea medida es la que el sat\u00e9lite " +
             "ve cultivada, no la declarada por el productor: cuando es menor, el monto " +
-            "recomendado baja en la misma proporci\u00f3n. Cero ciclos en veinticuatro " +
-            "meses significa que la parcela dej\u00f3 de mostrar siembra y cosecha, y es " +
-            "lo que sustenta un rechazo \u2014 no un NDVI bajo: un predio abandonado se " +
-            "llena de rastrojo y sigue verde; lo que desaparece es el patr\u00f3n." +
+            "recomendado baja en la misma proporci\u00f3n. Los ciclos son cosechas " +
+            "terminadas, y su lectura depende del cultivo: en transitorios como el arroz " +
+            "o la papa, la ausencia de ciclo indica que la parcela dej\u00f3 de producir; " +
+            "en perennes como el caf\u00e9 o el cacao el ciclo no es la se\u00f1al, porque " +
+            "la planta no se cosecha entera. Y en ning\u00fan caso la se\u00f1al es un NDVI " +
+            "bajo: un predio abandonado se llena de rastrojo y sigue verde. Lo que " +
+            "desaparece es el patr\u00f3n." +
           "</p>" +
 
         "</div>" +
