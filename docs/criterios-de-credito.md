@@ -421,9 +421,63 @@ y cualquiera puede reproducir la consulta:
 
 ---
 
-`SUPUESTO:` los costos de referencia por hectárea que usa el demo (café $3,5M, arroz $3,7M,
-papa $4,5M) siguen siendo estimación del equipo. **No se citan como dato en el video.** Si
-alcanza el tiempo, se reemplazan con EVA.
+### Costos de referencia por hectárea — verificados 15-ago-2026, 19:20
+
+Se consultaron las fuentes primarias. **Dos de los cuatro cultivos quedaron con cifra oficial;
+los otros dos siguen marcados como supuesto.** Decir cuál es cuál es lo que nos protege.
+
+| Cultivo | Costo por hectárea | Fuente | Estado |
+|---|---|---|---|
+| **Arroz riego** | **$6.335.618** (I-sem) · $6.083.312 (II-sem) | Ficha de inteligencia FINAGRO — *Cultivo de arroz*, fuente MADR-DCAF / Fedearroz, datos 2019 | ✅ **Oficial** |
+| **Arroz secano** | $4.354.834 · $3.724.474 | Misma fuente | ✅ **Oficial** |
+| **Café** | Costo operacional por hectárea muy superior a $10.000.000 anuales en el estudio 2024 | *Costos de Producción de Café 2024 · Colombia*, Acuerdo Café, Bosque y Clima — J. Londoño Rendón, junio 2025 | ⚠️ **No comparable directo** |
+| **Papa** | ~$4.500.000 | — | 🔴 `SUPUESTO:` sin fuente |
+| **Cacao** | — | — | 🔴 `SUPUESTO:` sin fuente |
+
+#### 🔴 Corrección importante sobre el café
+
+Habíamos puesto **$3.500.000 por hectárea**. El estudio de costos 2024 muestra que el **costo
+operacional anual** de una hectárea de café está muy por encima de esa cifra —el estudio
+monetiza también la mano de obra familiar no remunerada, que es el rubro dominante.
+
+**Pero no son cifras comparables**, y ese es el punto:
+
+| | |
+|---|---|
+| Lo que mide el estudio | **Costo operacional anual completo** de sostener una hectárea en producción |
+| Lo que financia nuestro crédito | **Renovación de cafetal e insumos** — una inversión puntual, no el año completo |
+
+**Conclusión metodológica:** el "techo agronómico" no puede construirse sobre el costo total de
+producción, porque el crédito no financia el año completo. Solo es aplicable cuando existe una
+cifra oficial del rubro específico que se financia.
+
+#### Consecuencia: cambia la regla y cambian dos montos
+
+El techo agronómico **solo se aplica cuando hay cifra oficial del rubro financiado.** Donde no
+la hay, el monto se ajusta únicamente por **área verificada** — que es un dato propio, medido
+por nosotros, y no depende de ninguna fuente externa.
+
+| Predio | Antes | Ahora | Por qué |
+|---|---|---|---|
+| `huila-cafe` | $8.400.000 | **$9.000.000** | Se retira el techo agronómico: no había cifra oficial de costo de renovación. El monto solicitado es modesto frente al costo documentado y el área coincide. **Se aprueba completo** |
+| `tolima-arroz` | $21.800.000 | **$21.280.000** | Ajuste por área verificada: $22.000.000 × (5,9 ÷ 6,1). El techo agronómico oficial ($6.335.618 × 5,9 = $37.4M) **no restringe** |
+| `boyaca-papa` | $6.600.000 | **$6.583.000** | Ajuste por área: $7.500.000 × (1,58 ÷ 1,8) |
+| `meta-cacao` | $0 | **$0** | Rechazo |
+
+> **Esto mejora el relato, no lo debilita.** Antes teníamos tres predios con recortes explicados
+> por una cifra inventada. Ahora tenemos **un recorte, con una razón que medimos nosotros
+> mismos desde el satélite**: el área real es menor que la declarada. Ese es exactamente el
+> valor que vende SEEDLLITE.
+
+#### Rendimiento del arroz: dos fuentes, dos escalas
+
+| Fuente | Cifra | Escala |
+|---|---|---|
+| EVA 2018 | 7,69 t/ha | Municipio de Espinal |
+| FINAGRO / DANE-Fedearroz 2019 | 6,26 t/ha | **Zona Centro** (regional) |
+
+No se contradicen: Espinal es un municipio de alta productividad dentro de su zona. **Citar las
+dos y explicar la diferencia es más fuerte que citar una sola.**
 
 ---
 
