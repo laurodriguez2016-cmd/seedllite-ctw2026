@@ -97,6 +97,8 @@ enero de 2017. En el video se dice **nueve años**, no diez.
 
 ### A · El café se auto-rechazaría ⚠️ BLOQUEANTE
 
+> Se resuelve junto con B. Lee los dos antes de tocar nada.
+
 `huila-cafe` da **0 ciclos en los últimos 24 meses**, porque el café es perenne y
 no dibuja cosechas en NDVI. La regla de rechazo automático de
 `docs/criterios-de-credito.md` dice *"sin ciclo detectable en los últimos 24
@@ -120,21 +122,52 @@ patrón*) **no está sostenido por el dato**. Lo que parecía "ciclaba y se apla
 resultaron ser meses sueltos de nube en 2017-2022 que desaparecen al aplicar la
 mediana móvil.
 
-El barrido y sus resultados quedaron versionados en **`scripts/exploracion/`**
-(lee su `LEEME.md`: documenta el falso positivo y por qué se descartó). Estado:
-**Espinal devolvió 0 parcelas**; Saldaña y Villavicencio quedaron corriendo — sus
-salidas son `out_ab2_saldana.txt` y `out_ab2_villavo.txt`. Para relanzarlo:
+El barrido terminó: **147 candidatos en tres zonas (Espinal, Saldaña,
+Villavicencio) y CERO parcelas con firma de abandono.** Las salidas están
+versionadas en `scripts/exploracion/` — no lo vuelvas a correr, ya está resuelto
+en negativo.
 
-```bash
-python3 scripts/exploracion/buscar_abandono_transitorio.py espinal
-```
+**La conclusión honesta es más dura de lo que parece:** ninguna de las cuatro
+parcelas reales sostiene un rechazo. Compara los dos casos perennes:
 
-Si no aparece nada:
+| | pico | ciclos | 24m | rendimiento vs EVA |
+|---|---|---|---|---|
+| `huila-cafe` | 0,79 | 9 | 0 | 1,23 vs 1,14 — **encima** del municipal |
+| `meta-cacao` | 0,87 | 8 | 0 | 0,72 vs 0,60 — **encima** del municipal |
 
-- **Opción 1** — mover el rechazo a `boyaca-papa`, cuya área detectada real es
-  12% menor que la declarada. Esa regla sí está sostenida por dato.
-- **Opción 2** — dejar `meta-cacao` como el único predio con serie calibrada,
-  rotulado como tal. Honesto, pero cuesta explicarlo en 60 segundos.
+Son indistinguibles, y ambos se ven sanos. Los problemas A y B son en realidad
+**el mismo problema**: no hay señal en el dato que separe un cafetal en manejo de
+un cacaotal abandonado, porque la parcela de cacao que encontramos no está
+abandonada.
+
+### RECOMENDACIÓN — opción 2, con rótulo preciso
+
+Dejar `meta-cacao` como **el único predio con serie construida**, rotulado como
+tal en el JSON y en la interfaz, y los otros tres con serie real descargada.
+
+Por qué es la salida correcta y no una rendición:
+
+1. El caso de rechazo carga el argumento central del producto —*un modelo que
+   solo aprueba no es un modelo de riesgo*— y sin él el video pierde su remate.
+2. La constitución III.1 **permite expresamente** el dato calibrado siempre que
+   se rotule. Rotular uno de cuatro, en un archivo donde los otros tres dicen
+   "descargada de Copernicus", es *más* honesto que el plan original, donde los
+   cuatro eran calibrados.
+3. Es defendible dicho en voz alta: *"tres de los cuatro predios son series
+   reales; el cuarto es un caso construido para mostrar el rechazo, y está
+   rotulado en pantalla."* Un jurado técnico premia eso.
+
+Para ejecutarlo: regenerar solo ese predio con el modelo fenológico viejo
+(`generar_series_ndvi.py` tiene el perfil `meta-cacao` con `abandono_desde`), y
+añadirle al bloque de la serie un campo `origen: "calibrada"` mientras los otros
+tres llevan `origen: "copernicus"`. La app puede pintar ese rótulo sin cambios de
+esquema.
+
+**Si prefieres cero dato construido**, la alternativa es mover el rechazo a
+`boyaca-papa` por área detectada 12% menor que la declarada — pero ojo: 12% no
+dispara la regla de rechazo (que exige menos del 50%), así que habría que
+degradar el caso a `aprobar_con_ajuste` y **quedarse sin ningún rechazo en el
+demo**. Es más limpio y más débil.
 
 ### C · Los dictámenes reales no se han generado
 
@@ -278,4 +311,4 @@ detectable en 24 meses, que es cierta y sigue siendo suficiente.
 
 ---
 
-*Actualizado 15-ago-2026, 23:40 · frente MOTOR*
+*Actualizado 16-ago-2026, 00:05 · frente MOTOR*
