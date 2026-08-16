@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEEDLLITE — Puntaje de crédito agrícola desde imágenes satelitales</title>
+<meta name="description" content="Puntaje de crédito agrícola construido desde 10 años de imágenes satelitales. Hackathon Colombia Tech Week 2026.">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<header class="barra">
+  <span class="marca">SEEDLLITE</span>
+  <span class="marca-sub">Originación y monitoreo satelital de crédito agropecuario</span>
+  <nav class="barra-fin">
+    <button class="boton boton-icono" data-nav="mapa">Mapa</button>
+    <button class="boton boton-icono" data-nav="cartera">Cartera</button>
+    <button class="boton boton-icono" id="tema" aria-label="Alternar tema claro y oscuro">◐</button>
+  </nav>
+</header>
+
+<main class="lienzo" id="vista"></main>
+
+<!--
+  ORDEN DE CARGA — importa, no hay bundler.
+  El prefijo numérico de cada archivo ES su posición en esta lista.
+
+  NO cambiar a type="module" ni usar import: los ES modules están sujetos a CORS
+  y NO cargan bajo file://, lo que rompe el requisito de abrir con doble clic
+  (constitución V.4). Misma razón por la que los datos entran por <script> y no
+  por fetch(). Ver ARQUITECTURA.md §2.
+-->
+<script src="data/datos.js"></script>
+<script src="assets/10-mapa.js"></script>
+<script src="assets/20-grafica-ndvi.js"></script>
+<script src="assets/30-vistas.js"></script>
+<script src="assets/90-app.js"></script>
+
+</body>
+</html>
