@@ -478,6 +478,11 @@
     if (!destino) return;
     if (!dictamen || typeof dictamen.memorando !== "string" || !dictamen.memorando.trim()) {
       destino.innerHTML = '<span class="vacio-en-linea">Sin memorando disponible para este predio.</span>';
+      if (dictamen) {
+        host.querySelector("#pie").innerHTML =
+          '<button class="boton boton-primario" data-ir="#dictamen/' + esc(predio.id) + '">Ver dictamen disponible</button>' +
+          "<p>La salida no incluye memorando, pero conserva los datos de decisión disponibles.</p>";
+      }
       return;
     }
 
