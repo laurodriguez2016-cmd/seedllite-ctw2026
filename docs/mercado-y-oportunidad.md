@@ -13,7 +13,7 @@
 ## 1. Resumen
 
 1. Colombia tiene **2.370.099 Unidades de Producción Agropecuaria**, y el **70,4 %** de
-   ellas mide **menos de 5 hectáreas** — cerca de **1,67 millones de predios minifundistas**
+   ellas mide **menos de 5 hectáreas** — cerca de **1,67 millones de UPA minifundistas**
    (Fedesarrollo 2019, tabulando el CNA; DANE, CNA 2014, Boletín 1 definitivo).
 2. Solo el **11,6 %** de las UPA solicitó crédito para su actividad agropecuaria; el
    **88,4 % no lo solicitó**. De las que sí solicitaron, se aprobó el **89,3 %** — es decir,
@@ -125,7 +125,7 @@ solicitud y aprobación de crédito. **Entrega definitiva, Boletín 6:**
 productor logra presentarse, casi siempre le aprueban (89,3 %). El problema es que **9 de
 cada 10 no se presentan**. Un embudo con 88,4 % de abandono antes de la solicitud es un
 problema de *fricción de entrada*, no de riesgo crediticio. Eso es exactamente lo que un
-dictamen automático de $0 de costo marginal ataca.
+dictamen automático de costo marginal cercano a cero (US$0,18 por dictamen) ataca.
 
 ### 2.3 Cartera y colocaciones de FINAGRO
 
@@ -161,7 +161,7 @@ criterio es la columna `tipo_productor` sumando `valor_credito`.
 | **Subtotal pequeños** | **313.888** | **79,3 %** | **6.178,5** | **12,8 %** | **$19,7 M** |
 | Mediano | 52.556 | 13,3 % | 5.538,3 | 11,5 % | $105,4 M |
 | Grande | 29.170 | 7,4 % | 36.366,0 | 75,6 % | $1.246,7 M |
-| **Total 2025** | **395.614** | 100 % | **48.083,2** | 100 % | — |
+| **Total 2025** | **395.614** | 100 % | **48.082,7** | 100 % | — |
 
 Desglose trimestral, para que se pueda auditar archivo por archivo:
 
@@ -177,7 +177,7 @@ Desglose trimestral, para que se pueda auditar archivo por archivo:
 > <https://www.finagro.com.co/estadisticas/microdatos/credito/desembolsos-2025>
 
 **Control de calidad de nuestra propia medición.** La suma de los cuatro archivos da
-**395.614 operaciones** y **$48,083 billones**. FINAGRO comunicó oficialmente **395.614
+**395.614 operaciones** y **$48,082 billones**. FINAGRO comunicó oficialmente **395.614
 operaciones** y **$48,1 billones**. Coinciden al registro. Eso significa que el microdato
 público reconstruye exactamente el titular oficial — y que cualquier desagregación que
 hagamos sobre él hereda esa validez.
@@ -206,7 +206,7 @@ garantía ya están puestos por el Estado.
 | Campesinos y campesinas respaldados | **833.411** |
 | De ellos, acceso por primera vez al sistema financiero | **294.144** |
 | Garantías a mujeres | 347.688, movilizando $5,16 billones |
-| Pequeños y medianos entre los nuevos beneficiarios | **94 %** |
+| Pequeños productores entre los nuevos beneficiarios | **94 %** |
 | Cobertura municipal | 1.024 municipios (91 % del país) |
 | Inversión en municipios de alta pobreza | $11,4 billones (45 %) |
 
