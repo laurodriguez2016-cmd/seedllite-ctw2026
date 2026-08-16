@@ -90,8 +90,11 @@ ESQUEMA_DICTAMEN = {
                 "puntúan 36+19+23+13 = 91, el puntaje es 910. Debe cuadrar con los ejes."
             ),
         },
-        "banda_riesgo": {"type": "string", "enum": ["bajo", "medio", "alto", "rechazo"]},
-        "decision": {"type": "string", "enum": ["aprobar", "aprobar_con_ajuste", "rechazar"]},
+        "banda_riesgo": {"type": "string", "enum": ["bajo", "medio", "alto", "rechazo", "sin_concepto"],
+                         "description": "sin_concepto SOLO cuando la cobertura del dato no permite evaluar. No es una banda mala: es la ausencia de banda."},
+        "decision": {"type": "string", "enum": ["aprobar", "aprobar_con_ajuste", "rechazar",
+                                                "aplazar_por_verificacion"],
+                     "description": "aplazar_por_verificacion cuando el dato satelital no alcanza para concluir. NO es un rechazo: el expediente se remite a visita técnica."},
         "monto_sugerido_cop": {
             "type": "integer",
             "description": "Monto en pesos. 0 si la decisión es rechazar. Nunca mayor al solicitado.",
@@ -236,6 +239,30 @@ REGLAS DE RECHAZO AUTOMÁTICO — no admiten compensación entre ejes
 Cuando una de estas se activa, el dictamen la nombra como la causa, con su cifra.
 Cuando NINGUNA se activa, no se insinúa que casi se activó.
 
+LA REGLA QUE MANDA SOBRE TODAS LAS DEMÁS — cobertura insuficiente
+Si la ventana de 24 meses tiene MENOS DE 12 MESES CON OBSERVACIÓN ÓPTICA \
+UTILIZABLE, ninguna causal del eje A opera y NO se emite concepto de riesgo. La \
+decisión es `aplazar_por_verificacion`, la banda es `sin_concepto`, el puntaje es \
+0 y el monto sugerido es 0.
+
+Esto NO es un rechazo y el dictamen tiene que decirlo con todas las letras. La \
+razón importa y hay que explicarla: cuando la nubosidad borra la mitad de la \
+ventana, la interpolación aplana la serie, los ciclos dejan de detectarse y la \
+amplitud se desploma — el predio produce EXACTAMENTE la misma firma que uno \
+abandonado. Un predio nublado y un predio abandonado son indistinguibles, y el \
+sistema no puede fingir que los distingue.
+
+Rechazar un crédito porque estuvo nublado sobre la parcela es el peor error que \
+este sistema puede cometer: es invisible, se ve técnico, y le cae encima al \
+productor que menos capacidad tiene de apelarlo. Cuando el dato no alcanza, la \
+respuesta correcta no es "no": es "no sé, vaya y mire".
+
+En ese caso el memorando: dice cuántos meses se midieron de los 24, explica por \
+qué eso impide concluir, ADVIERTE que los indicadores de forma que se ven abajo \
+NO deben leerse como evidencia de abandono, y remite a visita técnica de campo \
+indicando qué habría que verificar en ella. Los ejes se puntúan en 0: no es que \
+el predio saque cero, es que no hay concepto que emitir.
+
 CONTROLES OBLIGATORIOS QUE SIEMPRE SE REPORTAN
 - Verificación RTDAF/RUPTA (Registro de Tierras Despojadas y Abandonadas \
   Forzosamente / Registro Único de Predios y Territorios Abandonados, Ley 1448 de \
@@ -336,6 +363,20 @@ def construir_prompt(predio, serie, caida_regional):
     # no significa nada: el bosque en pie tiene NDVI altisimo y produce un
     # "rendimiento" alto para un cultivo que no esta. Si el modelo lo cita como
     # favorable, aprueba un credito sobre un bosque. Hay que decirselo.
+    # Menos de 12 meses medidos en la ventana de 24: la firma de abandono y la de
+    # nubosidad son la misma, y no hay forma de separarlas. Manda sobre todo lo demas.
+    med24 = serie.get("cobertura_24m_medidos", 24)
+    aviso_cobertura = (
+        "Cobertura suficiente: las causales del eje A operan normalmente."
+        if med24 >= 12 else
+        "⚠ COBERTURA INSUFICIENTE. Con %d de 24 meses medidos NO se puede concluir sobre\n"
+        "  la actividad reciente del predio. Los indicadores de forma de más abajo —ciclos\n"
+        "  recientes y pérdida de amplitud— están contaminados por la interpolación y NO\n"
+        "  son evidencia de abandono: un predio nublado los produce iguales que uno\n"
+        "  abandonado. Aplica la regla que manda sobre todas: aplazar_por_verificacion,\n"
+        "  banda sin_concepto, puntaje 0, ejes en 0, monto 0, y remitir a visita técnica."
+        % med24)
+
     sin_actividad = (serie["ciclos_detectados"] == 0
                      or (area_dec and area_det / area_dec < 0.50))
     aviso_rendimiento = ""
@@ -400,6 +441,9 @@ Cobertura del dato: {medidos} de {totales} meses con observación óptica utiliz
 Los {interpolados} meses restantes se interpolaron por nubosidad y NO entran en
 ninguno de los indicadores de abajo.
 
+COBERTURA DE LA VENTANA DE DECISIÓN (últimos 24 meses): {med24} de 24 meses medidos.
+{aviso_cobertura}
+
 Trayectoria anual (pico, valle y amplitud de cada año):
 {anual}
 
@@ -456,6 +500,8 @@ Emite el dictamen de crédito.""".format(
         medidos=serie["cobertura_meses_medidos"],
         totales=serie["cobertura_meses_totales"],
         interpolados=serie["cobertura_meses_totales"] - serie["cobertura_meses_medidos"],
+        med24=med24,
+        aviso_cobertura=aviso_cobertura,
         anual="\n".join(resumen_anual),
         reciente=serie_reciente,
         ciclos=serie["ciclos_detectados"],
@@ -550,7 +596,7 @@ def llamar_api(prompt_usuario, api_key):
 LINEAS_OFICIALES = ("Inversión", "Capital de Trabajo", "Normalización de Cartera")
 
 
-def incoherencias(d, predio):
+def incoherencias(d, predio, serie=None):
     """
     Lo que structured outputs NO puede garantizar: que las cifras cuadren entre si.
 
@@ -560,6 +606,27 @@ def incoherencias(d, predio):
     comprueban aqui, y cuyo incumplimiento dispara un reintento.
     """
     fallas = []
+
+    # Cobertura insuficiente: el estado es obligatorio y va en bloque. Si el
+    # modelo emite un puntaje o un monto aqui, esta opinando sobre un predio que
+    # no pudo ver — que es exactamente lo que la regla existe para impedir.
+    if serie is not None and serie.get("cobertura_24m_medidos", 24) < 12:
+        med24 = serie["cobertura_24m_medidos"]
+        if d.get("decision") != "aplazar_por_verificacion":
+            fallas.append(
+                "con %d de 24 meses medidos no se puede emitir concepto: la decisión debe ser "
+                "«aplazar_por_verificacion», no «%s»" % (med24, d.get("decision")))
+        if d.get("banda_riesgo") != "sin_concepto":
+            fallas.append("con cobertura insuficiente la banda es «sin_concepto», no «%s»"
+                          % d.get("banda_riesgo"))
+        if d.get("puntaje", 0) != 0 or d.get("monto_sugerido_cop", 0) != 0:
+            fallas.append("con cobertura insuficiente el puntaje y el monto sugerido van en 0")
+        texto = " ".join([d.get("memorando", ""), d.get("recomendacion", "")]).lower()
+        if "rechaz" in texto and "no es un rechazo" not in texto and "no constituye" not in texto:
+            fallas.append(
+                "el dictamen usa lenguaje de rechazo sobre un caso de cobertura insuficiente: "
+                "aplazar por falta de dato NO es rechazar, y confundirlos castiga al productor")
+        return fallas          # el resto de invariantes no aplica a este estado
 
     for e in d.get("ejes", []):
         if e["puntaje"] > e["peso"]:
@@ -668,7 +735,7 @@ def main():
             total_in += uso.get("input_tokens", 0)
             total_out += uso.get("output_tokens", 0)
 
-            fallas = incoherencias(dictamen, predio)
+            fallas = incoherencias(dictamen, predio, series_doc["series"][pid])
             if not fallas:
                 break
             print("\n    intento %d rechazado: %s" % (intento, "; ".join(fallas)))

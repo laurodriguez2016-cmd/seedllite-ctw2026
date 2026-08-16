@@ -227,6 +227,286 @@
       ],
       "memorando": "Se recomienda al comité negar la solicitud por $18.000.000. La causal es objetiva y no admite compensación entre ejes: la verificación satelital identifica 0.5 ha con actividad agrícola dentro de un polígono declarado de 4.0 ha, es decir 12.5% del área, muy por debajo del umbral del 50%. El destino declarado —mantenimiento de cacaotal establecido— no es sostenible frente a esa medición: no hay activo productivo de la escala que respalda el monto. Se advierte expresamente que la pérdida de amplitud contra su propia historia es de solo 14.0% y que no hubo caída de vigor durante El Niño 2023-24 frente a 2.0% regional; ninguno de esos dos indicadores se lee como fortaleza, porque provienen de cobertura vegetal permanente y no de un cultivo en manejo. Por la misma razón la estimación de rendimiento de 0.73 t/ha no debe compararse con el municipal de EVA 2018 para Granada, Meta. Siendo cacao un perenne, la ausencia de ciclos de cosecha no se invoca como defecto. Los controles RTDAF/RUPTA y ambiental resultaron limpios, pero no subsanan la inconsistencia de área. Si el productor precisa el polígono efectivamente sembrado, SEEDLLITE puede reevaluar sobre el área corregida.",
       "recomendacion": "Rechazar la solicitud por área con actividad agrícola detectada de 0.5 ha frente a 4.0 ha declaradas (12.5%), con reevaluación posible únicamente si el productor delimita nuevamente el polígono sembrado."
+    },
+    "boyaca-papa-nubes": {
+      "puntaje": 0,
+      "banda_riesgo": "sin_concepto",
+      "decision": "aplazar_por_verificacion",
+      "monto_sugerido_cop": 0,
+      "linea_finagro": "Capital de Trabajo — pequeño productor",
+      "cobertura_fag_pct": 80,
+      "plazo_meses": 0,
+      "desembolso": "Sin desembolso por ahora: el expediente queda abierto y se remite a visita técnica de campo. Una vez radicada el acta de visita, el caso vuelve a comité para definir monto, plazo y tramos.",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 0
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 0
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 0
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 0
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "alerta",
+          "texto": "Cobertura óptica insuficiente en la ventana de decisión: 11 de 24 meses medidos (48 de 108 en la serie completa). No se emite concepto de riesgo; no es un hallazgo desfavorable sobre el predio."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "Los indicadores de forma —0 ciclos completos en los últimos 24 meses y pérdida de amplitud de 65,1% frente a la amplitud histórica de 0,335— están contaminados por la interpolación de 13 meses y NO deben leerse como evidencia de abandono."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Control anti-despojo RTDAF/RUPTA (Ley 1448 de 2011): sin coincidencias; el predio no figura en el registro ni tiene medida de protección vigente. Verificación ambiental del polígono sin superposición con áreas protegidas ni frontera agrícola excluida."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Área con actividad agrícola detectada por Sentinel-2 de 1,6 ha frente a 1,6 ha declaradas (desvío +0,0%); el monto solicitado de $6.800.000 se ubica muy por debajo del tope de crédito de $40.445.905 para 33 SMMLV de activos."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Antecedentes de la serie histórica —7 ciclos completos en 9 años, NDVI pico promedio de 0,76 y rendimiento estimado de 31,2 t/ha contra 30,0 t/ha municipales (EVA 2018 — VENTAQUEMADA, BOYACA — PAPA)— son consistentes, pero corresponden a años previos y no sustituyen la ventana de decisión."
+        }
+      ],
+      "memorando": "Se somete al comité un aplazamiento por verificación, no un rechazo. La ventana de decisión de 24 meses solo cuenta con 11 meses de observación óptica utilizable; los 13 restantes fueron interpolados por nubosidad, condición habitual en el altiplano de Ventaquemada. En esa situación la interpolación aplana la serie: los ciclos de siembra y cosecha dejan de detectarse y la amplitud cae, de modo que un predio nublado produce exactamente la misma firma que uno abandonado. Por eso los indicadores de forma que aparecen en el detalle —cero ciclos recientes y 65,1% de pérdida de amplitud— no constituyen evidencia de inactividad y el comité no debe leerlos así. Los ejes se puntúan en cero porque no hay concepto que emitir, no porque el predio haya sido evaluado desfavorablemente. Los antecedentes son favorables: 7 ciclos completos en 9 años, área detectada igual a la declarada, rendimiento estimado de 31,2 t/ha frente a 30,0 t/ha municipales (EVA 2018), y controles RTDAF/RUPTA y ambiental sin coincidencias. La visita técnica debe verificar siembra vigente o lote preparado, etapa fenológica, semilla y fertilizante aplicados, y calendario de los dos ciclos financiados.",
+      "recomendacion": "Aplazar por verificación —no rechazar— y remitir a visita técnica de campo que confirme actividad reciente en las 1,6 ha; con acta favorable el expediente vuelve a comité para Capital de Trabajo — pequeño productor por hasta $6.800.000 con cobertura FAG del 80%."
+    },
+    "meta-cacao-productivo": {
+      "puntaje": 900,
+      "banda_riesgo": "bajo",
+      "decision": "aprobar",
+      "monto_sugerido_cop": 16000000,
+      "linea_finagro": "Capital de Trabajo — pequeño productor",
+      "cobertura_fag_pct": 80,
+      "plazo_meses": 24,
+      "desembolso": "Tramo único, contra verificación de la cédula catastral y firma de pagaré con garantía FAG al 80%.",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 34
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 19
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 23
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 14
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "favorable",
+          "texto": "Rendimiento estimado del predio 0,63 t/ha frente a 0,6 t/ha del municipal oficial (EVA 2018 — GRANADA, META — CACAO): la estimación derivada del vigor satelital ubica el predio 5% por encima del referente municipal."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Vigor sostenido con NDVI pico promedio de 0,82 y 11 ciclos de manejo identificados en 9 años, 2 de ellos en la ventana de decisión; pérdida de amplitud de apenas 5,7% frente a su propia historia (0,421 histórica vs. 0,397 en 24 meses), muy por debajo del umbral de 40%."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Resiliencia verificada en El Niño 2023-24: caída de vigor de 0,0% contra 1,6% de caída promedio regional; la amplitud de 2023 (0,66) y de 2025 (0,72) son las dos más altas de la serie."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Área declarada 4,5 ha contra 4,5 ha con actividad agrícola detectada por Sentinel-2 (desvío +0,0%); el monto solicitado equivale a $3.555.556 por hectárea, consistente con mantenimiento de cacaotal en producción, y a 22,5% del tope de crédito del productor ($71.086.742)."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "Control anti-despojo RTDAF/RUPTA (Ley 1448 de 2011): sin coincidencias ni medida de protección vigente. Verificación ambiental del polígono sin superposición con áreas protegidas. Se reporta como limitación que 15 de 108 meses de la serie se interpolaron por nubosidad y no alimentan los indicadores."
+        }
+      ],
+      "memorando": "Se somete a consideración del comité la solicitud del señor Aníbal Reyes Ospina por $16.000.000 para mantenimiento de cacaotal en producción e insumos, sobre 4,5 ha en la vereda Canaguaro, Granada, Meta. La cobertura del dato es adecuada: 93 de 108 meses con observación óptica utilizable y 21 de 24 en la ventana de decisión, de modo que los indicadores del eje de capacidad de pago operan con normalidad. Tratándose de un cultivo perenne, la lectura se centra en vigor sostenido y rendimiento comparado: el NDVI pico promedio de 0,82 y la pérdida de amplitud de solo 5,7% frente a la historia del propio predio indican manejo continuo, y el rendimiento estimado de 0,63 t/ha supera el municipal oficial de 0,6 t/ha (EVA 2018). El comportamiento durante El Niño 2023-24, sin caída de vigor frente al 1,6% regional, constituye evidencia observada de resiliencia. El área detectada coincide íntegramente con la declarada y el monto solicitado representa 22,5% del tope aplicable al productor. Se recuerda al comité que SEEDLLITE no evalúa centrales de riesgo, endeudamiento con otras entidades ni garantías distintas del FAG: esa verificación corresponde al intermediario antes del desembolso.",
+      "recomendacion": "Aprobar $16.000.000 en línea de Capital de Trabajo — pequeño productor a 24 meses con cobertura FAG del 80%, condicionado a la verificación de centrales de riesgo y endeudamiento agregado por parte del intermediario."
+    },
+    "meta-cacao-sin-manejo": {
+      "puntaje": 750,
+      "banda_riesgo": "bajo",
+      "decision": "aprobar_con_ajuste",
+      "monto_sugerido_cop": 10300000,
+      "linea_finagro": "Inversión — pequeño productor",
+      "cobertura_fag_pct": 80,
+      "plazo_meses": 84,
+      "desembolso": "Dos tramos: 60% al desembolso inicial ($6.180.000) y 40% ($4.120.000) contra verificación en campo de la renovación efectiva del cacaotal y del control de sombrío sobre las 2,61 ha con actividad detectada.",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 28
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 13
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 23
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 11
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "favorable",
+          "texto": "Rendimiento estimado del predio 0,67 t/ha frente a 0,6 t/ha del municipal oficial (EVA 2018 — GRANADA, META — CACAO): estimación derivada del vigor satelital, 11,7% por encima de la referencia municipal."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Durante El Niño 2023-24 la caída de vigor del predio fue de 0,0% contra 1,6% de caída promedio regional; resiliencia verificada sobre 11 de 12 meses medidos en 2023 y 11 de 12 en 2024."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "Pérdida de amplitud de 64,5% contra su propia historia (histórica 0,248 → 0,088 en los últimos 24 meses; amplitud 2025 de 0,04), consistente con una fase de renovación y regulación de sombrío, con NDVI pico promedio sostenido en 0,84."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "Área con actividad agrícola detectada de 2,61 ha sobre 3,8 ha declaradas (desvío -31,3%); el monto se ajusta en proporción al área efectivamente verificada."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "RTDAF/RUPTA (Ley 1448 de 2011): sin coincidencias, sin medida de protección vigente. Verificación ambiental del polígono: sin superposición con áreas protegidas ni frontera agrícola excluida."
+        }
+      ],
+      "memorando": "Se somete a consideración del comité la solicitud de Gilma Peñaloza Arias por $15.000.000 para renovación de cacaotal y control de sombrío. La cobertura del dato es adecuada: 94 de 108 meses con observación óptica utilizable y 21 de 24 meses medidos en la ventana de decisión, por lo que los indicadores del eje de capacidad de pago operan sin reservas. Tratándose de un cultivo perenne, la ausencia de ciclos en los últimos 24 meses es el comportamiento esperado y no se computa como defecto. La pérdida de amplitud de 64,5% frente a la historia del propio predio es la única señal adversa, pero no configura causal: el rendimiento estimado, 0,67 t/ha, supera el municipal oficial de 0,6 t/ha (EVA 2018 — Granada, Meta — Cacao) y el pico promedio se mantiene en 0,84, patrón compatible con la renovación que el crédito precisamente financia. El comportamiento durante El Niño 2023-24 fue de 0,0% de caída frente a 1,6% regional. El área con actividad detectada, 2,61 ha sobre 3,8 declaradas, obliga a ajustar el monto a $10.300.000. Se recuerda que SEEDLLITE no evalúa centrales de riesgo, endeudamiento con terceros ni garantías: esa verificación corresponde al intermediario.",
+      "recomendacion": "Aprobar con ajuste por $10.300.000 en Inversión — pequeño productor, con FAG al 80% y segundo tramo condicionado a la verificación en campo de la renovación sobre las 2,61 ha detectadas."
+    },
+    "boyaca-papa-media": {
+      "puntaje": 730,
+      "banda_riesgo": "bajo",
+      "decision": "aprobar",
+      "monto_sugerido_cop": 8200000,
+      "linea_finagro": "Capital de Trabajo — pequeño productor",
+      "cobertura_fag_pct": 80,
+      "plazo_meses": 12,
+      "desembolso": "Dos tramos: 60% ($4.920.000) al perfeccionamiento del pagaré y 40% ($3.280.000) a los cuatro meses, contra confirmación satelital de emergencia del cultivo en el polígono verificado (repunte de NDVI sobre el valle de siembra).",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 29
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 18
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 14
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 12
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "favorable",
+          "texto": "Cultivo transitorio con ciclos verificados: 6 ciclos completos entre 2017 y 2025 y 1 ciclo completo dentro de la ventana de decisión de 24 meses; no se activa la causal de ausencia de ciclo en transitorios."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Área declarada 2.1 ha frente a 2.1 ha con actividad agrícola detectada por Sentinel-2 (desvío +0.0%): el activo productivo queda verificado sin ajuste de monto."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Pérdida de amplitud de apenas 10.1% frente a su propia historia (0.357 histórica contra 0.321 en los últimos 24 meses): el patrón de siembra y cosecha se mantiene, con pico promedio de 0.79."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "Durante El Niño 2023-24 el predio perdió 6.5% de vigor contra 1.6% del promedio regional, es decir cuatro veces la caída de su entorno; la amplitud de 2023 bajó a 0.21 y la de 2025 a 0.20, las dos más bajas de la serie."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Controles de originación en firme: RTDAF/RUPTA (Ley 1448 de 2011) sin coincidencias y sin medida de protección vigente; polígono sin superposición con áreas protegidas ni frontera agrícola excluida."
+        }
+      ],
+      "memorando": "Se recomienda aprobar el crédito de capital de trabajo por $8.200.000 solicitado por el señor Efraín Buitrago Sáenz sobre 2.1 hectáreas de papa Diacol capiro en la vereda Parroquia Vieja, Ventaquemada. El monto equivale al 17% del tope de crédito estimado para el productor ($47.799.706 sobre activos de 39 SMMLV) y a $3.905.000 por hectárea verificada, proporción consistente con un ciclo de siembra de papa. La serie Sentinel-2 muestra 6 ciclos completos en nueve años y 1 ciclo dentro de la ventana de decisión, con pérdida de amplitud de solo 10.1% frente a su propia historia: el predio sigue sembrándose. El rendimiento estimado a partir del vigor satelital, 32.24 t/ha, se ubica sobre el municipal oficial de 30.0 t/ha (EVA 2018 — VENTAQUEMADA, BOYACA — PAPA). La reserva del dictamen es climática: la caída de vigor de 6.5% durante El Niño 2023-24 cuadruplica la caída regional de 1.6%, lo que sugiere menor resiliencia hídrica que sus vecinos y sustenta el desembolso fraccionado. Se advierte además que la cobertura óptica es de 64 de 108 meses y 16 de 24 en la ventana de decisión: los indicadores son sólidos pero se calculan sobre una serie con nubosidad alta, propia del altiplano boyacense.",
+      "recomendacion": "Aprobar $8.200.000 en línea Capital de Trabajo — pequeño productor a 12 meses con cobertura FAG del 80%, condicionando el segundo tramo del 40% a la confirmación satelital de emergencia del cultivo, dada la mayor sensibilidad del predio al déficit hídrico observada en El Niño 2023-24."
+    },
+    "meta-cacao-vigor-bajo": {
+      "puntaje": 420,
+      "banda_riesgo": "alto",
+      "decision": "rechazar",
+      "monto_sugerido_cop": 0,
+      "linea_finagro": "",
+      "cobertura_fag_pct": 0,
+      "plazo_meses": 0,
+      "desembolso": "No aplica: no se origina desembolso.",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 14
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 3
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 18
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 7
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "critico",
+          "texto": "Área con actividad agrícola detectada por Sentinel-2: 1,84 ha frente a 4,2 ha declaradas, es decir 43,8% del polígono (desvío -56,2%). Al ubicarse por debajo del umbral del 50% se activa la causal de rechazo automático por inconsistencia de área."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "El rendimiento estimado de 0,71 t/ha frente al municipal oficial de 0,60 t/ha (EVA 2018 — Granada, Meta — Cacao) NO es interpretable en este expediente: se deriva del escalamiento del vigor NDVI y el polígono no presenta actividad agrícola suficiente, por lo que la vegetación permanente (bosque o rastrojo, NDVI pico promedio 0,87) infla la cifra. No se computa como evidencia favorable."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "La pérdida de amplitud contra su propia historia es de 33,1% (histórica 0,133 vs. 0,089 en los últimos 24 meses), por debajo del umbral de 40%: la causal de rechazo aplicable a perennes —pérdida ≥40% junto con rendimiento inferior al municipal— NO se activa. El rechazo obedece exclusivamente al criterio de área."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Comportamiento climático verificado: caída de vigor de 0,0% durante El Niño 2023-24 frente a 1,6% de caída promedio regional, con picos anuales estables entre 0,84 y 0,89 en los nueve años de serie (94 de 108 meses medidos)."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Control anti-despojo RTDAF/RUPTA (Ley 1448 de 2011): sin coincidencias, el predio no figura en el registro ni tiene medida de protección vigente. Verificación ambiental del polígono sin superposición con áreas protegidas ni frontera agrícola excluida."
+        }
+      ],
+      "memorando": "Se recomienda al comité no originar la operación por $14.500.000 solicitada. La causal es única y objetiva: sobre el polígono declarado de 4,2 ha, la rejilla de análisis identifica apenas 1,84 ha con actividad agrícola verificable, equivalentes al 43,8% del área, por debajo del umbral del 50% que la política define como rechazo automático sin compensación entre ejes. El resto del polígono está vegetado pero sin dinámica de manejo, firma propia de bosque o rastrojo. Por esa misma razón el rendimiento estimado de 0,71 t/ha frente a 0,60 t/ha del municipio (EVA 2018 — Granada, Meta — Cacao) no puede leerse como fortaleza: la estimación escala vigor NDVI y la vegetación permanente lo eleva artificialmente. Se deja constancia de que, tratándose de un cultivo perenne, la ausencia de ciclos en la ventana reciente no se computa como defecto y la pérdida de amplitud de 33,1% no alcanza el umbral de 40%; la resiliencia climática observada es favorable (0,0% de caída en El Niño 2023-24 contra 1,6% regional). Los controles RTDAF/RUPTA y ambiental resultaron limpios. El expediente puede reconsiderarse si el productor reformula el área y el monto sobre las hectáreas efectivamente en producción, con soporte de linderos del IGAC.",
+      "recomendacion": "Rechazar la solicitud por área con actividad agrícola detectada equivalente al 43,8% de la declarada, con posibilidad de reconsideración si se reformula el monto sobre las 1,84 ha efectivamente productivas y se acredita el área con delimitación del IGAC."
     }
   }
 }

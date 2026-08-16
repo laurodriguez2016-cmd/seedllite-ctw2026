@@ -39,11 +39,17 @@ def evaluar(token, lat, lon, area_ha):
     recientes = [p for p in puntos if p["fecha"] >= "2024-01"]
     perdida, a_hist, a_rec = ing.perdida_amplitud(puntos)
 
+    # La cobertura de la ventana de 24 meses decide si la causal puede operar:
+    # con menos de 12 meses medidos el sistema no rechaza, declara que no sabe.
+    medidos_24m = sum(1 for p in recientes if not p["interpolado"])
+    valores_24m = [p["ndvi"] if not p["interpolado"] else None for p in recientes]
+
     return {
         "medidos": medidos,
         "totales": len(puntos),
+        "medidos_24m": medidos_24m,
         "ciclos": ing.contar_ciclos(valores_medidos),
-        "ciclos_24m": ing.contar_ciclos([p["ndvi"] for p in recientes], minimo=6),
+        "ciclos_24m": ing.contar_ciclos(valores_24m, minimo=6),
         "pico": ing.pico_promedio(puntos),
         "amp_hist": a_hist,
         "amp_rec": a_rec,
@@ -93,10 +99,16 @@ def main():
             print("  (%.4f, %.4f)  descartada: %s" % (lat, lon, e))
             continue
 
-        marca = "◀ FIRMA DE ABANDONO" if firma_abandono(r) else ""
-        print("  (%.4f, %.4f)  %d/%d meses · ciclos %d → %d en 24m · "
+        if r["medidos_24m"] < 12:
+            marca = "◀ COBERTURA INSUFICIENTE — el sistema no puede decidir"
+        elif firma_abandono(r):
+            marca = "◀ FIRMA DE ABANDONO"
+        else:
+            marca = ""
+        print("  (%.4f, %.4f)  %d/%d meses (24m: %d/24) · ciclos %d → %d · "
               "amp %.3f → %.3f (−%.1f%%) · pico %.2f  %s"
-              % (lat, lon, r["medidos"], r["totales"], r["ciclos"], r["ciclos_24m"],
+              % (lat, lon, r["medidos"], r["totales"], r["medidos_24m"],
+                 r["ciclos"], r["ciclos_24m"],
                  r["amp_hist"], r["amp_rec"], r["perdida_pct"], r["pico"], marca))
         if firma_abandono(r):
             hallazgos.append(((lat, lon), r))
