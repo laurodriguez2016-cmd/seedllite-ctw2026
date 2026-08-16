@@ -14,7 +14,7 @@ No se reabre la discusión de concepto ni de track.
 ## El producto en una frase
 
 > Un pequeño productor sin extractos bancarios sí tiene historia financiera: está escrita
-> en 10 años de imágenes satelitales de su parcela. SEEDLLITE la lee y la convierte en un
+> en 10 años de imágenes satelitales de su lote. SEEDLLITE la lee y la convierte en un
 > dictamen de crédito que un banco puede firmar.
 
 ## Idioma

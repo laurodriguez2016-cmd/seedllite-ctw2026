@@ -30,7 +30,7 @@ la máquina para todos por igual — **el criterio no.**
 **SEEDLLITE** — puntaje de crédito agrícola construido desde imágenes satelitales.
 
 > Un pequeño productor sin extractos bancarios sí tiene historia financiera: está escrita en
-> 10 años de imágenes satelitales de su parcela. SEEDLLITE la lee y la convierte en un
+> 10 años de imágenes satelitales de su lote. SEEDLLITE la lee y la convierte en un
 > dictamen de crédito que un banco puede firmar.
 
 **No prestamos dinero. Vendemos la decisión.** El capital ya existe (FINAGRO) y la garantía

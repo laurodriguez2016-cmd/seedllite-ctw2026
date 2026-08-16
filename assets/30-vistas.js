@@ -112,7 +112,7 @@
        rechazo. Cuando menos de 12 de los últimos 24 meses tienen observación
        óptica, la interpolación aplana la serie y produce la misma firma que un
        predio abandonado de verdad. Negarle el crédito a ese productor sería
-       castigarlo porque estuvo nublado sobre su parcela. */
+       castigarlo porque estuvo nublado sobre su lote. */
     aplazar_por_verificacion: "Aplazar por verificación"
   };
 
@@ -226,7 +226,7 @@
 
     /* La rejilla de medición del área, celda por celda.
        Es el otro extremo del zoom que arranca en el mapa: allá el país era una
-       malla de celdas, aquí la parcela es una malla de 16. Y a diferencia de la
+       malla de celdas, aquí el lote es una malla de 16. Y a diferencia de la
        malla del mapa, ESTA sí lleva color de dato, porque el dato existe:
        predios.json trae el NDVI mediano y la amplitud medidos en cada celda, y
        la bandera de si califica como agrícola con los umbrales declarados.
@@ -388,7 +388,7 @@
             : "") +
 
           /* El fotograma final de la secuencia que arranca en el mapa: la
-             parcela, ya no como imagen, sino como las 16 celdas que el motor
+             lote, ya no como imagen, sino como las 16 celdas que el motor
              midió una por una. */
           rejilla +
 
@@ -971,7 +971,7 @@
             "ve cultivada, no la declarada por el productor: cuando es menor, el monto " +
             "recomendado baja en la misma proporci\u00f3n. Los ciclos son cosechas " +
             "terminadas, y su lectura depende del cultivo: en transitorios como el arroz " +
-            "o la papa, la ausencia de ciclo indica que la parcela dej\u00f3 de producir; " +
+            "o la papa, la ausencia de ciclo indica que el lote dej\u00f3 de producir; " +
             "en perennes como el caf\u00e9 o el cacao el ciclo no es la se\u00f1al, porque " +
             "la planta no se cosecha entera. Y en ning\u00fan caso la se\u00f1al es un NDVI " +
             "bajo: un predio abandonado se llena de rastrojo y sigue verde. Lo que " +
@@ -984,7 +984,7 @@
             "la nube borra la se\u00f1al y la interpolaci\u00f3n aplana la serie hasta producir " +
             "la misma firma que un predio realmente abandonado. SEEDLLITE se niega a " +
             "opinar en ese caso: emitir un no ser\u00eda castigar al productor por el clima " +
-            "sobre su parcela, y es la clase de error que nadie ve porque parece t\u00e9cnico." +
+            "sobre su lote, y es la clase de error que nadie ve porque parece t\u00e9cnico." +
           "</p>" +
 
         "</div>" +

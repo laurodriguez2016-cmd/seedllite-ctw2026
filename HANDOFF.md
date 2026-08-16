@@ -34,7 +34,7 @@ capturas y video.
 ### El rechazo ya no es por abandono, es por área — y es mejor así
 
 Se buscó el cacaotal abandonado en cuatro zonas y no existe. Las tres candidatas
-que pasaron los filtros resultaron ser parcelas con la mitad de los últimos dos
+que pasaron los filtros resultaron ser lotes con la mitad de los últimos dos
 años sin observación óptica: **en el trópico andino la firma de abandono y la de
 nubosidad son indistinguibles.** El recorrido completo está en
 `scripts/exploracion/LEEME.md` y vale la pena leerlo antes del video.
@@ -53,7 +53,7 @@ dudarlo. Lo que no tiene es dinámica de manejo.
 1. **`ciclos_ultimos_24m` se calculaba sobre datos interpolados** mientras
    `ciclos_detectados` sí los excluía. Era la métrica que dispara el rechazo
    automático: se negaba crédito a un productor por haber estado nublado sobre su
-   parcela. Ahora `criterios-de-credito.md` exige 12 meses medidos antes de dejar
+   lote. Ahora `criterios-de-credito.md` exige 12 meses medidos antes de dejar
    operar la causal.
 2. **`area_detectada_ha` estaba escrita a mano** en los cuatro predios y ningún
    script la calculaba. `scripts/medir_area.py` la mide con una rejilla 4×4. El
@@ -68,7 +68,7 @@ sistema y encontró cómo se equivocaba.**
 ## 1. Qué es esto, en treinta segundos
 
 Un pequeño productor sin extractos bancarios sí tiene historia financiera: está
-escrita en años de imágenes satelitales de su parcela. SEEDLLITE la lee y la
+escrita en años de imágenes satelitales de su lote. SEEDLLITE la lee y la
 convierte en un **dictamen de crédito** que un comité de banco puede firmar.
 
 No prestamos plata. El capital ya existe (FINAGRO) y la garantía estatal también
@@ -125,7 +125,7 @@ Una petición por predio a la Statistical API de Sentinel Hub, 108 meses
 | `meta-cacao` | 89/108 | 8 | **0** | Perenne y plano. **Ver problema abierto B** |
 
 Coordenadas actuales (re-elegidas por barrido contra dato real; las originales
-eran inventadas y tres de cuatro no caían sobre parcelas agrícolas):
+eran inventadas y tres de cuatro no caían sobre lotes agrícolas):
 
 ```
 huila-cafe     1.8834, -76.0621
@@ -299,7 +299,7 @@ entero, y apoyado en medición:**
 
 Y si sobran diez segundos, el remate que ningún otro equipo va a tener:
 
-> *"Encontramos un sesgo en nuestro propio sistema: rechazaba parcelas por haber
+> *"Encontramos un sesgo en nuestro propio sistema: rechazaba lotes por haber
 > estado nubladas. Lo corregimos y lo dejamos escrito en el repositorio."*
 
 Eso último es verificable en `scripts/exploracion/LEEME.md` y en el commit que

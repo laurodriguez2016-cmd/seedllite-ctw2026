@@ -89,7 +89,7 @@ def main():
     # Un solo token para todo el lote: pedirlo por candidato golpea el endpoint
     # de autenticacion y lo tumba a mitad del barrido.
     token = ing.obtener_token()
-    print("Copernicus Data Space · token OK · %.1f ha por parcela\n" % area)
+    print("Copernicus Data Space · token OK · %.1f ha por lote\n" % area)
 
     hallazgos = []
     for lat, lon in puntos:

@@ -18,7 +18,7 @@ Se obtienen creando un cliente OAuth en
 QUE HACE, EN UNA FRASE
 ----------------------
 Para cada predio manda su poligono a la Statistical API de Sentinel Hub, que
-calcula el NDVI pixel a pixel sobre la parcela y devuelve la MEDIANA MENSUAL de
+calcula el NDVI pixel a pixel sobre el lote y devuelve la MEDIANA MENSUAL de
 los 108 meses de la serie. No se descarga ni una imagen: el calculo ocurre del
 lado de Copernicus y vuelven solo los estadisticos. Una peticion por predio,
 unos 3 segundos cada una.
@@ -239,7 +239,7 @@ def pedir_serie(token, lat, lon, area_ha):
 
         total = est.get("sampleCount", 0)
         sin_dato = est.get("noDataCount", 0)
-        # Fraccion de la parcela que el SCL descarto ese mes. ESTO es la nubosidad:
+        # Fraccion del lote que el SCL descarto ese mes. ESTO es la nubosidad:
         # no un numero aleatorio, una medicion.
         nubosidad = (sin_dato / float(total)) if total else 1.0
         filas.append((mes, round(mediana, 3), round(nubosidad, 2)))
@@ -489,7 +489,7 @@ def main():
         # causal de rechazo automatico, y en una ventana con mucha nube la
         # interpolacion aplana la serie, mata los cruces de umbral y devuelve 0.
         # Es decir: se rechazaba a un productor porque estuvo nublado sobre su
-        # parcela. En un sistema que decide sobre credito eso no es un bug de
+        # lote. En un sistema que decide sobre credito eso no es un bug de
         # calculo, es una negacion de credito sin causa.
         valores_24m = [p["ndvi"] if not p["interpolado"] else None for p in recientes]
         medidos_24m = sum(1 for p in recientes if not p["interpolado"])
@@ -538,7 +538,7 @@ def main():
             "todos los agregados —ciclos, pico, rendimiento, caída ENSO— se calculan "
             "únicamente sobre meses medidos. El rendimiento estimado es una estimación "
             "relativa anclada al rendimiento municipal oficial de EVA, con el método "
-            "declarado en el mismo script. Los productores son ficticios; las parcelas "
+            "declarado en el mismo script. Los productores son ficticios; los lotes "
             "y sus series son reales."),
         "fuente_rendimiento": eva["fuente"],
         "caida_enso_regional_pct": caida_regional,

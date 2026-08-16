@@ -285,7 +285,7 @@ de producto. Nueve años medidos valen más que diez con uno inventado.
 
 **Las coordenadas se eligieron contra el dato, no en un mapa.** Las originales
 eran "ubicaciones plausibles" inventadas y tres de las cuatro no caían sobre
-parcelas agrícolas: NDVI plano entre 0,13 y 0,28 durante nueve años, o sea suelo
+lotes agrícolas: NDVI plano entre 0,13 y 0,28 durante nueve años, o sea suelo
 desnudo. Se barrió una rejilla sobre cada zona productora corriendo la serie real
 de cada candidato, y se eligieron las que muestran la fenología del cultivo
 declarado.

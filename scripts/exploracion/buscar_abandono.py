@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Busca la firma del ABANDONO en datos reales: una parcela que ciclaba y se aplano.
+Busca la firma del ABANDONO en datos reales: un lote que ciclaba y se aplano.
 
 Criterio duro:
   - ciclos(2017-2022) >= 5          -> hubo actividad agricola verificable
@@ -127,7 +127,7 @@ for dla in ks:
         if n % 25 == 0:
             print("  ... %d/%d revisados, %d hallazgos" % (n, len(ks) ** 2, len(hallazgos)))
 
-print("\n=== %d PARCELAS CON FIRMA DE ABANDONO ===" % len(hallazgos))
+print("\n=== %d LOTES CON FIRMA DE ABANDONO ===" % len(hallazgos))
 hallazgos.sort(key=lambda h: (-h[3], h[4]))
 for lat, lon, med, cv, an, mn, s in hallazgos[:4]:
     print("\n(%.4f, %.4f)  medidos=%d  ciclos 2017-22=%d  amplitud 24-25=%.2f  ndvi 24-25=%.2f"

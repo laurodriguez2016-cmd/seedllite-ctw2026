@@ -86,7 +86,7 @@ reemplazamos con satélite"*. Eso sonaba a rodeo ingenioso.
 | La norma dice | SEEDLLITE hace |
 |---|---|
 | La entidad **debe** contar con una metodología que **compense las deficiencias de información** del deudor informal | Exactamente eso: sustituye el balance ausente por evidencia satelital |
-| La información **podrá obtenerse y documentarse en el lugar donde se desarrolla la actividad económica** | Obtiene y documenta información **en la parcela**, que es el lugar donde se desarrolla la actividad |
+| La información **podrá obtenerse y documentarse en el lugar donde se desarrolla la actividad económica** | Obtiene y documenta información **en el lote**, que es el lugar donde se desarrolla la actividad |
 
 > **No estamos esquivando la regulación. Estamos construyendo la metodología que la regulación
 > lleva veinte años exigiendo, y que nadie construyó porque visitar cada finca no es rentable.**
@@ -174,13 +174,13 @@ dictamen declara la limitación y remite a visita técnica.
 
 Esto no es una excepción de conveniencia, es la corrección de un fallo real que se
 encontró midiendo. En el trópico andino la nubosidad borra entre 19 y 33 de los 108
-meses, y no se reparte pareja: hay parcelas con la mitad de los últimos dos años sin
+meses, y no se reparte pareja: hay lotes con la mitad de los últimos dos años sin
 una sola observación. Sobre una ventana así, la interpolación aplana la serie, los
 cruces de umbral desaparecen y el detector devuelve cero ciclos — **exactamente el
 mismo resultado que produce un predio abandonado.**
 
 > **Un predio nublado y un predio abandonado no se pueden distinguir, y el sistema no
-> puede fingir que sí.** Rechazar un crédito porque estuvo nublado sobre la parcela es
+> puede fingir que sí.** Rechazar un crédito porque estuvo nublado sobre el lote es
 > el peor error que este producto puede cometer: es invisible, se ve técnico, y le
 > cae encima al productor que menos capacidad tiene de apelarlo. Cuando el dato no
 > alcanza, la respuesta correcta no es "no" — es "no sé, vaya y mire".
@@ -190,7 +190,7 @@ ninguna sola distingue un cafetal en manejo de uno abandonado:
 
 1. `perdida_amplitud_pct >= 40` — el predio perdió el ritmo de su propio manejo (poda,
    renovación, recolección) frente a su historia previa. **No se compara contra otros predios,
-   se compara contra sí mismo**, que es lo único honesto cuando cada parcela tiene su altitud,
+   se compara contra sí mismo**, que es lo único honesto cuando cada lote tiene su altitud,
    su variedad y su sombrío.
 2. `rendimiento_estimado_t_ha < rendimiento_municipal_eva_t_ha` — y además rinde por debajo de
    su municipio según la cifra oficial de EVA.

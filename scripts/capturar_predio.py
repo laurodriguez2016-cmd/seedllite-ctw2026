@@ -61,7 +61,7 @@ LADO_PX = 640          # resolución de la imagen descargada
 # Cuánto encuadre alrededor del predio (1 = justo el borde). Se abre a 3,5 a
 # propósito: un predio de 4 ha mide 200 m de lado, o sea 20 píxeles nativos de
 # Sentinel-2. Encuadrado justo se ve una mancha; encuadrado ancho se ve el bloque
-# de bosque CONTRA las parcelas sembradas del vecino, que es exactamente el
+# de bosque CONTRA los lotes sembradas del vecino, que es exactamente el
 # contraste que sostiene el rechazo. El contexto no es decoración: es el argumento.
 MARGEN = 3.5
 

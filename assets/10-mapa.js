@@ -461,7 +461,7 @@
    *
    * No es un adorno de transición. Es el argumento del producto contado con el
    * encuadre: el país es una malla de celdas, se entra a UNA de ellas, y del
-   * otro lado está la parcela con su rejilla de medición de 10 m. País →
+   * otro lado está el lote con su rejilla de medición de 10 m. País →
    * celda → predio, sin corte.
    *
    * La curva es de entrada (acelera) porque una cámara que se lanza hacia algo
@@ -498,7 +498,7 @@
       ].map(function (n) { return n.toFixed(1); }).join(" "));
 
       /* La malla y el contorno se disuelven mientras se entra: al final solo
-         queda la celda de destino, que es la que se convierte en la parcela. */
+         queda la celda de destino, que es la que se convierte en el lote. */
       if (malla) { malla.style.opacity = (1 - a * 0.92).toFixed(2); }
       if (pais) { pais.style.opacity = (1 - a).toFixed(2); }
       svg.style.opacity = (1 - Math.max(0, (a - 0.6) / 0.4)).toFixed(2);

@@ -30,5 +30,5 @@ vez de sobre el video ya armado.
 | 08 | `#cartera` | 6 | La cartera completa: nueve expedientes |
 
 El orden no es el de la aplicación, es el de la historia: primero el país, después la
-parcela, después la evidencia, después el veredicto. El plano del rechazo va tarde porque
+lote, después la evidencia, después el veredicto. El plano del rechazo va tarde porque
 es el remate, y el de "sin concepto" va al final porque es lo que nos diferencia.

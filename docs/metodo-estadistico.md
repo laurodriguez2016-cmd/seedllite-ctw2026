@@ -268,7 +268,7 @@ arregla eso.
 > el sesgo de nubosidad estacional, que queda declarado y no cuantificado.
 >
 > `SUPUESTO A VERIFICAR:` cuantificar ese sesgo exige contrastar contra una fuente que sí vea
-> bajo nube —Sentinel-1 (radar, todo tiempo)— sobre las mismas parcelas. No se hizo. Es la
+> bajo nube —Sentinel-1 (radar, todo tiempo)— sobre las mismas lotes. No se hizo. Es la
 > primera línea de trabajo posterior al hackathon.
 
 ---
@@ -760,7 +760,7 @@ sus dos umbrales declarados: es una constante escondida en el denominador.**
 
 > `SUPUESTO A VERIFICAR — prioridad máxima:` `VIGOR_REFERENCIA = 0,72` no tiene fuente. Bajo la
 > regla del proyecto debería ir marcada como supuesto en el dictamen o sustituirse por una
-> referencia derivada del propio dato —por ejemplo, el percentil de vigor de las parcelas del
+> referencia derivada del propio dato —por ejemplo, el percentil de vigor de los lotes del
 > mismo cultivo y municipio—, que es una cantidad medible. Mientras no se resuelva, **todo
 > `rendimiento_estimado_t_ha` del sistema es una estimación anclada a un número sin fuente**, y
 > el README no puede afirmar que no hay una tercera categoría entre «oficial» y «medido por
@@ -869,9 +869,9 @@ proporcionalmente menor.
 | **Poder discriminante del modelo (AUC, KS, Gini)** | Requiere etiquetas de resultado. No hay ninguna. No existe ni el conjunto de validación. |
 | **Que el puntaje esté calibrado** | Nunca se contrastó contra un resultado observado. No hay curva de calibración posible. |
 | **Que la caída de NDVI en El Niño 2023-24 fue causada por El Niño** | Es coincidencia temporal en una ventana definida a priori. Una caída puede ser plaga, cambio de cultivo o manejo. `criterios-de-credito.md` §8 ya lo declara como correlación, no causalidad; la estadística no lo mejora. |
-| **Que `rendimiento_estimado_t_ha` mide producción** | Es una reescala del rendimiento municipal de EVA por un cociente de vigor, anclada además a `VIGOR_REFERENCIA = 0,72`, constante sin fuente (§4.5). Es un **índice relativo**, no una medición de toneladas. Nunca se ha contrastado contra una producción reportada de estas parcelas. |
+| **Que `rendimiento_estimado_t_ha` mide producción** | Es una reescala del rendimiento municipal de EVA por un cociente de vigor, anclada además a `VIGOR_REFERENCIA = 0,72`, constante sin fuente (§4.5). Es un **índice relativo**, no una medición de toneladas. Nunca se ha contrastado contra una producción reportada de estas lotes. |
 | **Causal 3: «cultivo detectado no corresponde al declarado»** | **No hay clasificador de cultivos en el sistema.** La causal está enunciada en `criterios-de-credito.md` §5 pero **ninguna función la puede evaluar**. Su tasa de acierto no es baja: es indefinida. Debe declararse como no implementada. |
-| **Que 9 predios permitan estimar tasas de error del sistema** | Nueve casos, de los cuales cinco son variantes construidas de dos parcelas base. Cualquier «tasa de acierto» sobre esta muestra es descriptiva de estos nueve, no del método. |
+| **Que 9 predios permitan estimar tasas de error del sistema** | Nueve casos, de los cuales cinco son variantes construidas de dos lotes base. Cualquier «tasa de acierto» sobre esta muestra es descriptiva de estos nueve, no del método. |
 | **Que los intervalos de §1 cubran la incertidumbre total** | Cubren el muestreo de los meses observados. No cubren el sesgo de nubosidad estacional (§1.9), ni el error de georreferenciación del polígono, ni la mezcla espectral dentro del píxel de 10 m. |
 | **Que el intervalo de Wilson cubra la incertidumbre del área** | Es cota inferior: las 16 celdas están espacialmente correlacionadas (§3.6). |
 

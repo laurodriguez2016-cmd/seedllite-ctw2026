@@ -7,7 +7,7 @@
 ## El producto
 
 > **SEEDLLITE** — Un pequeño productor sin extractos bancarios sí tiene historia financiera:
-> está escrita en 10 años de imágenes satelitales de su parcela. SEEDLLITE la lee y la convierte
+> está escrita en 10 años de imágenes satelitales de su lote. SEEDLLITE la lee y la convierte
 > en un dictamen de crédito que un banco puede firmar.
 
 **No prestamos dinero. Vendemos la decisión.** El capital ya existe (FINAGRO) y la garantía
@@ -160,8 +160,8 @@ git add . && git commit -m "app: <qué hiciste> — <por qué>" && git push -u o
 
 | Seg | Qué se ve |
 |---|---|
-| 0–8 | Un campesino y su parcela. Texto: *"Para pedir un crédito le piden un balance financiero con menos de 90 días."* |
-| 8–15 | *"Él no tiene. Pero su parcela lleva 10 años siendo fotografiada desde el espacio."* |
+| 0–8 | Un campesino y su lote. Texto: *"Para pedir un crédito le piden un balance financiero con menos de 90 días."* |
+| 8–15 | *"Él no tiene. Pero su lote lleva 10 años siendo fotografiada desde el espacio."* |
 | 15–28 | Mapa → predio → **la serie NDVI de 10 años apareciendo**, con El Niño 2023-24 marcado |
 | 28–42 | *"Evaluar"* → pasos del análisis → **el dictamen escribiéndose solo** |
 | 42–52 | Puntaje 780 · $8.400.000 · línea FINAGRO · FAG 80% · la evidencia |

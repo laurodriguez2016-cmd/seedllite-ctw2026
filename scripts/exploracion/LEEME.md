@@ -1,15 +1,15 @@
-# Cómo se eligieron las parcelas
+# Cómo se eligieron los lotes
 
 > Estos scripts no son parte del producto. Son la **bitácora de exploración** con
 > la que se escogieron las coordenadas de los cuatro predios del demo, y se
-> conservan porque son la prueba de que las parcelas se eligieron contra el dato
+> conservan porque son la prueba de que los lotes se eligieron contra el dato
 > y no en un mapa.
 
 ## El problema
 
 `data/predios.json` arrancó con coordenadas inventadas — "ubicaciones plausibles"
 de cada zona productora. Al correr el pipeline real contra ellas, **tres de las
-cuatro no caían sobre parcelas agrícolas**: NDVI plano entre 0,13 y 0,28 durante
+cuatro no caían sobre lotes agrícolas**: NDVI plano entre 0,13 y 0,28 durante
 nueve años seguidos, que es la firma de suelo desnudo o terreno construido, no de
 un cultivo.
 
@@ -31,7 +31,7 @@ python3 scripts/exploracion/buscar_parcelas.py arroz     # tambien: papa, cacao,
 
 | Script | Qué buscaba | Resultado |
 |---|---|---|
-| `buscar_parcelas.py` | Parcela con la fenología de cada cultivo | ✅ Arroz, papa y café resueltos |
+| `buscar_parcelas.py` | Lote con la fenología de cada cultivo | ✅ Arroz, papa y café resueltos |
 | `buscar_abandono.py` | Cacaotal abandonado cerca de Granada, Meta | ⚠️ 20 candidatos, **ninguno real** — ver abajo |
 | `buscar_abandono_transitorio.py` | Cultivo transitorio que dejó de ciclar | ❌ Espinal, Saldaña y Villavicencio: **0** |
 | `evaluar_candidato.py` | Verificar una candidata con el detector de producción | 🔧 La herramienta que tumbó las tres candidatas |
@@ -42,7 +42,7 @@ Las salidas crudas están en los `out_*.txt` de esta carpeta.
 
 ### El falso positivo que costó una hora, y por qué se descarta
 
-`buscar_abandono.py` devolvió 20 parcelas que parecían encajar: ciclaban entre
+`buscar_abandono.py` devolvió 20 lotes que parecían encajar: ciclaban entre
 2017 y 2022 y se aplanaban después. **Era ruido.** Las caídas de los años viejos
 eran meses sueltos —nubes finas que el enmascarado SCL no atrapó— y no cosechas.
 Al aplicar la mediana móvil de 3 meses que usa el detector de ciclos, esas caídas
@@ -87,7 +87,7 @@ interpolados mientras `ciclos_detectados` sí los excluía; era la métrica que 
 causal de rechazo automático. Y `docs/criterios-de-credito.md` ahora exige **12 meses
 medidos** en la ventana de 24 antes de dejar operar esa causal.
 
-Rechazar un crédito porque estuvo nublado sobre la parcela es el peor error que este
+Rechazar un crédito porque estuvo nublado sobre el lote es el peor error que este
 sistema puede cometer: es invisible, se ve técnico, y le cae encima a quien menos
 capacidad tiene de apelarlo. **Cuando el dato no alcanza, la respuesta correcta no es
 "no" — es "no sé, vaya y mire".**

@@ -189,7 +189,7 @@ hacen igual: *¿con qué derecho un satélite reemplaza un balance?*
 > compensar las deficiencias de información del deudor de acuerdo a su grado de informalidad"*,
 > y admite que esa información *"podrá ser obtenida y documentada en el lugar donde se
 > desarrolla la actividad económica del deudor"*. Los cuatro ejes de este dictamen son esa
-> metodología, y la parcela es ese lugar.
+> metodología, y el lote es ese lugar.
 
 #### §7 · Los cuatro ejes
 
@@ -542,7 +542,7 @@ que para microcrédito la entidad cuente con una metodología *"cuyos elementos 
 las deficiencias de información del deudor de acuerdo a sus características y grado de
 informalidad"*, y admite que esa información *"podrá ser obtenida y documentada en el lugar donde
 se desarrolla la actividad económica del deudor"*. Los cuatro ejes siguientes son esa
-metodología; la parcela es ese lugar.
+metodología; el lote es ese lugar.
 
 #### LOS CUATRO EJES · 87 de 100, por 10 = 870
 

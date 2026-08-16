@@ -42,7 +42,7 @@ rm -f "$CUADROS"/*.png
 # EL GUION. Cada plano: ruta · segundos en pantalla · que cuenta.
 #
 # El orden no es el de la aplicacion, es el de la historia: primero el pais,
-# despues la parcela, despues la evidencia, despues el veredicto. El plano del
+# despues el lote, despues la evidencia, despues el veredicto. El plano del
 # rechazo va al final porque es el remate: el predio mas verde de los nueve es
 # el que el sistema no aprueba.
 # --------------------------------------------------------------------------

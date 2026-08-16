@@ -237,7 +237,7 @@ riesgo real y no un adorno.
 > **De dónde salió este caso.** Se buscó primero un cacaotal abandonado y luego un transitorio
 > que dejara de ciclar. Cuatro zonas barridas, cero hallazgos: en el trópico andino la firma de
 > abandono y la de nubosidad son indistinguibles, y los únicos dos candidatos que pasaron el
-> detector resultaron ser parcelas con la mitad de los últimos 24 meses sin observación. El
+> detector resultaron ser lotes con la mitad de los últimos 24 meses sin observación. El
 > recorrido completo, con sus falsos positivos, está en `scripts/exploracion/LEEME.md`. La
 > causal de área no tiene ese problema: se mide sobre nueve años, no sobre una ventana de dos.
 

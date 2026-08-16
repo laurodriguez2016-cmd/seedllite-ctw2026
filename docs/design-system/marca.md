@@ -15,10 +15,10 @@ Dos cosas, y son las dos que el motor realmente hace:
    16 celdas y cuenta cuáles tienen actividad agrícola. Ese es el paso que rechaza a
    meta-cacao: declara 4 ha, la rejilla encuentra 0,5 con actividad; el resto es dosel de
    bosque. La rejilla no es decoración, es el instrumento.
-2. **La serie NDVI.** 108 meses, 2017 a 2025, leídos sobre esa misma parcela. Es la
+2. **La serie NDVI.** 108 meses, 2017 a 2025, leídos sobre esa misma lote. Es la
    dimensión que un balance con fecha no tiene: el tiempo.
 
-El símbolo es la parcela vista desde arriba, con la rejilla encima y la serie corriendo
+El símbolo es el lote vista desde arriba, con la rejilla encima y la serie corriendo
 por dentro. Una lectura, no un logo agrícola. No hay hoja, no hay sol, no hay satélite
 dibujado.
 
@@ -31,7 +31,7 @@ símbolo se renderiza a 32 px.
 
 | Elemento | Coordenadas | Nota |
 |---|---|---|
-| Linde de la parcela | `x=4 y=4 w=24 h=24` | 24 u de lado, 4 u de aire por cada costado |
+| Linde del lote | `x=4 y=4 w=24 h=24` | 24 u de lado, 4 u de aire por cada costado |
 | Rejilla 4×4 | verticales en `x = 10, 16, 22`; horizontales en `y = 10, 16, 22` | celda = 6 u |
 | Serie NDVI | `M4 16 L10 10 L16 22 L22 13 L28 16` | 4 tramos, 5 vértices |
 
@@ -41,7 +41,7 @@ símbolo se renderiza a 32 px.
 |---|---|---|---|
 | 1 | 4 | 16 | Entra por el linde izquierdo, sobre la fila central |
 | 2 | 10 | 10 | Primer pico. Nodo de rejilla |
-| 3 | 16 | 22 | Valle. Nodo de rejilla, centro exacto de la parcela en x |
+| 3 | 16 | 22 | Valle. Nodo de rejilla, centro exacto del lote en x |
 | 4 | 22 | 13 | Segundo pico, media celda por debajo del primero |
 | 5 | 28 | 16 | Sale por el linde derecho, sobre la fila central |
 
@@ -82,9 +82,9 @@ Rejilla visible. Es el símbolo de cabecera, de portada y de impresión.
   <g stroke-width="1" opacity="0.35">
     <path d="M10 4V28M16 4V28M22 4V28M4 10H28M4 16H28M4 22H28"/>
   </g>
-  <!-- linde de la parcela -->
+  <!-- linde del lote -->
   <rect x="4" y="4" width="24" height="24" stroke-width="1.5"/>
-  <!-- serie NDVI leida sobre esa parcela -->
+  <!-- serie NDVI leida sobre esa lote -->
   <path d="M4 16L10 10L16 22L22 13L28 16" stroke-width="2"/>
 </svg>
 ```
@@ -92,7 +92,7 @@ Rejilla visible. Es el símbolo de cabecera, de portada y de impresión.
 ### 3.2 Corte compacto · para 24 px y menos
 
 Mismo linde, misma serie, mismos vértices. Se le quita la rejilla y se le sube el trazo.
-El `viewBox` se recorta a `2 2 28 28` para que la parcela ocupe el 86 % del lienzo en vez
+El `viewBox` se recorta a `2 2 28 28` para que el lote ocupe el 86 % del lienzo en vez
 del 75 %: a 16 px cada píxel cuenta.
 
 ```html
@@ -225,14 +225,14 @@ el lockup cambia solo entre claro y oscuro sin duplicar marcado.
 }
 ```
 
-**Hueco óptico entre símbolo y texto = 1/3 del lado de la parcela** (8 u de 24). Como el
+**Hueco óptico entre símbolo y texto = 1/3 del lado del lote** (8 u de 24). Como el
 `viewBox` ya lleva 4 u de aire a la derecha, el `gap` en CSS es la mitad: 4 px a símbolo de
 32 px, 6 px a 48 px, 8 px a 64 px. La regla general es `gap = 0,125 × altura del símbolo`.
 
 **Alineación vertical.** `align-items: center` da el resultado correcto: el bloque de
-versales (18 u) queda centrado sobre la parcela (24 u), con 3 u de holgura arriba y abajo.
+versales (18 u) queda centrado sobre el lote (24 u), con 3 u de holgura arriba y abajo.
 Quien lo reconstruya en un editor vectorial: la línea base del wordmark va 3 u por encima
-del borde inferior de la parcela.
+del borde inferior del lote.
 
 **Descriptor.** Cuando acompaña un descriptor (`Originación y monitoreo satelital de
 crédito agropecuario`), este va en Barlow regular, `var(--texto-2)`, a 0,44 × el tamaño del
@@ -302,7 +302,7 @@ navegadores.
 
 ## 7. Zona de protección y tamaño mínimo
 
-**Zona de protección = una celda de la rejilla (6 u), medida desde el linde de la parcela.**
+**Zona de protección = una celda de la rejilla (6 u), medida desde el linde del lote.**
 Ningún texto, filete, borde de tarjeta ni marca de registro `+` entra en esa banda.
 
 El `viewBox` ya aporta 4 de esas 6 unidades. Faltan 2 por fuera:
@@ -352,7 +352,7 @@ pinta de acento a tamaño de párrafo: para eso está `var(--acento-texto)` `#41
 ## 9. Usos prohibidos
 
 1. **No rotar ni inclinar el símbolo.** La rejilla es una medición sobre el terreno; girada deja de serlo.
-2. **No rellenar la parcela ni sus celdas.** El símbolo es un dibujo de línea, como toda tarjeta del sistema Industry.
+2. **No rellenar el lote ni sus celdas.** El símbolo es un dibujo de línea, como toda tarjeta del sistema Industry.
 3. **No suavizar la serie a curva.** Es una poligonal entre observaciones mensuales; una spline dibuja meses que no se midieron.
 4. **No usar el corte completo por debajo de 32 px.** La rejilla se cierra y el símbolo se vuelve una mancha.
 5. **No teñir el símbolo de `--favorable`, `--alerta` ni `--critico`.** Esos tres colores están atados a `evidencia[].tipo` del contrato de datos: un logo verde se lee como "aprobado".
@@ -529,7 +529,7 @@ El símbolo se renderizó a 16, 20, 24, 32, 48, 64, 96 y 112 px sobre `#f2f2f3` 
 anotadas para que nadie las deshaga:
 
 1. La serie bajó de 2,5 a **2 u**. A 2,5 el trazo dominaba el cuadro y el símbolo se leía
-   como una letra maciza en vez de como una línea trazada sobre una parcela.
+   como una letra maciza en vez de como una línea trazada sobre un lote.
 2. Los picos dejaron de ser iguales. Con los dos a `y=10` la figura se lee "M"; con el
    segundo a `y=13` se lee serie.
 3. La rejilla pasó a `opacity 0.35`. A trazo pleno competía con el linde y el símbolo se

@@ -1122,7 +1122,7 @@ p  { margin: 0 0 var(--e2); }
 /* ==========================================================================
    REJILLA DE MEDICIÓN DEL ÁREA
    El otro extremo del zoom que arranca en el mapa: allá el país era una malla
-   de celdas, aquí la parcela es una malla de 16.
+   de celdas, aquí el lote es una malla de 16.
    Y a diferencia de la malla del mapa, ESTA sí lleva color de dato — porque el
    dato existe: NDVI mediano y amplitud medidos celda por celda, con umbrales
    declarados en el propio JSON.

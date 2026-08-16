@@ -268,7 +268,7 @@ mismo archivo. Debe abrir con doble clic y funcionar.
 QUÉ ES: la interfaz de una herramienta de evaluación de riesgo crediticio
 agropecuario que usaría un analista de crédito de un banco colombiano para
 decidir si le presta a un pequeño productor, usando 10 años de imágenes
-satelitales de su parcela.
+satelitales de su lote.
 
 SISTEMA VISUAL: implementa EXACTAMENTE los valores de docs/DESIGN-SYSTEM.md —
 las variables CSS de color en claro y oscuro, la escala tipográfica, el

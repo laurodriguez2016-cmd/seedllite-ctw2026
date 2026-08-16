@@ -43,7 +43,7 @@
     "pérdida de amplitud": {
       t: "Pérdida de amplitud",
       d: "Cuánto ritmo perdió el predio contra su propia historia, no contra otros " +
-         "predios. Se compara consigo mismo porque cada parcela tiene su altura, su " +
+         "predios. Se compara consigo mismo porque cada lote tiene su altura, su " +
          "variedad y su sombrío. Si un predio que subía y bajaba deja de hacerlo, " +
          "algo cambió en el manejo."
     },

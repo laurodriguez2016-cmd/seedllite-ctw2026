@@ -5,7 +5,7 @@
 # SEEDLLITE
 
 **Un campesino sin extractos bancarios sí tiene historia financiera.**
-**Está escrita en nueve años de imágenes satelitales de su parcela.**
+**Está escrita en nueve años de imágenes satelitales de su lote.**
 
 [**Ver la aplicación**](https://seedllite-motor.vercel.app/app/) · [**Landing**](https://seedllite-motor.vercel.app)
 
@@ -107,7 +107,7 @@ su propio caso insignia de aprobación.
 ## Los nueve predios
 
 Puntajes y decisiones **reales**, emitidas por `claude-opus-5` y commiteadas en
-[`data/dictamenes.json`](data/dictamenes.json). Las parcelas y las series son reales; los
+[`data/dictamenes.json`](data/dictamenes.json). Los lotes y las series son reales; los
 productores son ficticios.
 
 | Predio | Cultivo | Declarada → medida | Puntaje | Decisión |

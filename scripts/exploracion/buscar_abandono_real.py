@@ -80,7 +80,7 @@ def main():
         try:
             r = evaluar(token, lat, lon, ha)
         except SystemExit:
-            continue        # sin un solo mes valido: no es una parcela
+            continue        # sin un solo mes valido: no es un lote
         except Exception as e:
             print("  (%.4f, %.4f) error: %s" % (lat, lon, e))
             sys.stdout.flush()
@@ -103,7 +103,7 @@ def main():
     with open(salida, "w", encoding="utf-8") as f:
         json.dump(hallazgos, f, ensure_ascii=False, indent=2)
 
-    print("\n=== %d PARCELAS CON FIRMA DE ABANDONO en %s ===" % (len(hallazgos), zona))
+    print("\n=== %d LOTES CON FIRMA DE ABANDONO en %s ===" % (len(hallazgos), zona))
     if hallazgos:
         mejor = max(hallazgos, key=lambda h: h["perdida_pct"])
         print("mejor: (%.4f, %.4f) — pierde %.1f%% de su ritmo conservando pico %.2f"

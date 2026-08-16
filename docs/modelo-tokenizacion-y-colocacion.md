@@ -179,7 +179,7 @@ la cartera rural pequeña se queda sin mercado secundario.
 ### Qué cambia cuando la serie no se detiene
 
 La serie NDVI que originó el crédito **sigue corriendo**. Sentinel-2 vuelve a pasar sobre la misma
-parcela y la mediana mensual sobre el mismo polígono se sigue produciendo contra la misma fuente
+lote y la mediana mensual sobre el mismo polígono se sigue produciendo contra la misma fuente
 pública. El tenedor del token observa el estado del activo subyacente mes a mes sin pedirle
 información a nadie.
 
@@ -352,7 +352,7 @@ residuales que hay que nombrar en voz alta:
 - **Habeas data.** El expediente asocia un polígono con un productor identificado. Lo que debe
   viajar con el token es la evidencia del **predio**, no la identidad del deudor: coordenadas,
   serie, área medida y dictamen despersonalizado. Es una exigencia de la Ley 1266 de 2008 y de la
-  Ley 1581 de 2012, y de paso es mejor diseño, porque el comprador necesita saber que la parcela
+  Ley 1581 de 2012, y de paso es mejor diseño, porque el comprador necesita saber que el lote
   produce, no cómo se llama quien la trabaja.
 
 `SUPUESTO:` si la estructura se articula como titularización de cartera, el análisis se desplaza al

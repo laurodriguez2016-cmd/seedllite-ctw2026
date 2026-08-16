@@ -12,7 +12,7 @@ contra el dato:
 1. Cacaotal abandonado (`buscar_abandono.py`): 20 candidatos, todos ruido de nube.
 2. Transitorio que dejo de ciclar (`buscar_abandono_transitorio.py` y
    `buscar_abandono_real.py`): 4 zonas barridas. Los dos unicos candidatos que
-   pasaron el detector de produccion resultaron ser parcelas con la mitad de los
+   pasaron el detector de produccion resultaron ser lotes con la mitad de los
    ultimos 24 meses sin observacion optica. La amplitud no colapso: la borro la
    nubosidad.
 

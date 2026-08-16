@@ -73,7 +73,7 @@ técnica" (15 pts).
 Se calcula desde satélite. Un cultivo sano en pico de desarrollo da ~0,8; suelo desnudo
 recién arado da ~0,15.
 
-**La idea central del producto:** cuando graficas el NDVI de una parcela mes a mes durante
+**La idea central del producto:** cuando graficas el NDVI de un lote mes a mes durante
 10 años, aparecen **dientes de sierra** — sube en el desarrollo del cultivo, cae en la
 cosecha, vuelve a subir. **Cada diente es una cosecha.** Contar esos dientes es contar
 cuántas veces ese campesino efectivamente terminó lo que sembró. Y eso, según la literatura

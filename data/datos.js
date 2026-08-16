@@ -6,7 +6,7 @@ window.SEEDLLITE_DATOS = {
  "predios": {
   "version": "1.0",
   "generado": "2026-08-15T16:00:00-05:00",
-  "nota_datos": "Predios y productores FICTICIOS construidos para demostración. Las PARCELAS son reales: cada coordenada fue verificada descargando su serie NDVI de Copernicus Sentinel-2 y comprobando que la fenología observada corresponde al cultivo declarado. Las personas, los montos y los destinos del crédito no existen. Las imágenes satelitales son una secuencia temporal de al menos dos cortes por predio.",
+  "nota_datos": "Predios y productores FICTICIOS construidos para demostración. Las LOTES son reales: cada coordenada fue verificada descargando su serie NDVI de Copernicus Sentinel-2 y comprobando que la fenología observada corresponde al cultivo declarado. Las personas, los montos y los destinos del crédito no existen. Las imágenes satelitales son una secuencia temporal de al menos dos cortes por predio.",
   "predios": [
    {
     "id": "huila-cafe",
@@ -1406,7 +1406,7 @@ window.SEEDLLITE_DATOS = {
    "aptitud_suelo": "UPRA — aptitud por cultivo",
    "marco_credito": "Manual de Servicios FINAGRO v.26.21 (16-04-2026)"
   },
-  "verificacion_parcelas": "Coordenadas seleccionadas por barrido sobre la Statistical API de Sentinel Hub (scripts/ingesta_sentinel.py). Criterio: cobertura de meses con observación válida, amplitud de la serie y número de ciclos detectados coherentes con el cultivo.",
+  "verificacion_lotes": "Coordenadas seleccionadas por barrido sobre la Statistical API de Sentinel Hub (scripts/ingesta_sentinel.py). Criterio: cobertura de meses con observación válida, amplitud de la serie y número de ciclos detectados coherentes con el cultivo.",
   "nota_area": "area_detectada_ha se MIDE con scripts/medir_area.py: rejilla 4x4 sobre el poligono declarado, una serie NDVI real por celda, y se cuenta como agricola la celda vegetada (mediana >= 0.30) con dinamica de manejo (amplitud >= 0.12). Es una estimacion de proporcion, no una delimitacion de linderos."
  },
  "series": {

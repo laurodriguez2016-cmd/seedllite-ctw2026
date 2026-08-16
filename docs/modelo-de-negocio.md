@@ -114,7 +114,7 @@ No como comprador inicial, sino como **validador**. Un piloto con FINAGRO abre t
 |---|---|
 | **Banco** | "Le bajamos el costo de originar un crédito rural de $400.000 a $8.000." |
 | **Inversionista** | "Somos la capa de underwriting de un mercado de crédito de miles de millones que hoy no se coloca porque nadie sabe evaluarlo." |
-| **Jurado del hackathon** | "Un campesino sin extractos bancarios sí tiene historia financiera: está escrita en 10 años de imágenes satelitales de su parcela. Nosotros la leemos." |
+| **Jurado del hackathon** | "Un campesino sin extractos bancarios sí tiene historia financiera: está escrita en 10 años de imágenes satelitales de su lote. Nosotros la leemos." |
 | **Prensa / público** | "Puntaje de crédito hecho desde el espacio para quien nunca tuvo cuenta de banco." |
 
 ## 3.3 La frase que cierra la venta

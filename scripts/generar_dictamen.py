@@ -339,7 +339,7 @@ amplitud se desploma — el predio produce EXACTAMENTE la misma firma que uno \
 abandonado. Un predio nublado y un predio abandonado son indistinguibles, y el \
 sistema no puede fingir que los distingue.
 
-Rechazar un crédito porque estuvo nublado sobre la parcela es el peor error que \
+Rechazar un crédito porque estuvo nublado sobre el lote es el peor error que \
 este sistema puede cometer: es invisible, se ve técnico, y le cae encima al \
 productor que menos capacidad tiene de apelarlo. Cuando el dato no alcanza, la \
 respuesta correcta no es "no": es "no sé, vaya y mire".
@@ -370,7 +370,7 @@ suavizada). Se te entregan tres cifras que hay que leer juntas:
 - amplitud histórica: cuánto subía y bajaba el predio antes.
 - amplitud de los últimos 24 meses: cuánto sube y baja ahora.
 - pérdida de amplitud: cuánto de su PROPIO ritmo perdió. No se compara contra otros \
-  predios, porque cada parcela tiene su altitud, su variedad y su sombrío; \
+  predios, porque cada lote tiene su altitud, su variedad y su sombrío; \
   compararla contra sí misma es lo único honesto.
 
 Y la lectura cambia según el tipo de cultivo:
