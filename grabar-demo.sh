@@ -46,15 +46,17 @@ rm -f "$CUADROS"/*.png
 # rechazo va al final porque es el remate: el predio mas verde de los nueve es
 # el que el sistema no aprueba.
 # --------------------------------------------------------------------------
+# ruta | segundos | desplazamiento en px | que cuenta
 PLANOS=(
-  "|5|01 El mapa: nueve predios en evaluacion"
-  "#ficha/tolima-arroz|6|02 Un productor de arroz — 14 ciclos en nueve anos"
-  "#analisis/tolima-arroz|10|03 El analisis corriendo: seis pasos y el memorando"
-  "#dictamen/tolima-arroz|7|04 El dictamen: aprobado, con sus cuatro ejes"
-  "#ficha/meta-cacao|7|05 El caso del rechazo — la imagen satelital con la rejilla"
-  "#dictamen/meta-cacao|8|06 Rechazado: 0,5 ha de actividad sobre 4,0 declaradas"
-  "#dictamen/boyaca-papa-nubes|8|07 Sin concepto: el sistema declara que no puede evaluar"
-  "#cartera|6|08 La cartera completa: nueve expedientes"
+  "|5|0|01 El mapa: nueve predios en evaluacion"
+  "#ficha/tolima-arroz|6|0|02 Un productor de arroz — 14 ciclos en nueve anos"
+  "#analisis/tolima-arroz|9|0|03 El analisis corriendo: seis pasos y el memorando"
+  "#dictamen/tolima-arroz|6|0|04 El dictamen: aprobado, con sus cuatro ejes"
+  "#ficha/meta-cacao|6|0|05 El caso del rechazo — la imagen satelital con la rejilla"
+  "#dictamen/meta-cacao|7|0|06 Rechazado: 0,5 ha de actividad sobre 4,0 declaradas"
+  "#dictamen/meta-cacao|7|1150|07 El analisis estadistico: intervalos y robustez"
+  "#dictamen/boyaca-papa-nubes|7|0|08 Sin concepto: el sistema declara que no puede evaluar"
+  "#cartera|5|0|09 La cartera completa: nueve expedientes"
 )
 
 echo "Capturando ${#PLANOS[@]} planos a ${ANCHO}x${ALTO}"
@@ -63,20 +65,36 @@ LISTA="$SALIDA/planos.txt"
 : > "$LISTA"
 
 for p in "${PLANOS[@]}"; do
-  IFS='|' read -r ruta seg titulo <<< "$p"
+  IFS='|' read -r ruta seg desp titulo <<< "$p"
   i=$((i + 1))
   n=$(printf "%02d" "$i")
   archivo="$CUADROS/plano-$n.png"
 
-  printf "  %s  %-38s %2ss  " "$n" "${ruta:-#mapa}" "$seg"
+  printf "  %s  %-34s %2ss %5s  " "$n" "${ruta:-#mapa}" "$seg" "${desp}px"
 
   # --virtual-time-budget deja que las animaciones terminen antes de capturar:
   # la pantalla de analisis tarda 10,5 s en armarse sola.
+  # --screenshot captura siempre desde arriba de la pagina, asi que para los
+  # planos de mas abajo se sirve una copia con el desplazamiento inyectado.
+  DESTINO="$RAIZ$ruta"
+  if [ "${desp:-0}" != "0" ]; then
+    COPIA="$SALIDA/.desplazado-$n.html"
+    python3 - "$desp" "$COPIA" <<'PYEOF'
+import sys
+desp, destino = sys.argv[1], sys.argv[2]
+t = open("index.html", encoding="utf-8").read()
+t = t.replace("</body>",
+  "<script>setTimeout(function(){window.scrollTo(0,%s);},2200);</script></body>" % desp)
+open(destino, "w", encoding="utf-8").write(t)
+PYEOF
+    DESTINO="file://$(pwd)/$COPIA$ruta"
+  fi
+
   "$CHROME" --headless=new --disable-gpu --no-sandbox \
             --hide-scrollbars --force-color-profile=srgb \
             --virtual-time-budget=17000 \
             --window-size="$ANCHO,$ALTO" \
-            --screenshot="$archivo" "$RAIZ$ruta" 2>/dev/null
+            --screenshot="$archivo" "$DESTINO" 2>/dev/null
 
   if [ -f "$archivo" ]; then
     echo "file '$(basename "$CUADROS")/$(basename "$archivo")'" >> "$LISTA"
@@ -89,6 +107,7 @@ done
 
 # ffconcat exige repetir el ultimo archivo para que respete su duracion.
 tail -2 "$LISTA" | head -1 >> "$LISTA"
+rm -f "$SALIDA"/.desplazado-*.html
 
 TOTAL=$(awk '/^duration/ {s += $2} END {print s}' "$LISTA")
 echo ""
