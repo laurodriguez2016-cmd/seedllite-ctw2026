@@ -9,49 +9,89 @@
    alineadas. Nada de degradados, nada de emojis decorativos.
    ========================================================================== */
 
+
+/* Paleta: sistema "Industry" de Laura fusionado con la semántica de SEEDLLITE.
+   Dos tokens de acento porque #5980a6 da 3,71:1: alcanza para iconos y texto
+   grande, no para párrafo. Para texto normal va --acento-texto (5,78:1).
+   Corregidos --texto-3 (estaba en 2,91:1) y --alerta (4,25:1).
+   La escala de espaciado NO se cambió: la de Industry es más densa y
+   comprimiría layouts ya afinados. */
+
 :root {
-  /* --- superficie ------------------------------------------------------- */
-  --fondo:        #f4f4f1;
+  /* --- superficie · el fondo técnico de Industry ------------------------ */
+  --fondo:        #f2f2f3;
   --superficie:   #ffffff;
-  --superficie-2: #ebebe6;
-  --borde:        #d8d8d1;
-  --borde-fuerte: #b9b9af;
+  --superficie-2: #e9e9ea;
+  --borde:        #d4d4d7;   /* neutral-300 */
+  --borde-fuerte: #b7b7ba;   /* neutral-400 */
+  --borde-pelo:   color-mix(in srgb, #1d1f20 16%, transparent);
 
   /* --- texto ------------------------------------------------------------ */
-  --texto:        #16181c;
-  --texto-2:      #5b6068;
-  --texto-3:      #8b9098;
+  --texto:        #1d1f20;
+  --texto-2:      #5d5d60;   /* neutral-700 */
+  --texto-3:      #6a6a6e;   /* corregido: estaba en 2,91:1 */
 
-  /* --- acento institucional --------------------------------------------- */
-  --acento:       #1f5673;
-  --acento-suave: #e3edf3;
+  /* --- acento institucional · azul acero -------------------------------- */
+  --acento:        #5980a6;  /* rellenos, bordes, iconos, texto GRANDE */
+  --acento-texto:  #416180;  /* accent-700 — texto de tamaño normal */
+  --acento-fuerte: #2c455d;  /* accent-800 — estado presionado */
+  --acento-suave:  #eef6ff;  /* accent-100 — fondos teñidos */
+  --acento-borde:  #b5d9fd;  /* accent-300 */
 
-  /* --- semántica de riesgo ---------------------------------------------- */
-  --favorable:    #2f7d52;
+  /* --- rampa tonal completa, para data-viz ------------------------------ */
+  --acento-100: #eef6ff;  --acento-200: #d6ebff;  --acento-300: #b5d9fd;
+  --acento-400: #94bce3;  --acento-500: #749dc4;  --acento-600: #597ea3;
+  --acento-700: #416180;  --acento-800: #2c455d;  --acento-900: #1d2d3d;
+
+  /* --- semántica de riesgo · atada a evidencia[].tipo del contrato ------ */
+  --favorable:    #2b7048;
   --favorable-bg: #e6f2eb;
-  --alerta:       #9a6b09;
+  --alerta:       #8a5f08;   /* corregido: estaba en 4,25:1 */
   --alerta-bg:    #f8efd9;
   --critico:      #a83a2c;
   --critico-bg:   #f8e6e3;
 
-  /* --- NDVI ------------------------------------------------------------- */
-  --ndvi-linea:   #2f7d52;
-  --ndvi-area:    rgba(47, 125, 82, 0.13);
+  /* --- el cuarto estado: el sistema no puede emitir concepto ------------ */
+  /* Neutro a propósito. Ni rojo ni verde: no es un rechazo ni una
+     aprobación. Pintarlo de rojo sería el error que la regla evita. */
+  --aplazar:      #5d5d60;
+  --aplazar-bg:   #e9e9ea;
+
+  /* --- NDVI y bandas climáticas ----------------------------------------- */
+  --ndvi-linea:   #2b7048;
+  --ndvi-area:    rgba(43, 112, 72, 0.13);
+  --ndvi-punto-interpolado: #b7b7ba;   /* mes sin observación utilizable */
   --banda-sequia: rgba(168, 58, 44, 0.10);
-  --banda-lluvia: rgba(31, 86, 115, 0.10);
+  --banda-lluvia: rgba(89, 128, 166, 0.12);
 
-  /* --- métrica ---------------------------------------------------------- */
-  --r:      3px;
-  --e1:     4px;
-  --e2:     8px;
-  --e3:    16px;
-  --e4:    24px;
-  --e5:    40px;
+  /* --- métrica · densidad 0,85 y radio 4px de Industry ------------------ */
+  --r:      0px;      /* Industry: esquina recta. Los objetos son de plano */
+  --r-suave: 4px;     /* solo donde una esquina recta sea agresiva */
+  --e1:  3.4px;  --e2:  6.8px;  --e3: 10.2px;
+  --e4: 13.6px;  --e5:   20px;  --e6:   34px;
 
-  --sans: ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --pelo: 1px;        /* el borde de un pelo de todo objeto enmarcado */
+
+  --sans: "Barlow", ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --display: "Barlow Condensed", "Arial Narrow", var(--sans);
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* --- elevación · Industry usa sombras muy contenidas ------------------ */
+  --sombra-1: 0 1px 2px rgba(29, 31, 32, 0.06);
+  --sombra-2: 0 2px 8px rgba(29, 31, 32, 0.08);
+  --sombra-3: 0 8px 24px rgba(29, 31, 32, 0.10);
+
+  /* --- motion · exponencial de salida, sin sobrepaso -------------------- */
+  --sal: cubic-bezier(0.22, 1, 0.36, 1);
+  --sal-rapida: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ==========================================================================
+   TEMA OSCURO
+   Industry no define uno. Este conserva el de SEEDLLITE y le mapea la rampa
+   de Industry: sobre fondo oscuro el acento sube de paso (400 en vez de 700),
+   que es la regla inversa a la del fondo claro.
+   ========================================================================== */
 @media (prefers-color-scheme: dark) {
   :root:not([data-tema="claro"]) {
     --fondo:        #0e1013;
@@ -59,25 +99,37 @@
     --superficie-2: #1e2228;
     --borde:        #2a2f36;
     --borde-fuerte: #3d434c;
+    --borde-pelo:   color-mix(in srgb, #e7e9ec 18%, transparent);
 
     --texto:        #e7e9ec;
     --texto-2:      #9aa1ab;
-    --texto-3:      #6b727c;
+    --texto-3:      #7b828c;
 
-    --acento:       #6fb3d6;
-    --acento-suave: #16303e;
+    --acento:        #94bce3;   /* accent-400 */
+    --acento-texto:  #b5d9fd;   /* accent-300 — texto sobre fondo oscuro */
+    --acento-fuerte: #d6ebff;
+    --acento-suave:  #1d2d3d;
+    --acento-borde:  #2c455d;
 
-    --favorable:    #5fbf8a;
-    --favorable-bg: #14301f;
-    --alerta:       #d9a83c;
-    --alerta-bg:    #33280d;
-    --critico:      #e0705f;
-    --critico-bg:   #351a16;
+    --favorable:    #6fc08d;
+    --favorable-bg: #14251b;
+    --alerta:       #e0b357;
+    --alerta-bg:    #2a2113;
+    --critico:      #e88374;
+    --critico-bg:   #2b1714;
 
-    --ndvi-linea:   #5fbf8a;
-    --ndvi-area:    rgba(95, 191, 138, 0.15);
-    --banda-sequia: rgba(224, 112, 95, 0.13);
-    --banda-lluvia: rgba(111, 179, 214, 0.13);
+    --aplazar:      #9aa1ab;
+    --aplazar-bg:   #1e2228;
+
+    --ndvi-linea:   #6fc08d;
+    --ndvi-area:    rgba(111, 192, 141, 0.14);
+    --ndvi-punto-interpolado: #4a5058;
+    --banda-sequia: rgba(232, 131, 116, 0.12);
+    --banda-lluvia: rgba(148, 188, 227, 0.12);
+
+    --sombra-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --sombra-2: 0 2px 8px rgba(0, 0, 0, 0.5);
+    --sombra-3: 0 8px 24px rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -87,22 +139,39 @@
   --superficie-2: #1e2228;
   --borde:        #2a2f36;
   --borde-fuerte: #3d434c;
+  --borde-pelo:   color-mix(in srgb, #e7e9ec 18%, transparent);
+
   --texto:        #e7e9ec;
   --texto-2:      #9aa1ab;
-  --texto-3:      #6b727c;
-  --acento:       #6fb3d6;
-  --acento-suave: #16303e;
-  --favorable:    #5fbf8a;
-  --favorable-bg: #14301f;
-  --alerta:       #d9a83c;
-  --alerta-bg:    #33280d;
-  --critico:      #e0705f;
-  --critico-bg:   #351a16;
-  --ndvi-linea:   #5fbf8a;
-  --ndvi-area:    rgba(95, 191, 138, 0.15);
-  --banda-sequia: rgba(224, 112, 95, 0.13);
-  --banda-lluvia: rgba(111, 179, 214, 0.13);
+  --texto-3:      #7b828c;
+
+  --acento:        #94bce3;   /* accent-400 */
+  --acento-texto:  #b5d9fd;   /* accent-300 — texto sobre fondo oscuro */
+  --acento-fuerte: #d6ebff;
+  --acento-suave:  #1d2d3d;
+  --acento-borde:  #2c455d;
+
+  --favorable:    #6fc08d;
+  --favorable-bg: #14251b;
+  --alerta:       #e0b357;
+  --alerta-bg:    #2a2113;
+  --critico:      #e88374;
+  --critico-bg:   #2b1714;
+
+  --aplazar:      #9aa1ab;
+  --aplazar-bg:   #1e2228;
+
+  --ndvi-linea:   #6fc08d;
+  --ndvi-area:    rgba(111, 192, 141, 0.14);
+  --ndvi-punto-interpolado: #4a5058;
+  --banda-sequia: rgba(232, 131, 116, 0.12);
+  --banda-lluvia: rgba(148, 188, 227, 0.12);
+
+  --sombra-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sombra-2: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --sombra-3: 0 8px 24px rgba(0, 0, 0, 0.6);
 }
+
 
 /* ========================================================================== */
 
@@ -1122,3 +1191,27 @@ p  { margin: 0 0 var(--e2); }
 @media (prefers-reduced-motion: reduce) {
   .rej-celda { animation: none; }
 }
+
+/* ==========================================================================
+   MARCO DE PLANO — la firma visual del sistema "Industry"
+   Un objeto enmarcado es un DIBUJO DE LÍNEA: transparente, esquina recta,
+   borde de un pelo y cuatro marcas de registro. No una tarjeta rellena.
+   El botón primario es el único objeto sólido de la pantalla.
+   ========================================================================== */
+.plano { position: relative; border: 1px solid var(--borde-pelo);
+         border-radius: 0; background: transparent; }
+.plano > .esq { position: absolute; width: 9px; height: 9px;
+                pointer-events: none; color: var(--acento); }
+.plano > .esq::before, .plano > .esq::after {
+  content: ""; position: absolute; background: currentColor; }
+.plano > .esq::before { left: 0; top: 4px; width: 9px; height: 1px; }
+.plano > .esq::after  { top: 0; left: 4px; width: 1px; height: 9px; }
+.plano > .si { top: -5px; left: -5px; }   .plano > .sd { top: -5px; right: -5px; }
+.plano > .ii { bottom: -5px; left: -5px; } .plano > .id { bottom: -5px; right: -5px; }
+
+/* Titulares condensados, como pide el sistema. */
+h1, h2, h3, .marca { font-family: var(--display); letter-spacing: 0.01em; }
+
+/* Foco de teclado tematizado, nunca el anillo azul por defecto. */
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+::selection { background: var(--acento-200); color: var(--texto); }

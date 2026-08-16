@@ -14,9 +14,25 @@
 #   bash scripts/probar_app.sh
 # ==========================================================================
 
-CHROME="/c/Program Files/Google/Chrome/Application/chrome.exe"
-[ -x "$CHROME" ] || CHROME="/c/Program Files (x86)/Google/Chrome/Application/chrome.exe"
-RAIZ="file:///$(pwd | sed 's|^/\([a-z]\)|\1:|')/index.html"
+# Chrome en Windows y en macOS: el equipo trabaja en los dos. Antes solo
+# miraba Windows, asi que en un Mac $CHROME apuntaba a un binario inexistente,
+# el DOM volvia vacio y reportaba las 14 rutas incompletas. Un falso 14/14 a
+# las cinco de la manana cuesta media hora de panico.
+for c in \
+  "/c/Program Files/Google/Chrome/Application/chrome.exe" \
+  "/c/Program Files (x86)/Google/Chrome/Application/chrome.exe" \
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  "$(command -v google-chrome 2>/dev/null)" "$(command -v chromium 2>/dev/null)"
+do
+  [ -n "$c" ] && [ -x "$c" ] && CHROME="$c" && break
+done
+if [ -z "$CHROME" ]; then
+  printf '\033[31m ✗\033[0m No se encontro Chrome ni Chromium.\n'; exit 2
+fi
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) RAIZ="file:///$(pwd | sed 's|^/\([a-z]\)|\1:|')/index.html" ;;
+  *)                    RAIZ="file://$(pwd)/index.html" ;;
+esac
 
 PREDIOS="huila-cafe tolima-arroz boyaca-papa meta-cacao boyaca-papa-nubes          meta-cacao-productivo meta-cacao-sin-manejo boyaca-papa-media          meta-cacao-vigor-bajo"
 FALLOS=0
