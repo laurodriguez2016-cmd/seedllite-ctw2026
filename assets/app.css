@@ -1122,3 +1122,26 @@ p  { margin: 0 0 var(--e2); }
 @media (prefers-reduced-motion: reduce) {
   .rej-celda { animation: none; }
 }
+
+/* --------------------------------------------------------------------------
+   Retículo de coordenadas
+   Paralelos y meridianos cada 4°, trazados con la misma proyección que el
+   contorno y los predios. Es lo que convierte una silueta en un mapa: la
+   referencia que permite decir dónde está algo.
+   -------------------------------------------------------------------------- */
+
+.mapa .reticulo { pointer-events: none; }
+
+.mapa .ret-linea {
+  stroke: var(--borde);
+  stroke-width: 0.5;
+  stroke-dasharray: 2 4;
+  opacity: 0.7;
+}
+
+.mapa .ret-texto {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.04em;
+  fill: var(--texto-3);
+}
