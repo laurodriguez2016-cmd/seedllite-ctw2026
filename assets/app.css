@@ -419,3 +419,60 @@ p  { margin: 0 0 var(--e2); }
   color: var(--texto-3);
   font-size: 13px;
 }
+
+/* --------------------------------------------------------------------------
+   PANTALLA 3 — pasos del análisis
+   Cada paso vive en dos estados: en curso (glifo pulsante, texto atenuado) y
+   cerrado (check verde, texto en primer plano y la cifra alineada a la derecha).
+   Las cifras van en tabular-nums para que el contador no baile al subir.
+   -------------------------------------------------------------------------- */
+
+.paso {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 13px;
+}
+
+.paso-glifo {
+  flex: 0 0 1em;
+  text-align: center;
+  font-weight: 700;
+}
+
+.paso-curso .paso-glifo {
+  color: var(--texto-2);
+  animation: paso-pulso 1s ease-in-out infinite;
+}
+
+.paso-ok .paso-glifo { color: var(--favorable); }
+
+.paso-curso .paso-texto { color: var(--texto-2); }
+.paso-ok    .paso-texto { color: var(--texto); }
+
+.paso-cifra {
+  margin-left: auto;
+  padding-left: 12px;
+  text-align: right;
+  font-size: 12px;
+  color: var(--texto-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@keyframes paso-pulso {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 1; }
+}
+
+/* Rótulo de autoría del memorando. Discreto: acompaña, no compite. */
+.chip-modelo {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--texto-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paso-curso .paso-glifo { animation: none; opacity: 0.5; }
+}

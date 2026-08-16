@@ -199,83 +199,214 @@
      PANTALLA 3 — Análisis  ⭐ la que vale 25 puntos de la rúbrica
      ====================================================================== */
 
-  var PASOS = [
-    "Leyendo 120 observaciones Sentinel-2 del polígono…",
-    "Descartando observaciones con nubosidad alta…",
-    "Detectando ciclos de siembra y cosecha…",
-    "Comparando vigor contra el percentil de la vereda…",
-    "Midiendo el comportamiento durante El Niño 2023-24…",
-    "Redactando el dictamen de crédito…"
-  ];
+  /* ======================================================================
+     PANTALLA 3 - Analisis  (25 puntos de la rubrica; es la toma del video)
+
+     Presupuesto de tiempo, TAREA 4: el efecto completo entre 8 y 12 s.
+       seis pasos ....... 7,3 s   (PASOS_MS)
+       memorando ........ 3,2 s   (MEMO_MS, duracion fija)
+       total ........... 10,5 s
+     ====================================================================== */
+
+  var PASOS_MS = [1200, 1200, 1500, 1200, 1200, 1000];
+  var MEMO_MS  = 3200;
+
+  /* Token de la corrida en curso. El router repinta en cada hashchange y para
+     el video se graban varias tomas seguidas; sin esto la cadena de timeouts
+     anterior sigue viva escribiendo sobre nodos ya desechados y dos
+     animaciones se pisan. */
+  var corrida = null;
+
+  function num(n, dec) {
+    return new Intl.NumberFormat("es-CO", {
+      minimumFractionDigits: dec || 0,
+      maximumFractionDigits: dec || 0
+    }).format(n);
+  }
+
+  /* Los seis pasos y la cifra con que cada uno cierra.
+     Toda cifra sale de la serie real; ninguna esta escrita a mano.
+     Contrato v1.1: el paso 4 contrasta contra el rendimiento municipal de EVA,
+     no contra un percentil veredal (que no existe como estadistica). */
+  function pasosDe(serie) {
+    var hay  = !!(serie && serie.puntos);
+    var n    = hay ? serie.puntos.length : 0;
+    var ini  = hay ? String(serie.desde).slice(0, 4) : "";
+    var fin  = hay ? String(serie.hasta).slice(0, 4) : "";
+    var c24  = hay ? serie.ciclos_ultimos_24m : null;
+    var re   = hay ? serie.rendimiento_estimado_t_ha : null;
+    var rm   = hay ? serie.rendimiento_municipal_eva_t_ha : null;
+    var enso = hay ? serie.caida_enso_pct : null;
+    var pct  = (enso == null) ? null
+             : (Math.abs(enso) <= 1 ? Math.abs(enso) * 100 : Math.abs(enso));
+
+    return [
+      { texto: "Recuperando imagenes Copernicus Sentinel-2\u2026",
+        conteo: n,
+        cifra: hay ? num(n) + " observaciones mensuales \u00b7 " + ini + "\u2013" + fin
+                   : "Sin serie para este predio" },
+
+      { texto: "Calculando serie NDVI sobre el pol\u00edgono del predio\u2026",
+        cifra: "Mediana mensual \u00b7 resoluci\u00f3n 10 m" },
+
+      { texto: "Detectando ciclos de siembra y cosecha\u2026",
+        cifra: !hay ? "\u2014"
+             : num(serie.ciclos_detectados) + " ciclos en la serie" +
+               (c24 == null ? "" : " \u00b7 " + num(c24) + " en los \u00faltimos 24 meses") },
+
+      { texto: "Contrastando rendimiento con el promedio municipal \u2014 EVA\u2026",
+        cifra: (re == null || rm == null) ? "Sin referencia municipal"
+             : num(re, 2) + " t/ha frente a " + num(rm, 2) + " t/ha" },
+
+      { texto: "Evaluando exposici\u00f3n clim\u00e1tica \u2014 IDEAM\u2026",
+        cifra: (pct == null) ? "El Ni\u00f1o 2023-24 \u00b7 La Ni\u00f1a 2022"
+             : "Ca\u00edda de vigor de " + num(pct) + "% en El Ni\u00f1o 2023-24" },
+
+      { texto: "Redactando dictamen\u2026" }
+    ];
+  }
+
+  /* Contador ascendente sincronizado con la duracion del paso. */
+  function contar(destino, total, ms, yo) {
+    var t0 = new Date().getTime();
+    (function tic() {
+      if (yo.cancelada) { return; }
+      var avance = Math.min(1, (new Date().getTime() - t0) / ms);
+      destino.textContent = num(Math.round(total * avance)) + " / " + num(total);
+      if (avance < 1) { setTimeout(tic, 40); }
+    })();
+  }
 
   function analisis(host, datos, estado) {
     var p = S.estado.predio(estado.predioId);
     if (!p) { return mapa(host, datos, estado); }
-    var dict = S.estado.dictamen(p.id);
+
+    var dict  = S.estado.dictamen(p.id);
+    var serie = (datos.series && datos.series.series)
+              ? datos.series.series[p.id] : null;
+
+    if (corrida) { corrida.cancelada = true; }
+    var yo = corrida = { cancelada: false };
+    yo.rehacer = function () { analisis(host, datos, estado); };
+
+    var maqueta = !!(datos.dictamenes && datos.dictamenes.es_placeholder);
+    var modelo  = (!maqueta && datos.dictamenes && datos.dictamenes.modelo)
+                ? datos.dictamenes.modelo : "claude-opus-5";
 
     host.innerHTML =
-      '<div class="migas"><a href="#ficha/' + esc(p.id) + '">← Ficha</a>' +
-        "<span>/</span><span>Análisis</span></div>" +
+      '<div class="migas"><a href="#ficha/' + esc(p.id) + '">\u2190 Ficha</a>' +
+        "<span>/</span><span>An\u00e1lisis</span></div>" +
       '<div class="tarjeta" style="max-width:760px;margin:0 auto">' +
         '<div class="tarjeta-cab">' +
           "<h2>Evaluando " + esc(p.productor) + "</h2>" +
           '<span class="etiqueta" style="margin-left:auto">SEEDLLITE</span>' +
         "</div>" +
         '<div class="tarjeta-cuerpo">' +
-          '<ol id="pasos" style="list-style:none;padding:0;margin:0 0 var(--e3);font-size:13px"></ol>' +
+          '<ol id="pasos" style="list-style:none;padding:0;margin:0 0 var(--e3)"></ol>' +
+          '<div id="cab-memo" style="display:none;align-items:center;' +
+            'border-top:1px solid var(--borde);padding-top:var(--e3);margin-bottom:10px">' +
+            '<span class="chip-modelo">Generado por Claude \u00b7 ' + esc(modelo) +
+              (maqueta ? " \u00b7 dictamen de ejemplo" : "") +
+            "</span>" +
+          "</div>" +
           '<div id="memorando" class="mono" style="white-space:pre-wrap;font-size:12.5px;' +
-            'line-height:1.65;min-height:120px;border-top:1px solid var(--borde);padding-top:var(--e3)"></div>' +
+            'line-height:1.65;min-height:120px"></div>' +
           '<div id="pie" style="margin-top:var(--e3)"></div>' +
         "</div>" +
       "</div>";
 
+    var pasos = pasosDe(serie);
     var ol = host.querySelector("#pasos");
     var i = 0;
 
-    (function siguientePaso() {
-      if (i < PASOS.length) {
-        var li = document.createElement("li");
-        li.style.padding = "3px 0";
-        li.style.color = "var(--texto-2)";
-        li.innerHTML = '<span style="color:var(--favorable);font-weight:700">✓</span> ' + esc(PASOS[i]);
-        ol.appendChild(li);
-        i++;
-        setTimeout(siguientePaso, 420);
-        return;
+    (function siguiente() {
+      if (yo.cancelada) { return; }
+      if (i >= pasos.length) { return escribirMemorando(host, dict, p, yo); }
+
+      var paso = pasos[i];
+      var ms = PASOS_MS[i] || 1200;
+
+      var li = document.createElement("li");
+      li.className = "paso paso-curso";
+      li.innerHTML =
+        '<span class="paso-glifo">\u00b7</span>' +
+        '<span class="paso-texto">' + esc(paso.texto) + "</span>" +
+        '<span class="paso-cifra"></span>';
+      ol.appendChild(li);
+
+      if (paso.conteo) {
+        contar(li.querySelector(".paso-cifra"), paso.conteo, ms, yo);
       }
-      escribirMemorando(host, dict, p);
+
+      setTimeout(function () {
+        if (yo.cancelada) { return; }
+        li.className = "paso paso-ok";
+        li.querySelector(".paso-glifo").textContent = "\u2713";
+        li.querySelector(".paso-cifra").textContent = paso.cifra || "";
+        i++;
+        siguiente();
+      }, ms);
     })();
   }
 
-  /** Animación de escritura del memorando. Reproduce una salida ya generada. */
-  function escribirMemorando(host, dict, p) {
+  /* Animacion de escritura del memorando.
+     Velocidad ADAPTATIVA: el memorando de maqueta tiene ~260 caracteres y el
+     real tendra 120-200 palabras (~900). A caracteres-por-tick fijos el efecto
+     pasaria de 3 s a 11 s cuando lleguen los datos buenos y se saldria del
+     minuto de video. Se fija la DURACION y se derivan los caracteres. */
+  function escribirMemorando(host, dict, p, yo) {
     var destino = host.querySelector("#memorando");
-    if (!dict) {
+    var cab = host.querySelector("#cab-memo");
+
+    if (!dict || !dict.memorando) {
+      if (cab) { cab.style.display = "none"; }
       destino.innerHTML = '<span class="vacio">Sin dictamen para este predio.</span>';
       return;
     }
 
+    if (cab) { cab.style.display = "flex"; }
+
     var texto = dict.memorando;
+    var tick  = 24;
+    var salto = Math.max(1, Math.ceil(texto.length / (MEMO_MS / tick)));
     var n = 0;
 
     (function teclear() {
-      if (n <= texto.length) {
+      if (yo.cancelada) { return; }
+      if (n < texto.length) {
+        n = Math.min(texto.length, n + salto);
         destino.textContent = texto.slice(0, n);
-        n += 3;
-        setTimeout(teclear, 12);
+        setTimeout(teclear, tick);
         return;
       }
       destino.textContent = texto;
-      var pie = host.querySelector("#pie");
-      pie.innerHTML =
-        '<button class="boton boton-primario" data-ir="#dictamen/' + esc(p.id) + '">' +
-          "Ver dictamen completo</button>" +
-        '<div class="aviso" style="margin-top:var(--e3)">' +
-          "Reproducción de una salida generada previamente por el modelo y " +
-          "commiteada en <code>data/dictamenes.json</code>. El demo no llama a la " +
-          "API en vivo; el prompt está en <code>scripts/generar_dictamen.py</code>." +
-        "</div>";
+      rematar(host, p, yo);
     })();
+  }
+
+  /* Remate: los dos botones y el rotulo de que esto reproduce una salida ya
+     generada. Los manejadores se enganchan aqui a mano y no por data-ir: el
+     router asigna los suyos al pintar, y estos nodos nacen segundos despues,
+     cuando ese recorrido ya paso. Con data-ir el boton nace muerto. */
+  function rematar(host, p, yo) {
+    var pie = host.querySelector("#pie");
+    pie.innerHTML =
+      '<button class="boton boton-primario" id="ir-dictamen">Ver dictamen completo</button> ' +
+      '<button class="boton" id="repetir">Repetir an\u00e1lisis</button>' +
+      '<div class="aviso" style="margin-top:var(--e3)">' +
+        "Reproducci\u00f3n de una salida generada previamente por el modelo y " +
+        "commiteada en <code>data/dictamenes.json</code>. El demo no llama a la " +
+        "API en vivo; el prompt est\u00e1 en <code>scripts/generar_dictamen.py</code>." +
+      "</div>";
+
+    pie.querySelector("#ir-dictamen").addEventListener("click", function () {
+      location.hash = "#dictamen/" + p.id;
+    });
+
+    /* Sin recargar: para grabar varias tomas seguidas del mismo predio. */
+    pie.querySelector("#repetir").addEventListener("click", function () {
+      yo.rehacer();
+    });
   }
 
   /* ======================================================================
