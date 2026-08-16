@@ -4,22 +4,35 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SEEDLLITE — Puntaje de crédito agrícola desde imágenes satelitales</title>
-<meta name="description" content="Puntaje de crédito agrícola construido desde 10 años de imágenes satelitales. Hackathon Colombia Tech Week 2026.">
+<meta name="description" content="Evaluación de riesgo crediticio agrícola construida desde nueve años de observaciones satelitales. Hackathon Colombia Tech Week 2026.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/app.css">
 </head>
 <body>
 
 <header class="barra">
-  <span class="marca">SEEDLLITE</span>
+  <a class="marca" href="#mapa" aria-label="SEEDLLITE, ir al mapa de predios">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 21V9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      <path d="M12 12C7.8 12 5 9.6 5 5.5c4.2 0 7 2.4 7 6.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M12 16c4.2 0 7-2.4 7-6.5-4.2 0-7 2.4-7 6.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </svg>
+    <span>SEEDLLITE</span>
+  </a>
   <span class="marca-sub">Originación y monitoreo satelital de crédito agropecuario</span>
-  <nav class="barra-fin">
+  <nav class="barra-fin" aria-label="Navegación principal">
     <button class="boton boton-icono" data-nav="mapa">Mapa</button>
     <button class="boton boton-icono" data-nav="cartera">Cartera</button>
-    <button class="boton boton-icono" id="tema" aria-label="Alternar tema claro y oscuro">◐</button>
+    <button class="boton boton-icono" id="tema" aria-label="Alternar tema claro y oscuro">Tema</button>
   </nav>
 </header>
 
 <main class="lienzo" id="vista"></main>
+
+<footer class="pie-pagina">
+  <span>Datos de demostración. Productores ficticios; parcelas y series rotuladas según su origen.</span>
+  <span>Copernicus Sentinel-2 · licencia abierta</span>
+</footer>
 
 <!--
   ORDEN DE CARGA — importa, no hay bundler.

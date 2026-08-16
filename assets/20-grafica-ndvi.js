@@ -1,8 +1,8 @@
 /* ==========================================================================
-   20-grafica-ndvi.js — la serie temporal satelital de 10 años
+   20-grafica-ndvi.js — la serie temporal satelital de nueve años
    Frente 🅰 APP · sin dependencias
 
-   Es la pieza visual central del producto: 120 observaciones mensuales, las
+   Es la pieza visual central del producto: 108 observaciones mensuales, las
    bandas de los eventos ENSO de fondo, y los puntos con nubosidad alta
    atenuados.
 
@@ -32,6 +32,19 @@
 
   var UMBRAL_NUBE = 0.6;   // contrato de datos §2: por encima, punto atenuado
 
+  function esNumero(valor) {
+    return typeof valor === "number" && isFinite(valor);
+  }
+
+  function estadoVacio(mensaje) {
+    var div = document.createElement("div");
+    div.className = "grafica-vacia vacio";
+    div.setAttribute("role", "img");
+    div.setAttribute("aria-label", mensaje);
+    div.textContent = mensaje;
+    return div;
+  }
+
   /**
    * @param {Object} opciones
    *   serie   {desde, hasta, puntos:[{fecha, ndvi, nubosidad}]}
@@ -40,8 +53,15 @@
    * @returns {SVGElement}
    */
   function ndvi(opciones) {
-    var puntos = opciones.serie.puntos;
-    var eventos = opciones.eventos || [];
+    opciones = opciones || {};
+    var serie = opciones.serie || {};
+    var puntos = Array.isArray(serie.puntos) ? serie.puntos : [];
+    var eventos = Array.isArray(opciones.eventos) ? opciones.eventos : [];
+
+    if (!puntos.length) {
+      return estadoVacio("No hay observaciones NDVI disponibles para graficar.");
+    }
+
     var W = opciones.ancho || 900;
     var H = opciones.alto || 260;
     var M = { arriba: 18, derecha: 12, abajo: 26, izquierda: 34 };
@@ -51,19 +71,26 @@
 
     var Y_MIN = 0, Y_MAX = 1;
 
-    function x(i) { return M.izquierda + (i / (puntos.length - 1)) * ancho; }
+    function x(i) {
+      if (puntos.length === 1) return M.izquierda + ancho / 2;
+      return M.izquierda + (i / (puntos.length - 1)) * ancho;
+    }
     function y(v) { return M.arriba + (1 - (v - Y_MIN) / (Y_MAX - Y_MIN)) * alto; }
 
     /* Índice por fecha para ubicar las bandas de eventos sin recorrer dos veces. */
     var indicePorFecha = {};
-    puntos.forEach(function (p, i) { indicePorFecha[p.fecha] = i; });
+    puntos.forEach(function (p, i) {
+      if (p && typeof p.fecha === "string") indicePorFecha[p.fecha] = i;
+    });
 
     var svg = svgEl("svg", {
       viewBox: "0 0 " + W + " " + H,
       "class": "grafica",
       role: "img",
       "aria-label":
-        "Serie NDVI mensual de " + opciones.serie.desde + " a " + opciones.serie.hasta
+        "Serie NDVI mensual de " + (serie.desde || "fecha inicial no disponible") +
+        " a " + (serie.hasta || "fecha final no disponible") +
+        ". Los puntos huecos representan meses interpolados por nubosidad."
     });
 
     /* --- 1. bandas de eventos climáticos, al fondo --------------------- */
@@ -94,35 +121,51 @@
       var t = svgEl("text", {
         x: M.izquierda - 6, y: y(v) + 3, "class": "eje-texto", "text-anchor": "end"
       });
-      t.textContent = v.toFixed(2);
+      t.textContent = v.toFixed(2).replace(".", ",");
       svg.appendChild(t);
     });
 
     /* --- 3. área y línea de la serie ----------------------------------- */
-    var d = puntos.map(function (p, i) {
-      return (i === 0 ? "M" : "L") + x(i).toFixed(1) + " " + y(p.ndvi).toFixed(1);
-    }).join(" ");
-
-    svg.appendChild(svgEl("path", {
-      d: d + " L" + x(puntos.length - 1).toFixed(1) + " " + y(0) +
-         " L" + x(0).toFixed(1) + " " + y(0) + " Z",
-      "class": "serie-area"
-    }));
-    svg.appendChild(svgEl("path", { d: d, "class": "serie-linea" }));
-
-    /* --- 4. puntos: los muy nublados van atenuados --------------------- */
+    var d = "";
+    var iniciarSegmento = true;
+    var todosValidos = true;
     puntos.forEach(function (p, i) {
-      var nublado = p.nubosidad > UMBRAL_NUBE;
+      if (!p || !esNumero(p.ndvi)) {
+        iniciarSegmento = true;
+        todosValidos = false;
+        return;
+      }
+      d += (iniciarSegmento ? "M" : "L") + x(i).toFixed(1) + " " +
+        y(Math.max(Y_MIN, Math.min(Y_MAX, p.ndvi))).toFixed(1) + " ";
+      iniciarSegmento = false;
+    });
+
+    if (d) {
+      if (todosValidos && puntos.length > 1) {
+        svg.appendChild(svgEl("path", {
+          d: d + "L" + x(puntos.length - 1).toFixed(1) + " " + y(0) +
+             " L" + x(0).toFixed(1) + " " + y(0) + " Z",
+          "class": "serie-area"
+        }));
+      }
+      svg.appendChild(svgEl("path", { d: d.trim(), "class": "serie-linea" }));
+    }
+
+    /* --- 4. puntos: interpolados y nublados se distinguen explícitamente */
+    puntos.forEach(function (p, i) {
+      if (!p || !esNumero(p.ndvi)) return;
+      var interpolado = p.interpolado === true;
+      var nublado = esNumero(p.nubosidad) && p.nubosidad > UMBRAL_NUBE;
       svg.appendChild(svgEl("circle", {
         cx: x(i), cy: y(p.ndvi),
-        r: nublado ? 2.4 : 1.6,
-        "class": nublado ? "punto-nube" : "punto"
+        r: interpolado ? 2.8 : (nublado ? 2.4 : 1.6),
+        "class": interpolado ? "punto-interpolado" : (nublado ? "punto-nube" : "punto")
       }));
     });
 
     /* --- 5. eje X: una marca por año ----------------------------------- */
     puntos.forEach(function (p, i) {
-      if (p.fecha.slice(5) !== "01") return;
+      if (!p || typeof p.fecha !== "string" || p.fecha.slice(5) !== "01") return;
       var t = svgEl("text", {
         x: x(i), y: H - 8, "class": "eje-texto", "text-anchor": "middle"
       });
@@ -138,10 +181,10 @@
     var div = document.createElement("div");
     div.className = "leyenda";
     div.innerHTML =
-      '<span><i style="background:var(--ndvi-linea)"></i>NDVI mensual</span>' +
-      '<span><i style="background:var(--texto-3);opacity:.4"></i>Observación con nubosidad &gt; 0,60</span>' +
-      '<span><i style="background:var(--banda-sequia)"></i>Evento de sequía (El Niño)</span>' +
-      '<span><i style="background:var(--banda-lluvia)"></i>Exceso de lluvia (La Niña)</span>';
+      '<span><i class="leyenda-ndvi"></i>NDVI mensual medido</span>' +
+      '<span><i class="leyenda-interpolado"></i>Mes interpolado sin observación óptica</span>' +
+      '<span><i class="leyenda-sequia"></i>Evento de sequía (El Niño)</span>' +
+      '<span><i class="leyenda-lluvia"></i>Exceso de lluvia (La Niña)</span>';
     return div;
   }
 

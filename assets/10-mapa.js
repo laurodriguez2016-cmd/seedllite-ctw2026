@@ -79,6 +79,9 @@
    * @param {Function} alSeleccionar  callback(id)
    */
   function render(svg, predios, dictamenes, seleccionado, alSeleccionar) {
+    if (!svg) return;
+    predios = Array.isArray(predios) ? predios : [];
+    alSeleccionar = typeof alSeleccionar === "function" ? alSeleccionar : function () {};
     svg.setAttribute("viewBox", "0 0 " + ANCHO + " " + ALTO);
     svg.setAttribute("class", "mapa");
     svg.setAttribute("role", "img");
@@ -93,6 +96,9 @@
     svg.appendChild(svgEl("path", { d: d, "class": "pais" }));
 
     predios.forEach(function (predio) {
+      if (!predio || !predio.coordenadas ||
+          typeof predio.coordenadas.lon !== "number" ||
+          typeof predio.coordenadas.lat !== "number") return;
       var xy = proyectar(predio.coordenadas.lon, predio.coordenadas.lat);
       var dict = dictamenes && dictamenes[predio.id];
       var color = dict ? (COLOR_DECISION[dict.decision] || "var(--acento)") : "var(--acento)";
@@ -102,13 +108,15 @@
         "aria-current": predio.id === seleccionado ? "true" : "false",
         tabindex: "0",
         role: "button",
-        "aria-label": predio.municipio + ", " + predio.departamento + " — " + predio.cultivo
+        "aria-label": (predio.municipio || "Municipio sin dato") + ", " +
+          (predio.departamento || "departamento sin dato") + " — " +
+          (predio.cultivo || "cultivo sin dato")
       });
 
       g.appendChild(svgEl("circle", { cx: xy[0], cy: xy[1], r: 6, fill: color }));
 
       var t = svgEl("text", { x: xy[0] + 11, y: xy[1] + 3.5 });
-      t.textContent = predio.municipio;
+      t.textContent = predio.municipio || "Predio";
       g.appendChild(t);
 
       function activar() { alSeleccionar(predio.id); }

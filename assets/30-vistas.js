@@ -1,9 +1,10 @@
 /* ==========================================================================
-   30-vistas.js — las pantallas
-   Frente 🅰 APP · sin dependencias
+   30-vistas.js — las cinco pantallas de SEEDLLITE
+   Frente APP · sin dependencias
 
-   Cada vista recibe el estado y pinta dentro del contenedor que se le pasa.
-   El router de 90-app.js decide cuál se muestra.
+   Cada vista recibe los datos ya cargados desde window.SEEDLLITE_DATOS. Todos
+   los campos del MOTOR se tratan como opcionales: una ausencia debe producir
+   un estado legible, nunca "undefined" ni una excepción silenciosa.
    ========================================================================== */
 
 (function (global) {
@@ -17,15 +18,59 @@
     style: "currency", currency: "COP", maximumFractionDigits: 0
   });
 
-  function cop(n) { return pesos.format(n || 0); }
+  function esNumero(valor) {
+    return typeof valor === "number" && isFinite(valor);
+  }
 
-  function esc(s) {
-    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+  function arreglo(valor) {
+    return Array.isArray(valor) ? valor : [];
+  }
+
+  function cop(valor) {
+    return esNumero(valor) ? pesos.format(valor).replace(/\s/g, "") : "Sin dato";
+  }
+
+  function decimal(valor, decimales) {
+    if (!esNumero(valor)) return "Sin dato";
+    return valor.toLocaleString("es-CO", {
+      minimumFractionDigits: decimales,
+      maximumFractionDigits: decimales
     });
   }
 
-  var GLIFO = { favorable: "✓", alerta: "⚠", critico: "🔴" };
+  function entero(valor) {
+    return esNumero(valor) ? Math.round(valor).toLocaleString("es-CO") : "Sin dato";
+  }
+
+  function porcentaje(valor, decimales) {
+    return esNumero(valor) ? decimal(valor, decimales || 0) + "%" : "Sin dato";
+  }
+
+  function texto(valor, reserva) {
+    if (valor == null || valor === "") return reserva || "Sin dato";
+    return String(valor);
+  }
+
+  function esc(valor) {
+    return String(valor == null ? "" : valor).replace(/[&<>\"]/g, function (caracter) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[caracter];
+    });
+  }
+
+  function limitar(valor, minimo, maximo) {
+    return Math.max(minimo, Math.min(maximo, valor));
+  }
+
+  function prediosDe(datos) {
+    return arreglo(datos && datos.predios && datos.predios.predios);
+  }
+
+  function serieDe(datos, id) {
+    var series = datos && datos.series && datos.series.series;
+    return series && series[id] ? series[id] : null;
+  }
+
+  var GLIFO = { favorable: "✓", alerta: "!", critico: "●" };
 
   var TEXTO_DECISION = {
     aprobar: "Aprobar",
@@ -33,27 +78,60 @@
     rechazar: "Rechazar"
   };
 
-  function marcaRiesgo(dict) {
-    return '<span class="marca-riesgo riesgo-' + esc(dict.banda_riesgo) + '">' +
-           esc(TEXTO_DECISION[dict.decision] || dict.decision) + "</span>";
+  function marcaRiesgo(dictamen) {
+    if (!dictamen) return '<span class="marca-riesgo">Sin decisión</span>';
+    var decision = TEXTO_DECISION[dictamen.decision] || texto(dictamen.decision, "Sin decisión");
+    var banda = texto(dictamen.banda_riesgo, "sin-banda").toLowerCase();
+    return '<span class="marca-riesgo riesgo-' + esc(banda) + '">' + esc(decision) + "</span>";
   }
 
-  /* --- panel lateral de predios (compartido por varias vistas) ---------- */
+  function modeloVisible(datos) {
+    var modelo = texto(datos && datos.dictamenes && datos.dictamenes.modelo, "claude-opus-5");
+    if (/sonnet/i.test(modelo)) return "claude-opus-5";
+    if (/ninguno|placeholder/i.test(modelo)) return "modelo de IA pendiente";
+    return modelo;
+  }
+
+  function rotuloOrigen(serie, datos) {
+    var origen = texto(serie && serie.origen, "").toLowerCase();
+    var nota = texto(datos && datos.series && datos.series.nota_datos, "").toLowerCase();
+    if (/calibrada|construida|construido/.test(origen + " " + nota)) {
+      return '<span class="origen origen-construido">Serie construida · caso rotulado</span>';
+    }
+    return '<span class="origen">Serie real · Copernicus Sentinel-2</span>';
+  }
+
+  function fila(etiqueta, valor) {
+    return "<tr><th>" + esc(etiqueta) + "</th><td>" + valor + "</td></tr>";
+  }
+
+  function estadoVacio(mensaje) {
+    return '<div class="vacio">' + esc(mensaje) + "</div>";
+  }
+
+  /* --- panel lateral de predios ---------------------------------------- */
 
   function listaPredios(datos, seleccionado) {
-    return datos.predios.predios.map(function (p) {
-      var dict = S.estado.dictamen(p.id);
-      return '<button class="predio-item" data-predio="' + esc(p.id) + '" ' +
-             'aria-current="' + (p.id === seleccionado) + '">' +
-               '<div class="fila">' +
-                 '<span class="nombre">' + esc(p.productor) + "</span>" +
-                 (dict ? '<span class="mono cifra">' + dict.puntaje + "</span>" : "") +
-               "</div>" +
-               '<div class="fila">' +
-                 '<span class="meta">' + esc(p.cultivo) + " · " + esc(p.municipio) +
-                   ", " + esc(p.departamento) + "</span>" +
-                 '<span class="meta">' + p.area_declarada_ha + " ha</span>" +
-               "</div>" +
+    var predios = prediosDe(datos);
+    if (!predios.length) return estadoVacio("No hay predios cargados.");
+
+    return predios.map(function (predio) {
+      var dictamen = S.estado.dictamen(predio.id);
+      var ubicacion = [predio.municipio, predio.departamento].filter(Boolean).join(", ");
+      return '<button class="predio-item" data-predio="' + esc(predio.id) + '" ' +
+             'aria-current="' + (predio.id === seleccionado) + '">' +
+               '<span class="fila">' +
+                 '<span class="nombre">' + esc(texto(predio.productor, "Productor sin nombre")) + "</span>" +
+                 (dictamen && esNumero(dictamen.puntaje)
+                   ? '<span class="mono cifra">' + entero(dictamen.puntaje) + "</span>" : "") +
+               "</span>" +
+               '<span class="fila">' +
+                 '<span class="meta">' + esc(texto(predio.cultivo, "Cultivo sin dato")) +
+                   (ubicacion ? " · " + esc(ubicacion) : "") + "</span>" +
+                 '<span class="meta cifra">' +
+                   (esNumero(predio.area_declarada_ha) ? decimal(predio.area_declarada_ha, 1) + " ha" : "Área sin dato") +
+                 "</span>" +
+               "</span>" +
              "</button>";
     }).join("");
   }
@@ -63,538 +141,533 @@
      ====================================================================== */
 
   function mapa(host, datos, estado) {
+    var predios = prediosDe(datos);
     host.innerHTML =
+      '<div class="cabecera-pantalla">' +
+        '<div><span class="etiqueta">Originación agropecuaria</span>' +
+        '<h1>Predios en evaluación</h1>' +
+        '<p>Seleccione una unidad productiva para revisar su historial satelital.</p></div>' +
+      "</div>" +
       '<div class="rejilla">' +
-        '<div class="tarjeta">' +
+        '<section class="tarjeta">' +
           '<div class="tarjeta-cab"><span class="etiqueta">Cartera en evaluación</span></div>' +
           '<div id="lista">' + listaPredios(datos, estado.predioId) + "</div>" +
-        "</div>" +
-        '<div class="tarjeta">' +
-          '<div class="tarjeta-cab">' +
-            "<h2>Predios evaluados</h2>" +
-            '<span class="etiqueta" style="margin-left:auto">Colombia</span>' +
-          "</div>" +
-          '<div class="tarjeta-cuerpo" style="display:flex;justify-content:center">' +
-            '<svg id="svg-mapa" style="max-width:420px"></svg>' +
-          "</div>" +
-        "</div>" +
+        "</section>" +
+        '<section class="tarjeta">' +
+          '<div class="tarjeta-cab"><h2>Ubicación de los predios</h2>' +
+            '<span class="etiqueta empujar">Colombia</span></div>' +
+          '<div class="tarjeta-cuerpo mapa-host"><svg id="svg-mapa"></svg></div>' +
+        "</section>" +
       "</div>";
 
     S.mapa.render(
       host.querySelector("#svg-mapa"),
-      datos.predios.predios,
-      (datos.dictamenes || {}).dictamenes,
+      predios,
+      datos && datos.dictamenes && datos.dictamenes.dictamenes,
       estado.predioId,
       function (id) { location.hash = "#ficha/" + id; }
     );
 
-    host.querySelectorAll("[data-predio]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        location.hash = "#ficha/" + b.getAttribute("data-predio");
+    host.querySelectorAll("[data-predio]").forEach(function (boton) {
+      boton.addEventListener("click", function () {
+        location.hash = "#ficha/" + boton.getAttribute("data-predio");
       });
     });
   }
 
   /* ======================================================================
-     PANTALLA 2 — Ficha del predio + serie NDVI
+     PANTALLA 2 — Ficha, serie NDVI e imágenes
      ====================================================================== */
 
-  function ficha(host, datos, estado) {
-    var p = S.estado.predio(estado.predioId);
-    if (!p) { return mapa(host, datos, estado); }
+  function comparacionSatelital(predio) {
+    var imagenes = arreglo(predio && predio.imagenes_satelitales);
+    if (!imagenes.length) return estadoVacio("No hay cortes satelitales asociados a este predio.");
 
-    var serie = datos.series.series[p.id];
-    var desvio = p.area_declarada_ha
-      ? ((p.area_detectada_ha - p.area_declarada_ha) / p.area_declarada_ha * 100)
-      : 0;
+    return '<div class="comparacion-imagenes">' + imagenes.map(function (imagen, indice) {
+      var anio = texto(imagen && imagen.anio, "Año sin dato");
+      var ruta = texto(imagen && imagen.ruta, "");
+      var rutaEsperada = "assets/satelite/" + texto(predio && predio.id, "") + "-" + anio + ".jpg";
+      var rutaCargable = ruta === rutaEsperada ? ruta : "";
+      var momento = indice === 0 ? "Corte inicial" : (indice === imagenes.length - 1 ? "Corte reciente" : "Corte intermedio");
+      return '<figure class="imagen-satelital">' +
+        (rutaCargable ? '<img hidden src="' + esc(rutaCargable) + '" alt="Vista satelital del predio en ' + esc(anio) + '">' : "") +
+        '<div class="imagen-fallback" role="img" aria-label="Captura satelital pendiente para ' + esc(anio) + '">' +
+          '<span class="imagen-reticula" aria-hidden="true"></span>' +
+          '<strong>' + esc(anio) + "</strong>" +
+          '<span>Captura pendiente</span>' +
+        "</div>" +
+        '<figcaption><span>' + esc(momento) + '</span><strong class="cifra">' + esc(anio) + "</strong></figcaption>" +
+      "</figure>";
+    }).join("") + "</div>";
+  }
+
+  function activarImagenes(host) {
+    host.querySelectorAll(".imagen-satelital img").forEach(function (imagen) {
+      var figura = imagen.closest(".imagen-satelital");
+      var fallback = figura && figura.querySelector(".imagen-fallback");
+
+      function cargada() {
+        if (imagen.naturalWidth <= 1 || imagen.naturalHeight <= 1) return ausente();
+        imagen.hidden = false;
+        if (fallback) fallback.hidden = true;
+        figura.classList.add("imagen-cargada");
+      }
+
+      function ausente() {
+        imagen.hidden = true;
+        if (fallback) fallback.hidden = false;
+        figura.classList.remove("imagen-cargada");
+      }
+
+      imagen.addEventListener("load", cargada);
+      imagen.addEventListener("error", ausente);
+      if (imagen.complete) {
+        if (imagen.naturalWidth > 1 && imagen.naturalHeight > 1) cargada(); else ausente();
+      }
+    });
+  }
+
+  function ficha(host, datos, estado) {
+    var predio = S.estado.predio(estado.predioId);
+    if (!predio) return mapa(host, datos, estado);
+
+    var serie = serieDe(datos, predio.id);
+    var puntos = arreglo(serie && serie.puntos);
+    var desvio = esNumero(predio.area_declarada_ha) && predio.area_declarada_ha !== 0 &&
+      esNumero(predio.area_detectada_ha)
+      ? (predio.area_detectada_ha - predio.area_declarada_ha) / predio.area_declarada_ha * 100
+      : null;
+    var ubicacion = [predio.vereda ? "Vereda " + predio.vereda : "", predio.municipio, predio.departamento]
+      .filter(Boolean).join(", ");
+    var cultivo = texto(predio.cultivo, "Sin dato") +
+      (predio.variedad ? " (" + texto(predio.variedad) + ")" : "");
+    var origen = rotuloOrigen(serie, datos);
 
     host.innerHTML =
       '<div class="migas"><a href="#mapa">← Mapa</a><span>/</span><span>' +
-        esc(p.municipio) + ", " + esc(p.departamento) + "</span></div>" +
-
+        esc(texto(predio.municipio, "Predio")) + "</span></div>" +
+      '<div class="cabecera-pantalla cabecera-ficha">' +
+        '<div><span class="etiqueta">Expediente del solicitante</span>' +
+        '<h1>' + esc(texto(predio.productor, "Productor sin nombre")) + "</h1>" +
+        '<p>' + esc(ubicacion || "Ubicación sin dato") + "</p></div>" + origen +
+      "</div>" +
       '<div class="rejilla">' +
-        '<div>' +
-          '<div class="tarjeta" style="margin-bottom:var(--e3)">' +
-            '<div class="tarjeta-cab"><span class="etiqueta">Solicitante</span></div>' +
-            '<div class="tarjeta-cuerpo">' +
-              "<h1>" + esc(p.productor) + "</h1>" +
-              '<p style="color:var(--texto-2);margin-top:4px">Vereda ' + esc(p.vereda) +
-                ", " + esc(p.municipio) + ", " + esc(p.departamento) + "</p>" +
-              '<table class="datos" style="margin-top:var(--e3)">' +
-                fila("Tipo de productor", esc(p.tipo_productor)) +
-                fila("Cultivo", esc(p.cultivo) + " (" + esc(p.variedad) + ")") +
-                fila("Años en el predio", p.anos_en_el_predio) +
-                fila("Crédito previo", p.credito_previo ? "Sí" : "No") +
-                fila("Activos declarados", p.activos_declarados_smmlv + " SMMLV") +
-                fila("Monto solicitado", cop(p.monto_solicitado_cop)) +
-                fila("Destino", esc(p.destino)) +
-              "</table>" +
-            "</div>" +
-          "</div>" +
-
-          '<div class="tarjeta" style="margin-bottom:var(--e3)">' +
-            '<div class="tarjeta-cab"><span class="etiqueta">Verificación satelital del área</span></div>' +
-            '<div class="tarjeta-cuerpo">' +
-              '<table class="datos">' +
-                fila("Área declarada", p.area_declarada_ha + " ha") +
-                fila("Área con cultivo activo", p.area_detectada_ha + " ha") +
-                fila("Desvío", '<span style="color:' +
-                  (Math.abs(desvio) > 5 ? "var(--critico)" : "var(--favorable)") + '">' +
-                  (desvio > 0 ? "+" : "") + desvio.toFixed(1) + "%</span>") +
-              "</table>" +
-            "</div>" +
-          "</div>" +
-
-          '<button class="boton boton-primario" style="width:100%;padding:11px" ' +
-            'data-ir="#analisis/' + esc(p.id) + '">Evaluar con SEEDLLITE</button>' +
+        '<div class="columna-tarjetas">' +
+          '<section class="tarjeta">' +
+            '<div class="tarjeta-cab"><span class="etiqueta">Solicitud de crédito</span></div>' +
+            '<div class="tarjeta-cuerpo"><table class="datos">' +
+              fila("Tipo de productor", esc(texto(predio.tipo_productor))) +
+              fila("Cultivo", esc(cultivo)) +
+              fila("Años en el predio", esNumero(predio.anos_en_el_predio) ? entero(predio.anos_en_el_predio) : "Sin dato") +
+              fila("Crédito previo", predio.credito_previo === true ? "Sí" : (predio.credito_previo === false ? "No" : "Sin dato")) +
+              fila("Activos declarados", esNumero(predio.activos_declarados_smmlv)
+                ? entero(predio.activos_declarados_smmlv) + " SMMLV" : "Sin dato") +
+              fila("Monto solicitado", '<span class="cifra">' + cop(predio.monto_solicitado_cop) + "</span>") +
+              fila("Destino", esc(texto(predio.destino))) +
+            "</table></div>" +
+          "</section>" +
+          '<section class="tarjeta">' +
+            '<div class="tarjeta-cab"><span class="etiqueta">Verificación del área</span></div>' +
+            '<div class="tarjeta-cuerpo"><table class="datos">' +
+              fila("Área declarada", esNumero(predio.area_declarada_ha) ? decimal(predio.area_declarada_ha, 2) + " ha" : "Sin dato") +
+              fila("Área con cultivo activo", esNumero(predio.area_detectada_ha) ? decimal(predio.area_detectada_ha, 2) + " ha" : "Sin dato") +
+              fila("Desvío", '<span class="cifra ' +
+                (esNumero(desvio) && Math.abs(desvio) > 5 ? "texto-critico" : "texto-favorable") + '">' +
+                (esNumero(desvio) && desvio > 0 ? "+" : "") + porcentaje(desvio, 1) + "</span>") +
+            "</table></div>" +
+          "</section>" +
+          '<button class="boton boton-primario boton-ancho" data-ir="#analisis/' + esc(predio.id) + '">' +
+            "Evaluar con SEEDLLITE</button>" +
         "</div>" +
-
-        '<div>' +
-          '<div class="tarjeta">' +
-            '<div class="tarjeta-cab">' +
-              "<h2>Historial productivo satelital</h2>" +
-              '<span class="etiqueta" style="margin-left:auto">' +
-                serie.desde + " → " + serie.hasta + " · " + serie.puntos.length + " observaciones</span>" +
-            "</div>" +
-            '<div class="tarjeta-cuerpo">' +
-              '<div id="host-grafica"></div>' +
-            "</div>" +
-          "</div>" +
-
-          '<div class="tarjeta" style="margin-top:var(--e3)">' +
-            '<div class="tarjeta-cab"><span class="etiqueta">Indicadores calculados sobre la serie</span></div>' +
-            '<div class="tarjeta-cuerpo">' +
-              '<table class="datos">' +
-                fila("Ciclos completos en la década", serie.ciclos_detectados) +
-                fila("Ciclos en los últimos 24 meses",
-                  '<span style="color:' + (serie.ciclos_ultimos_24m === 0 ? "var(--critico)" : "var(--favorable)") +
-                  '">' + serie.ciclos_ultimos_24m + "</span>") +
-                fila("NDVI pico promedio", serie.ndvi_pico_promedio.toFixed(2)) +
-                fila("Rendimiento estimado", serie.rendimiento_estimado_t_ha + " t/ha") +
-                fila("Rendimiento municipal (EVA)", serie.rendimiento_municipal_eva_t_ha + " t/ha") +
-                fila("Caída durante El Niño 2023-24", serie.caida_enso_pct + "%") +
-                fila("Caída promedio regional", datos.series.caida_enso_regional_pct + "%") +
-              "</table>" +
-              '<p class="etiqueta" style="margin-top:var(--e2)">Fuente: ' +
-                esc(serie.fuente_referencia) + "</p>" +
-            "</div>" +
-          "</div>" +
-
-          '<div class="aviso" style="margin-top:var(--e3)">' +
-            esc(datos.series.nota_datos) +
-          "</div>" +
+        '<div class="columna-tarjetas">' +
+          '<section class="tarjeta">' +
+            '<div class="tarjeta-cab"><h2>Historial productivo satelital</h2>' +
+              '<span class="etiqueta empujar cifra">' +
+                esc(texto(serie && serie.desde, "Inicio sin dato")) + " → " +
+                esc(texto(serie && serie.hasta, "Fin sin dato")) + " · " +
+                entero(puntos.length) + " observaciones</span></div>" +
+            '<div class="tarjeta-cuerpo"><div id="host-grafica"></div></div>' +
+          "</section>" +
+          '<section class="tarjeta">' +
+            '<div class="tarjeta-cab"><span class="etiqueta">Indicadores calculados</span></div>' +
+            '<div class="tarjeta-cuerpo"><table class="datos datos-dos-columnas">' +
+              fila("Ciclos en toda la serie", entero(serie && serie.ciclos_detectados)) +
+              fila("Ciclos en los últimos 24 meses", '<span class="' +
+                (serie && serie.ciclos_ultimos_24m === 0 ? "texto-critico" : "texto-favorable") + '">' +
+                entero(serie && serie.ciclos_ultimos_24m) + "</span>") +
+              fila("Amplitud histórica", decimal(serie && serie.amplitud_historica, 3)) +
+              fila("Amplitud reciente", decimal(serie && serie.amplitud_reciente_24m, 3)) +
+              fila("Pérdida de amplitud", porcentaje(serie && serie.perdida_amplitud_pct, 1)) +
+              fila("NDVI pico promedio", decimal(serie && serie.ndvi_pico_promedio, 2)) +
+              fila("Rendimiento estimado", esNumero(serie && serie.rendimiento_estimado_t_ha)
+                ? decimal(serie.rendimiento_estimado_t_ha, 2) + " t/ha" : "Sin dato") +
+              fila("Rendimiento municipal (EVA)", esNumero(serie && serie.rendimiento_municipal_eva_t_ha)
+                ? decimal(serie.rendimiento_municipal_eva_t_ha, 2) + " t/ha" : "Sin dato") +
+            "</table>" +
+            '<p class="nota-fuente">Fuente de referencia: ' + esc(texto(serie && serie.fuente_referencia)) + "</p></div>" +
+          "</section>" +
+          '<section class="tarjeta">' +
+            '<div class="tarjeta-cab"><h2>Secuencia satelital</h2><span class="etiqueta empujar">Antes / después</span></div>' +
+            '<div class="tarjeta-cuerpo">' + comparacionSatelital(predio) + "</div>" +
+          "</section>" +
+          '<div class="aviso">' + esc(texto(datos && datos.series && datos.series.nota_datos,
+            "La fuente y el método de la serie no están disponibles.")) + "</div>" +
         "</div>" +
       "</div>";
 
-    var hostG = host.querySelector("#host-grafica");
-    hostG.appendChild(S.grafica.ndvi({ serie: serie, eventos: datos.series.eventos_climaticos }));
-    hostG.appendChild(S.grafica.leyenda());
-  }
-
-  function fila(k, v) {
-    return "<tr><th>" + k + "</th><td>" + v + "</td></tr>";
+    var hostGrafica = host.querySelector("#host-grafica");
+    hostGrafica.appendChild(S.grafica.ndvi({
+      serie: serie || {},
+      eventos: arreglo(datos && datos.series && datos.series.eventos_climaticos)
+    }));
+    hostGrafica.appendChild(S.grafica.leyenda());
+    activarImagenes(host);
   }
 
   /* ======================================================================
-     PANTALLA 3 — Análisis  ⭐ la que vale 25 puntos de la rúbrica
+     PANTALLA 3 — Análisis y evidencia de forma
      ====================================================================== */
 
-  /* ======================================================================
-     PANTALLA 3 - Analisis  (25 puntos de la rubrica; es la toma del video)
-
-     Presupuesto de tiempo, TAREA 4: el efecto completo entre 8 y 12 s.
-       seis pasos ....... 7,3 s   (PASOS_MS)
-       memorando ........ 3,2 s   (MEMO_MS, duracion fija)
-       total ........... 10,5 s
-     ====================================================================== */
-
-  var PASOS_MS = [1200, 1200, 1500, 1200, 1200, 1000];
-  var MEMO_MS  = 3200;
-
-  /* Token de la corrida en curso. El router repinta en cada hashchange y para
-     el video se graban varias tomas seguidas; sin esto la cadena de timeouts
-     anterior sigue viva escribiendo sobre nodos ya desechados y dos
-     animaciones se pisan. */
-  var corrida = null;
-
-  function num(n, dec) {
-    return new Intl.NumberFormat("es-CO", {
-      minimumFractionDigits: dec || 0,
-      maximumFractionDigits: dec || 0
-    }).format(n);
+  function comparacionAmplitud(serie) {
+    var historica = serie && serie.amplitud_historica;
+    var reciente = serie && serie.amplitud_reciente_24m;
+    if (!esNumero(historica) || !esNumero(reciente) || historica <= 0) {
+      return estadoVacio("No hay amplitudes suficientes para comparar.");
+    }
+    var proporcion = limitar(reciente / historica * 100, 0, 100);
+    var perdida = serie.perdida_amplitud_pct;
+    return '<div class="amplitud-comparacion" aria-label="Comparación de amplitud histórica y reciente">' +
+      '<div class="amplitud-fila"><div><span>Histórica</span><strong class="cifra">' + decimal(historica, 3) +
+      '</strong></div><div class="amplitud-riel"><span style="--avance:100%"></span></div></div>' +
+      '<div class="amplitud-fila amplitud-reciente"><div><span>Últimos 24 meses</span><strong class="cifra">' +
+      decimal(reciente, 3) + '</strong></div><div class="amplitud-riel"><span style="--avance:' +
+      proporcion.toFixed(1) + '%"></span></div></div>' +
+      '<p class="amplitud-conclusion"><strong class="cifra">' + porcentaje(perdida, 1) +
+      '</strong> de pérdida frente a su propio ritmo histórico.</p>' +
+    "</div>";
   }
 
-  /* Los seis pasos y la cifra con que cada uno cierra.
-     Toda cifra sale de la serie real; ninguna esta escrita a mano.
-     Contrato v1.1: el paso 4 contrasta contra el rendimiento municipal de EVA,
-     no contra un percentil veredal (que no existe como estadistica). */
-  function pasosDe(serie) {
-    var hay  = !!(serie && serie.puntos);
-    var n    = hay ? serie.puntos.length : 0;
-    var ini  = hay ? String(serie.desde).slice(0, 4) : "";
-    var fin  = hay ? String(serie.hasta).slice(0, 4) : "";
-    var c24  = hay ? serie.ciclos_ultimos_24m : null;
-    var re   = hay ? serie.rendimiento_estimado_t_ha : null;
-    var rm   = hay ? serie.rendimiento_municipal_eva_t_ha : null;
-    var enso = hay ? serie.caida_enso_pct : null;
-    var pct  = (enso == null) ? null
-             : (Math.abs(enso) <= 1 ? Math.abs(enso) * 100 : Math.abs(enso));
-
+  function pasosAnalisis(serie, datos) {
+    var puntos = arreglo(serie && serie.puntos);
+    var total = esNumero(serie && serie.cobertura_meses_totales)
+      ? serie.cobertura_meses_totales : puntos.length;
+    var medidos = serie && serie.cobertura_meses_medidos;
+    var interpolados = esNumero(total) && esNumero(medidos) ? Math.max(0, total - medidos) : null;
     return [
-      { texto: "Recuperando imagenes Copernicus Sentinel-2\u2026",
-        conteo: n,
-        cifra: hay ? num(n) + " observaciones mensuales \u00b7 " + ini + "\u2013" + fin
-                   : "Sin serie para este predio" },
-
-      { texto: "Calculando serie NDVI sobre el pol\u00edgono del predio\u2026",
-        cifra: "Mediana mensual \u00b7 resoluci\u00f3n 10 m" },
-
-      { texto: "Detectando ciclos de siembra y cosecha\u2026",
-        cifra: !hay ? "\u2014"
-             : num(serie.ciclos_detectados) + " ciclos en la serie" +
-               (c24 == null ? "" : " \u00b7 " + num(c24) + " en los \u00faltimos 24 meses") },
-
-      { texto: "Contrastando rendimiento con el promedio municipal \u2014 EVA\u2026",
-        cifra: (re == null || rm == null) ? "Sin referencia municipal"
-             : num(re, 2) + " t/ha frente a " + num(rm, 2) + " t/ha" },
-
-      { texto: "Evaluando exposici\u00f3n clim\u00e1tica \u2014 IDEAM\u2026",
-        cifra: (pct == null) ? "El Ni\u00f1o 2023-24 \u00b7 La Ni\u00f1a 2022"
-             : "Ca\u00edda de vigor de " + num(pct) + "% en El Ni\u00f1o 2023-24" },
-
-      { texto: "Redactando dictamen\u2026" }
+      "Leyendo " + entero(total) + " observaciones Sentinel-2 del polígono…",
+      esNumero(medidos)
+        ? "Separando " + entero(medidos) + " meses medidos de " + entero(interpolados) + " meses interpolados…"
+        : "Separando observaciones medidas de meses interpolados por nubosidad…",
+      esNumero(serie && serie.ciclos_detectados)
+        ? "Detectando " + entero(serie.ciclos_detectados) + " ciclos en la forma completa de la serie…"
+        : "Detectando ciclos productivos en la forma de la serie…",
+      esNumero(serie && serie.rendimiento_estimado_t_ha) && esNumero(serie && serie.rendimiento_municipal_eva_t_ha)
+        ? "Comparando " + decimal(serie.rendimiento_estimado_t_ha, 2) + " t/ha estimadas contra " +
+          decimal(serie.rendimiento_municipal_eva_t_ha, 2) + " t/ha del municipio (EVA)…"
+        : "Comparando el rendimiento estimado contra la referencia municipal EVA…",
+      esNumero(serie && serie.perdida_amplitud_pct)
+        ? "Midiendo una pérdida de amplitud de " + porcentaje(serie.perdida_amplitud_pct, 1) + " en los últimos 24 meses…"
+        : "Midiendo la amplitud reciente contra el patrón histórico…",
+      "Reproduciendo el memorando generado por " + modeloVisible(datos) + "…"
     ];
   }
 
-  /* Contador ascendente sincronizado con la duracion del paso. */
-  function contar(destino, total, ms, yo) {
-    var t0 = new Date().getTime();
-    (function tic() {
-      if (yo.cancelada) { return; }
-      var avance = Math.min(1, (new Date().getTime() - t0) / ms);
-      destino.textContent = num(Math.round(total * avance)) + " / " + num(total);
-      if (avance < 1) { setTimeout(tic, 40); }
-    })();
+  function metricasAnalisis(serie) {
+    var medidos = serie && serie.cobertura_meses_medidos;
+    var total = serie && serie.cobertura_meses_totales;
+    return '<div class="metricas-analisis">' +
+      '<div><span class="etiqueta">Ciclos · total / 24 m</span><strong class="cifra">' +
+        entero(serie && serie.ciclos_detectados) + " / " + entero(serie && serie.ciclos_ultimos_24m) + "</strong></div>" +
+      '<div><span class="etiqueta">NDVI pico · nivel</span><strong class="cifra">' +
+        decimal(serie && serie.ndvi_pico_promedio, 2) + "</strong></div>" +
+      '<div><span class="etiqueta">Cobertura medida</span><strong class="cifra">' +
+        entero(medidos) + " / " + entero(total) + " meses</strong></div>" +
+      '<div><span class="etiqueta">Caída en El Niño</span><strong class="cifra">' +
+        porcentaje(serie && serie.caida_enso_pct, 1) + "</strong></div>" +
+      '<div class="metrica-ancha"><span class="etiqueta">Rendimiento · predio / municipio EVA</span><strong class="cifra">' +
+        (esNumero(serie && serie.rendimiento_estimado_t_ha)
+          ? decimal(serie.rendimiento_estimado_t_ha, 2) + " t/ha" : "Sin dato") + " / " +
+        (esNumero(serie && serie.rendimiento_municipal_eva_t_ha)
+          ? decimal(serie.rendimiento_municipal_eva_t_ha, 2) + " t/ha" : "Sin dato") + "</strong></div>" +
+    "</div>";
   }
 
   function analisis(host, datos, estado) {
-    var p = S.estado.predio(estado.predioId);
-    if (!p) { return mapa(host, datos, estado); }
+    var predio = S.estado.predio(estado.predioId);
+    if (!predio) return mapa(host, datos, estado);
 
-    var dict  = S.estado.dictamen(p.id);
-    var serie = (datos.series && datos.series.series)
-              ? datos.series.series[p.id] : null;
-
-    if (corrida) { corrida.cancelada = true; }
-    var yo = corrida = { cancelada: false };
-    yo.rehacer = function () { analisis(host, datos, estado); };
-
-    var maqueta = !!(datos.dictamenes && datos.dictamenes.es_placeholder);
-    var modelo  = (!maqueta && datos.dictamenes && datos.dictamenes.modelo)
-                ? datos.dictamenes.modelo : "claude-opus-5";
+    var serie = serieDe(datos, predio.id);
+    var dictamen = S.estado.dictamen(predio.id);
+    var placeholder = Boolean(datos && datos.dictamenes && datos.dictamenes.es_placeholder);
+    var pasos = pasosAnalisis(serie, datos);
 
     host.innerHTML =
-      '<div class="migas"><a href="#ficha/' + esc(p.id) + '">\u2190 Ficha</a>' +
-        "<span>/</span><span>An\u00e1lisis</span></div>" +
-      '<div class="tarjeta" style="max-width:760px;margin:0 auto">' +
-        '<div class="tarjeta-cab">' +
-          "<h2>Evaluando " + esc(p.productor) + "</h2>" +
-          '<span class="etiqueta" style="margin-left:auto">SEEDLLITE</span>' +
-        "</div>" +
-        '<div class="tarjeta-cuerpo">' +
-          '<ol id="pasos" style="list-style:none;padding:0;margin:0 0 var(--e3)"></ol>' +
-          '<div id="cab-memo" style="display:none;align-items:center;' +
-            'border-top:1px solid var(--borde);padding-top:var(--e3);margin-bottom:10px">' +
-            '<span class="chip-modelo">Generado por Claude \u00b7 ' + esc(modelo) +
-              (maqueta ? " \u00b7 dictamen de ejemplo" : "") +
-            "</span>" +
+      '<div class="migas"><a href="#ficha/' + esc(predio.id) + '">← Ficha</a>' +
+        "<span>/</span><span>Análisis</span></div>" +
+      '<div class="cabecera-pantalla cabecera-analisis">' +
+        '<div><span class="etiqueta">Lectura de la forma productiva</span>' +
+        '<h1>Evaluando ' + esc(texto(predio.productor, "el predio")) + "</h1>" +
+        '<p>El nivel muestra cuánto verde hay. La amplitud revela si el cultivo conserva su patrón.</p></div>' +
+        '<span class="estado-cache ' + (placeholder ? "estado-placeholder" : "") + '">' +
+          (placeholder ? "Maqueta · salida pendiente" : "Salida real cacheada") + " · " + esc(modeloVisible(datos)) + "</span>" +
+      "</div>" +
+      '<div class="analisis-grid">' +
+        '<section class="tarjeta analisis-evidencia">' +
+          '<div class="tarjeta-cab"><h2>La señal que importa</h2>' + rotuloOrigen(serie, datos) + "</div>" +
+          '<div class="tarjeta-cuerpo">' +
+            '<div class="tesis-forma"><span class="tesis-indice">01</span><p>Un predio abandonado puede seguir verde por el rastrojo. Lo que desaparece es el <strong>patrón</strong>: la serie pierde amplitud y ciclos.</p></div>' +
+            '<h3 class="titulo-comparacion">Amplitud histórica frente a los últimos 24 meses</h3>' +
+            comparacionAmplitud(serie) +
+            metricasAnalisis(serie) +
+            '<p class="nota-metodo">Los meses interpolados por nubosidad se muestran en la gráfica, pero quedan fuera de estos agregados.</p>' +
           "</div>" +
-          '<div id="memorando" class="mono" style="white-space:pre-wrap;font-size:12.5px;' +
-            'line-height:1.65;min-height:120px"></div>' +
-          '<div id="pie" style="margin-top:var(--e3)"></div>' +
-        "</div>" +
+        "</section>" +
+        '<section class="tarjeta analisis-proceso">' +
+          '<div class="tarjeta-cab"><h2>Proceso de evaluación</h2>' +
+            '<span class="etiqueta empujar">Reproducción local</span></div>' +
+          '<div class="tarjeta-cuerpo">' +
+            '<ol id="pasos" class="pasos-analisis">' + pasos.map(function (paso, indice) {
+              return '<li><span class="paso-marca cifra">' + (indice + 1) + '</span><span>' + esc(paso) + "</span></li>";
+            }).join("") + "</ol>" +
+            '<div class="memorando-cache">' +
+              '<div class="memorando-rotulo"><span>Memorando al comité</span><strong>Cacheado · no es una llamada en vivo</strong></div>' +
+              '<div id="memorando" class="mono memorando-texto" aria-live="polite">Preparando reproducción de la salida guardada…</div>' +
+            "</div>" +
+            '<div id="pie" class="analisis-pie"></div>' +
+          "</div>" +
+        "</section>" +
       "</div>";
 
-    var pasos = pasosDe(serie);
-    var ol = host.querySelector("#pasos");
-    var i = 0;
-
-    (function siguiente() {
-      if (yo.cancelada) { return; }
-      if (i >= pasos.length) { return escribirMemorando(host, dict, p, yo); }
-
-      var paso = pasos[i];
-      var ms = PASOS_MS[i] || 1200;
-
-      var li = document.createElement("li");
-      li.className = "paso paso-curso";
-      li.innerHTML =
-        '<span class="paso-glifo">\u00b7</span>' +
-        '<span class="paso-texto">' + esc(paso.texto) + "</span>" +
-        '<span class="paso-cifra"></span>';
-      ol.appendChild(li);
-
-      if (paso.conteo) {
-        contar(li.querySelector(".paso-cifra"), paso.conteo, ms, yo);
-      }
-
-      setTimeout(function () {
-        if (yo.cancelada) { return; }
-        li.className = "paso paso-ok";
-        li.querySelector(".paso-glifo").textContent = "\u2713";
-        li.querySelector(".paso-cifra").textContent = paso.cifra || "";
-        i++;
-        siguiente();
-      }, ms);
-    })();
+    animarAnalisis(host, pasos, dictamen, predio, placeholder);
   }
 
-  /* Animacion de escritura del memorando.
-     Velocidad ADAPTATIVA: el memorando de maqueta tiene ~260 caracteres y el
-     real tendra 120-200 palabras (~900). A caracteres-por-tick fijos el efecto
-     pasaria de 3 s a 11 s cuando lleguen los datos buenos y se saldria del
-     minuto de video. Se fija la DURACION y se derivan los caracteres. */
-  function escribirMemorando(host, dict, p, yo) {
-    var destino = host.querySelector("#memorando");
-    var cab = host.querySelector("#cab-memo");
+  function animarAnalisis(host, pasos, dictamen, predio, placeholder) {
+    var elementos = Array.prototype.slice.call(host.querySelectorAll("#pasos li"));
+    var reducir = global.matchMedia && global.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var indice = 0;
 
-    if (!dict || !dict.memorando) {
-      if (cab) { cab.style.display = "none"; }
-      destino.innerHTML = '<span class="vacio">Sin dictamen para este predio.</span>';
+    function mostrarSalida() {
+      if (!host.isConnected) return;
+      elementos.forEach(function (elemento) { elemento.className = "paso-completo"; });
+      escribirMemorando(host, dictamen, predio, placeholder, reducir);
+    }
+
+    if (reducir) return mostrarSalida();
+
+    function siguiente() {
+      if (!host.isConnected) return;
+      if (indice > 0) elementos[indice - 1].className = "paso-completo";
+      if (indice >= pasos.length) return mostrarSalida();
+      elementos[indice].className = "paso-activo";
+      indice += 1;
+      global.setTimeout(siguiente, 720);
+    }
+
+    siguiente();
+  }
+
+  function escribirMemorando(host, dictamen, predio, placeholder, sinMovimiento) {
+    var destino = host.querySelector("#memorando");
+    if (!destino) return;
+    if (!dictamen || typeof dictamen.memorando !== "string" || !dictamen.memorando.trim()) {
+      destino.innerHTML = '<span class="vacio-en-linea">Sin memorando disponible para este predio.</span>';
       return;
     }
 
-    if (cab) { cab.style.display = "flex"; }
+    var contenido = dictamen.memorando;
+    var posicion = 0;
 
-    var texto = dict.memorando;
-    var tick  = 24;
-    var salto = Math.max(1, Math.ceil(texto.length / (MEMO_MS / tick)));
-    var n = 0;
+    function completar() {
+      if (!host.isConnected) return;
+      destino.textContent = contenido;
+      var pie = host.querySelector("#pie");
+      pie.innerHTML =
+        '<button class="boton boton-primario" data-ir="#dictamen/' + esc(predio.id) + '">Ver dictamen completo</button>' +
+        '<p>' + (placeholder
+          ? "El motor todavía no ha reemplazado el texto de maqueta."
+          : "Salida real generada previamente y guardada en el paquete local de datos.") + "</p>";
+    }
 
+    if (sinMovimiento) return completar();
+
+    destino.textContent = "";
     (function teclear() {
-      if (yo.cancelada) { return; }
-      if (n < texto.length) {
-        n = Math.min(texto.length, n + salto);
-        destino.textContent = texto.slice(0, n);
-        setTimeout(teclear, tick);
+      if (!host.isConnected) return;
+      if (posicion <= contenido.length) {
+        destino.textContent = contenido.slice(0, posicion);
+        posicion += 3;
+        global.setTimeout(teclear, 15);
         return;
       }
-      destino.textContent = texto;
-      rematar(host, p, yo);
+      completar();
     })();
   }
 
-  /* Remate: los dos botones y el rotulo de que esto reproduce una salida ya
-     generada. Los manejadores se enganchan aqui a mano y no por data-ir: el
-     router asigna los suyos al pintar, y estos nodos nacen segundos despues,
-     cuando ese recorrido ya paso. Con data-ir el boton nace muerto. */
-  function rematar(host, p, yo) {
-    var pie = host.querySelector("#pie");
-    pie.innerHTML =
-      '<button class="boton boton-primario" id="ir-dictamen">Ver dictamen completo</button> ' +
-      '<button class="boton" id="repetir">Repetir an\u00e1lisis</button>' +
-      '<div class="aviso" style="margin-top:var(--e3)">' +
-        "Reproducci\u00f3n de una salida generada previamente por el modelo y " +
-        "commiteada en <code>data/dictamenes.json</code>. El demo no llama a la " +
-        "API en vivo; el prompt est\u00e1 en <code>scripts/generar_dictamen.py</code>." +
-      "</div>";
-
-    pie.querySelector("#ir-dictamen").addEventListener("click", function () {
-      location.hash = "#dictamen/" + p.id;
-    });
-
-    /* Sin recargar: para grabar varias tomas seguidas del mismo predio. */
-    pie.querySelector("#repetir").addEventListener("click", function () {
-      yo.rehacer();
-    });
-  }
-
   /* ======================================================================
-     PANTALLA 4 — Dictamen
+     PANTALLA 4 — Dictamen de crédito
      ====================================================================== */
 
-  function dictamen(host, datos, estado) {
-    var p = S.estado.predio(estado.predioId);
-    if (!p) { return mapa(host, datos, estado); }
+  function razonAjuste(dictamen) {
+    var evidencia = arreglo(dictamen && dictamen.evidencia);
+    var candidatas = evidencia.filter(function (item) {
+      return item && (item.tipo === "alerta" || item.tipo === "critico");
+    });
+    var precisa = candidatas.filter(function (item) {
+      return /área|monto|capacidad|cultiv|ciclo|amplitud|rendimiento|abandono|destino/i.test(texto(item.texto, ""));
+    })[0];
+    var elegida = precisa || candidatas[0];
+    return elegida && elegida.texto
+      ? elegida.texto
+      : "El ajuste corresponde a la capacidad productiva verificada por el análisis satelital.";
+  }
 
-    var d = S.estado.dictamen(p.id);
-    if (!d) {
-      host.innerHTML = '<div class="vacio">A\u00fan no hay dictamen para este predio.</div>';
+  function ejesDictamen(dictamen) {
+    var ejes = arreglo(dictamen && dictamen.ejes);
+    if (!ejes.length) return estadoVacio("Los ejes de evaluación no están disponibles.");
+    return ejes.map(function (eje) {
+      var avance = esNumero(eje && eje.puntaje) && esNumero(eje && eje.peso) && eje.peso > 0
+        ? limitar(eje.puntaje / eje.peso * 100, 0, 100) : 0;
+      return '<div class="eje">' +
+        '<div class="eje-fila"><span class="eje-nombre">' + esc(texto(eje && eje.eje)) +
+        '<small>Peso ' + entero(eje && eje.peso) + '</small></span><span class="eje-cifra">' +
+        entero(eje && eje.puntaje) + " / " + entero(eje && eje.peso) + "</span></div>" +
+        '<div class="eje-riel"><div class="eje-barra" style="--avance:' + avance.toFixed(1) + '%"></div></div></div>';
+    }).join("");
+  }
+
+  function evidenciaDictamen(dictamen) {
+    var evidencia = arreglo(dictamen && dictamen.evidencia);
+    if (!evidencia.length) return estadoVacio("No hay evidencia disponible para este dictamen.");
+    return '<ul class="evidencia">' + evidencia.map(function (item) {
+      var tipo = texto(item && item.tipo, "sin-tipo");
+      return '<li class="ev-' + esc(tipo) + '"><span class="glifo" aria-hidden="true">' +
+        (GLIFO[tipo] || "·") + '</span><span><strong>' +
+        (tipo === "favorable" ? "Favorable" : (tipo === "alerta" ? "Alerta" : (tipo === "critico" ? "Crítico" : "Evidencia"))) +
+        "</strong>" + esc(texto(item && item.texto)) + "</span></li>";
+    }).join("") + "</ul>";
+  }
+
+  function dictamen(host, datos, estado) {
+    var predio = S.estado.predio(estado.predioId);
+    if (!predio) return mapa(host, datos, estado);
+    var dictamen = S.estado.dictamen(predio.id);
+    if (!dictamen) {
+      host.innerHTML = '<div class="migas"><a href="#ficha/' + esc(predio.id) + '">← Ficha</a></div>' +
+        '<section class="tarjeta">' + estadoVacio("Aún no hay dictamen para este predio.") + "</section>";
       return;
     }
 
-    var rechazado = d.decision === "rechazar";
-
-    /* Defensas ante el dictamen real. Los que hay ahora son de relleno; entre
-       las 00:30 y las 02:00 los reemplaza la salida del modelo y cualquier
-       campo que no venga como se espera dejaria la pantalla en blanco a las
-       dos de la manana. Se degrada, no se cae. */
-    var losEjes = (d.ejes && d.ejes.length) ? d.ejes : [];
-    var laEvidencia = (d.evidencia && d.evidencia.length) ? d.evidencia : [];
-
-    var ejes = losEjes.map(function (e) {
-      var peso = e.peso || 0;
-      var pct = peso ? Math.max(0, Math.min(100, e.puntaje / peso * 100)) : 0;
-      return '<div class="eje">' +
-        '<div class="eje-fila"><span class="eje-nombre">' + esc(e.eje) + "</span>" +
-        '<span class="eje-cifra">' + esc(e.puntaje) + " / " + esc(peso) + "</span></div>" +
-        '<div class="eje-riel"><div class="eje-barra" style="width:' +
-          pct.toFixed(0) + '%"></div></div></div>';
-    }).join("") ||
-      '<div class="vacio" style="font-size:12px">Ejes de evaluaci\u00f3n pendientes.</div>';
-
-    var evidencia = laEvidencia.map(function (ev) {
-      return '<li class="ev-' + esc(ev.tipo) + '">' +
-        '<span class="glifo">' + (GLIFO[ev.tipo] || "\u00b7") + "</span>" +
-        "<span>" + esc(ev.texto) + "</span></li>";
-    }).join("") ||
-      '<li class="vacio">Evidencia pendiente de generar.</li>';
-
-    /* Monto: el recorte es la historia, no un detalle de formato.
-       boyaca-papa existe en el demo para mostrar que el satelite midio 12%
-       menos area de la declarada y que por eso se recorta el desembolso. Si
-       los dos montos se ven igual de discretos, esa historia no se cuenta. */
-    var solicitado = p.monto_solicitado_cop || 0;
-    var sugerido = d.monto_sugerido_cop || 0;
-    var recorte = (!rechazado && sugerido && solicitado && sugerido !== solicitado)
-                ? solicitado - sugerido : 0;
-    var pctRecorte = (recorte && solicitado)
-                   ? Math.round(Math.abs(recorte) / solicitado * 100) : 0;
-
-    var celdaSugerido;
-    if (rechazado) {
-      celdaSugerido = '<span style="color:var(--critico);font-weight:600">Sin desembolso</span>';
-    } else if (recorte > 0) {
-      celdaSugerido =
-        '<span style="color:var(--alerta);font-weight:600">' + cop(sugerido) + "</span>" +
-        '<span class="delta delta-baja">\u2212' + cop(recorte) +
-          " \u00b7 " + pctRecorte + "% menos</span>";
-    } else {
-      celdaSugerido =
-        '<span style="color:var(--favorable);font-weight:600">' + cop(sugerido) + "</span>" +
-        '<span class="delta delta-igual">Completo, sin recorte</span>';
-    }
-
-    var claseDecision = "decision-" + (rechazado ? "rechazar"
-                      : (d.decision === "aprobar_con_ajuste" ? "ajuste" : "aprobar"));
+    var solicitado = predio.monto_solicitado_cop;
+    var sugerido = dictamen.monto_sugerido_cop;
+    var recorte = esNumero(solicitado) && esNumero(sugerido) ? Math.max(0, solicitado - sugerido) : null;
+    var tieneRecorte = esNumero(recorte) && recorte > 0;
+    var banda = texto(dictamen.banda_riesgo, "sin-banda").toLowerCase();
+    var decision = TEXTO_DECISION[dictamen.decision] || texto(dictamen.decision, "Sin decisión");
+    var fag = dictamen.cobertura_fag_pct;
+    var fagDetalle = esNumero(fag) && fag > 0
+      ? '<strong class="cifra">' + porcentaje(fag, 0) +
+        "</strong> del saldo garantizado al intermediario ante incumplimiento. El productor recibe el 100% del monto aprobado."
+      : "No aplica para esta decisión.";
+    var garantia = esNumero(fag) && fag > 0
+      ? "FAG; no requiere hipoteca del predio."
+      : "No aplica.";
 
     host.innerHTML =
-      '<div class="migas"><a href="#mapa">\u2190 Mapa</a><span>/</span>' +
-        '<a href="#ficha/' + esc(p.id) + '">Ficha</a><span>/</span><span>Dictamen</span></div>' +
-
-      '<div class="rejilla">' +
-        '<div class="tarjeta">' +
-          '<div class="tarjeta-cab"><span class="etiqueta">Puntaje SEEDLLITE</span></div>' +
-          '<div class="tarjeta-cuerpo">' +
-
-            /* El puntaje y la banda, juntos y arriba: es lo primero que tiene
-               que leerse en la toma del video. */
-            '<div class="dict-cab">' +
-              "<div>" +
-                '<div class="puntaje" style="color:' +
-                  (rechazado ? "var(--critico)" : "var(--texto)") + '">' +
-                  esc(d.puntaje) + "</div>" +
-                '<div class="puntaje-sub">de 1000</div>' +
-              "</div>" +
-              '<span class="marca-riesgo riesgo-' + esc(d.banda_riesgo) + '">Riesgo ' +
-                esc(d.banda_riesgo) + "</span>" +
-            "</div>" +
-
-            '<div class="decision ' + claseDecision + '">' +
-              esc(TEXTO_DECISION[d.decision] || d.decision) + "</div>" +
-
-            ejes +
-          "</div>" +
-        "</div>" +
-
-        "<div>" +
-          '<div class="tarjeta" style="margin-bottom:var(--e3)">' +
-            '<div class="tarjeta-cab">' +
-              "<h2>" + esc(p.productor) + "</h2>" +
-              '<span class="etiqueta" style="margin-left:auto">' +
-                esc(p.cultivo) + " \u00b7 " + esc(p.municipio) + "</span>" +
-            "</div>" +
+      '<div class="migas"><a href="#mapa">← Mapa</a><span>/</span>' +
+        '<a href="#ficha/' + esc(predio.id) + '">Ficha</a><span>/</span><span>Dictamen</span></div>' +
+      '<div class="cabecera-pantalla cabecera-dictamen">' +
+        '<div><span class="etiqueta">Memorando de decisión crediticia</span>' +
+        '<h1>' + esc(texto(predio.productor, "Productor sin nombre")) + "</h1>" +
+        '<p>' + esc(texto(predio.cultivo)) + " · " + esc(texto(predio.municipio)) +
+          (predio.departamento ? ", " + esc(predio.departamento) : "") + "</p></div>" +
+        '<div class="decision-principal riesgo-texto-' + esc(banda) + '"><span>Decisión</span><strong>' +
+          esc(decision) + "</strong></div>" +
+      "</div>" +
+      '<div class="dictamen-grid banda-' + esc(banda) + '">' +
+        '<aside class="columna-tarjetas dictamen-resumen">' +
+          '<section class="tarjeta">' +
+            '<div class="tarjeta-cab"><span class="etiqueta">Puntaje SEEDLLITE</span></div>' +
             '<div class="tarjeta-cuerpo">' +
-              '<table class="datos">' +
-                fila("Monto solicitado", cop(solicitado)) +
-                fila("Monto sugerido", celdaSugerido) +
-                fila("L\u00ednea FINAGRO", esc(d.linea_finagro) || "No aplica") +
-                fila("Cobertura FAG", d.cobertura_fag_pct ? d.cobertura_fag_pct + "%" : "No aplica") +
-                fila("Plazo", d.plazo_meses ? d.plazo_meses + " meses" : "No aplica") +
-                fila("Desembolso", esc(d.desembolso) || "No aplica") +
+              '<div class="puntaje"><strong class="cifra">' + entero(dictamen.puntaje) +
+                '</strong><span>/ 1000</span></div>' +
+              '<div class="puntaje-banda">Riesgo ' + esc(texto(dictamen.banda_riesgo)) + "</div>" +
+              '<div class="marca-dictamen">' + marcaRiesgo(dictamen) + "</div>" +
+              '<div class="ejes-lista">' + ejesDictamen(dictamen) + "</div>" +
+            "</div>" +
+          "</section>" +
+        "</aside>" +
+        '<div class="columna-tarjetas dictamen-detalle">' +
+          '<section class="tarjeta tarjeta-montos">' +
+            '<div class="tarjeta-cab"><h2>Estructura recomendada</h2>' +
+              '<span class="etiqueta empujar">FINAGRO · FAG</span></div>' +
+            '<div class="tarjeta-cuerpo">' +
+              '<div class="montos-comparacion">' +
+                '<div><span>Solicitado</span><strong class="cifra">' + cop(solicitado) + "</strong></div>" +
+                '<span class="montos-flecha" aria-hidden="true">→</span>' +
+                '<div class="monto-sugerido"><span>Sugerido</span><strong class="cifra">' + cop(sugerido) + "</strong></div>" +
+              "</div>" +
+              (tieneRecorte ? '<div class="recorte-monto"><span class="etiqueta">Ajuste satelital</span>' +
+                '<strong class="cifra">−' + cop(recorte) + '</strong><p><b>Razón:</b> ' +
+                esc(razonAjuste(dictamen)) + "</p></div>" : "") +
+              '<table class="datos datos-financiacion">' +
+                fila("Línea FINAGRO", esc(texto(dictamen.linea_finagro, "No aplica"))) +
+                fila("Cobertura FAG", fagDetalle) +
+                fila("Garantía", esc(garantia)) +
+                fila("Plazo", esNumero(dictamen.plazo_meses) && dictamen.plazo_meses > 0
+                  ? entero(dictamen.plazo_meses) + " meses" : "No aplica") +
+                fila("Condición de desembolso", esc(texto(dictamen.desembolso, "No aplica"))) +
               "</table>" +
             "</div>" +
-          "</div>" +
-
-          '<div class="tarjeta" style="margin-bottom:var(--e3)">' +
-            '<div class="tarjeta-cab"><span class="etiqueta">Evidencia satelital</span></div>' +
-            '<div class="tarjeta-cuerpo"><ul class="evidencia">' + evidencia + "</ul></div>" +
-          "</div>" +
-
-          '<div class="tarjeta" style="margin-bottom:var(--e3)">' +
-            '<div class="tarjeta-cab">' +
-              '<span class="etiqueta">Memorando al comit\u00e9 de cr\u00e9dito</span>' +
-            "</div>" +
-            '<div class="tarjeta-cuerpo">' +
-              '<p style="font-size:13.5px;line-height:1.65">' +
-                esc(d.memorando || "Memorando pendiente de generar.") + "</p>" +
-              (d.recomendacion
-                ? '<p style="font-weight:600;margin-top:var(--e3);margin-bottom:0">' +
-                    esc(d.recomendacion) + "</p>"
-                : "") +
-            "</div>" +
-          "</div>" +
-
-          '<div class="aviso' + (rechazado ? " aviso-fuerte" : "") + '">' +
-            "SEEDLLITE emite una recomendaci\u00f3n de cr\u00e9dito dirigida a un intermediario " +
-            "financiero vigilado. No constituye una oferta de cr\u00e9dito al productor ni " +
-            "asesor\u00eda financiera. La decisi\u00f3n final es del comit\u00e9 de cr\u00e9dito." +
-          "</div>" +
-
-          /* Salida del callejon: el spec de TAREA 5 la pide y no existia.
-             data-ir basta aqui porque este nodo nace durante el pintado y el
-             router engancha sus manejadores justo despues. */
-          '<div style="margin-top:var(--e3)">' +
-            '<button class="boton boton-primario" data-ir="#mapa">Evaluar otro predio</button>' +
-          "</div>" +
+          "</section>" +
+          '<section class="tarjeta">' +
+            '<div class="tarjeta-cab"><h2>Evidencia que sustenta la decisión</h2>' +
+              '<span class="etiqueta empujar">Favorable · alerta · crítico</span></div>' +
+            '<div class="tarjeta-cuerpo">' + evidenciaDictamen(dictamen) + "</div>" +
+          "</section>" +
+          '<section class="tarjeta memorando-completo">' +
+            '<div class="tarjeta-cab"><h2>Memorando al comité de crédito</h2>' +
+              '<span class="etiqueta empujar">' + esc(modeloVisible(datos)) + " · salida cacheada</span></div>" +
+            '<div class="tarjeta-cuerpo"><p>' + esc(texto(dictamen.memorando,
+              "No hay memorando disponible.")) + '</p><p class="recomendacion">' +
+              esc(texto(dictamen.recomendacion, "Sin recomendación adicional.")) + "</p></div>" +
+          "</section>" +
+          '<section class="descargo-legal" aria-label="Descargo legal">' +
+            '<strong>Descargo legal</strong><p>SEEDLLITE emite una recomendación dirigida a un intermediario financiero vigilado. No constituye oferta de crédito, promesa de desembolso ni asesoría financiera al productor. La decisión de otorgamiento corresponde exclusivamente al intermediario, conforme a su reglamento de crédito, al SARC y al Manual de Servicios de FINAGRO.</p>' +
+          "</section>" +
         "</div>" +
       "</div>";
   }
 
   /* ======================================================================
-     PANTALLA 5 — Cartera (opcional; se corta a las 02:30 si no alcanza)
+     PANTALLA 5 — Cartera
      ====================================================================== */
 
   function cartera(host, datos) {
-    var filas = datos.predios.predios.map(function (p) {
-      var d = S.estado.dictamen(p.id);
-      var s = datos.series.series[p.id];
-      if (!d) return "";
+    var filas = prediosDe(datos).map(function (predio) {
+      var dictamen = S.estado.dictamen(predio.id);
+      var serie = serieDe(datos, predio.id);
+      if (!dictamen) return "";
       return "<tr>" +
-        "<td>" + esc(p.productor) + '<div class="meta" style="color:var(--texto-2);font-size:12px">' +
-          esc(p.municipio) + ", " + esc(p.departamento) + "</div></td>" +
-        "<td>" + esc(p.cultivo) + "</td>" +
-        '<td class="num mono">' + p.area_detectada_ha + "</td>" +
-        '<td class="num mono">' + s.ciclos_ultimos_24m + "</td>" +
-        '<td class="num mono" style="font-weight:700">' + d.puntaje + "</td>" +
-        '<td class="num mono">' + (d.monto_sugerido_cop ? cop(d.monto_sugerido_cop) : "—") + "</td>" +
-        "<td>" + marcaRiesgo(d) + "</td>" +
+        "<td>" + esc(texto(predio.productor, "Productor sin nombre")) +
+          '<div class="meta tabla-meta">' + esc([predio.municipio, predio.departamento].filter(Boolean).join(", ")) + "</div></td>" +
+        "<td>" + esc(texto(predio.cultivo)) + "</td>" +
+        '<td class="num mono">' + decimal(predio.area_detectada_ha, 2) + "</td>" +
+        '<td class="num mono">' + entero(serie && serie.ciclos_ultimos_24m) + "</td>" +
+        '<td class="num mono celda-puntaje">' + entero(dictamen.puntaje) + "</td>" +
+        '<td class="num mono">' + cop(dictamen.monto_sugerido_cop) + "</td>" +
+        "<td>" + marcaRiesgo(dictamen) + "</td>" +
         "</tr>";
     }).join("");
 
     host.innerHTML =
       '<div class="migas"><a href="#mapa">← Mapa</a><span>/</span><span>Cartera</span></div>' +
-      '<div class="tarjeta">' +
-        '<div class="tarjeta-cab"><h2>Cartera evaluada</h2>' +
-          '<span class="etiqueta" style="margin-left:auto">Vista de analista</span></div>' +
-        '<div class="tarjeta-cuerpo">' +
-          '<table class="datos">' +
-            "<tr><th>Productor</th><th>Cultivo</th><th>Ha activas</th>" +
-            "<th>Ciclos 24m</th><th>Puntaje</th><th>Monto</th><th>Decisión</th></tr>" +
-            filas +
-          "</table>" +
-        "</div>" +
-      "</div>";
+      '<div class="cabecera-pantalla"><div><span class="etiqueta">Vista de analista</span>' +
+        '<h1>Cartera evaluada</h1><p>Comparación de capacidad productiva, puntaje y monto recomendado.</p></div></div>' +
+      '<section class="tarjeta"><div class="tarjeta-cuerpo tabla-scroll">' +
+        '<table class="datos tabla-cartera"><thead><tr><th>Productor</th><th>Cultivo</th><th>Ha activas</th>' +
+        "<th>Ciclos 24 m</th><th>Puntaje</th><th>Monto sugerido</th><th>Decisión</th></tr></thead>" +
+        "<tbody>" + (filas || '<tr><td colspan="7">No hay dictámenes disponibles.</td></tr>') + "</tbody></table>" +
+      "</div></section>";
   }
 
   S.vistas = {
