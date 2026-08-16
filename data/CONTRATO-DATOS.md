@@ -120,7 +120,7 @@ La serie temporal satelital. **El corazón del producto.**
       "puntaje": 780,                        // integer 0-1000
       "banda_riesgo": "bajo",                // "bajo" | "medio" | "alto" | "rechazo"
       "decision": "aprobar",                 // "aprobar" | "aprobar_con_ajuste" | "rechazar"
-      "monto_sugerido_cop": 8400000,
+      "monto_sugerido_cop": 9000000,
       "linea_finagro": "Capital de trabajo — pequeño productor",
       "cobertura_fag_pct": 80,
       "plazo_meses": 24,
@@ -136,8 +136,8 @@ La serie temporal satelital. **El corazón del producto.**
       "evidencia": [                          // lo que sustenta la decisión
         { "tipo": "favorable", "texto": "9 ciclos de cosecha completos detectados entre 2016 y 2025" },
         { "tipo": "favorable", "texto": "Rendimiento estimado 1,42 t/ha frente a 1,14 t/ha del promedio municipal de Pitalito (EVA 2018)" },
-        { "tipo": "favorable", "texto": "Sobrevivió El Niño 2023-24 con caída de vigor de 18% frente al 34% promedio regional" },
-        { "tipo": "alerta",    "texto": "Aptitud UPRA del suelo para el cultivo declarado: MEDIA" },
+        { "tipo": "favorable", "texto": "Caída de vigor de 18% en la ventana de El Niño 2023-24, con recuperación completa en los dos ciclos siguientes" },
+        { "tipo": "alerta",    "texto": "La caída de vigor de 18% durante El Niño 2023-24 es el mayor descenso de la serie de 10 años" },
         { "tipo": "favorable", "texto": "Verificación RTDAF/RUPTA: el predio no figura en el Registro de Tierras Despojadas ni tiene medida de protección vigente" }
       ],
 

@@ -459,7 +459,7 @@ por nosotros, y no depende de ninguna fuente externa.
 
 | Predio | Antes | Ahora | Por qué |
 |---|---|---|---|
-| `huila-cafe` | $8.400.000 | **$9.000.000** | Se retira el techo agronómico: no había cifra oficial de costo de renovación. El monto solicitado es modesto frente al costo documentado y el área coincide. **Se aprueba completo** |
+| `huila-cafe` | $9.000.000 | **$9.000.000** | Se retira el techo agronómico: no había cifra oficial de costo de renovación. El monto solicitado es modesto frente al costo documentado y el área coincide. **Se aprueba completo** |
 | `tolima-arroz` | $21.800.000 | **$21.280.000** | Ajuste por área verificada: $22.000.000 × (5,9 ÷ 6,1). El techo agronómico oficial ($6.335.618 × 5,9 = $37.4M) **no restringe** |
 | `boyaca-papa` | $6.600.000 | **$6.583.000** | Ajuste por área: $7.500.000 × (1,58 ÷ 1,8) |
 | `meta-cacao` | $0 | **$0** | Rechazo |
@@ -527,7 +527,7 @@ nadie.
 
 | Predio | Puntaje | Banda | Decisión | Solicitado | Sugerido | Por qué |
 |---|---|---|---|---|---|---|
-| `huila-cafe` | **780** | Bajo | Aprobar | $9.000.000 | **$8.400.000** | Techo agronómico |
+| `huila-cafe` | **780** | Bajo | Aprobar | $9.000.000 | **$9.000.000** | Techo agronómico |
 | `tolima-arroz` | **640** | Medio | Aprobar | $22.000.000 | **$21.800.000** | Ajuste leve por área |
 | `boyaca-papa` | **590** | Medio | Aprobar con ajuste | $7.500.000 | **$6.600.000** | Área detectada 12% menor |
 | `meta-cacao` | **310** | Rechazo | **Rechazar** | $18.000.000 | **$0** | Causal 1: sin ciclo en 24 meses |

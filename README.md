@@ -197,6 +197,20 @@ garantía distinto que este modelo no aborda.
 
 ---
 
+## 🔍 Toda cifra es oficial o medida
+
+**No hay una tercera categoría.** Cada número del dictamen cae en uno de estos dos grupos:
+
+| Origen | Ejemplos |
+|---|---|
+| **Fuente oficial citada** | Rendimiento municipal (EVA 2018) · costo por hectárea del arroz ($6.335.618/ha — FINAGRO, MADR-DCAF/Fedearroz 2019) · clasificación de productor y cobertura FAG (Manual FINAGRO v.26.21) · criterios de evaluación (Circular Básica Contable y Financiera, Cap. II — SARC) |
+| **Medido por nosotros** | Ciclos de cosecha detectados · área efectivamente cultivada · caída de vigor en la ventana de El Niño · colapso del patrón cíclico |
+
+Lo que no cabe en ninguno de los dos grupos, **no entra al dictamen**. Los supuestos que
+quedan están marcados `SUPUESTO:` en [`docs/criterios-de-credito.md`](docs/criterios-de-credito.md).
+
+---
+
 ## ✅ Qué es real y qué es demostración
 
 Sin ambigüedad, porque el jurado va a leer el código.

@@ -28,10 +28,10 @@ en EVA 2018. Es la constancia del patrón productivo —y no su nivel puntual—
 proyección de flujo. La solicitante acredita capacidad y solvencia para responder por la
 obligación.
 
-**Riesgo sectorial y climático.** Durante El Niño 2023-24 el vigor del cultivo cayó **18%**,
-frente a una caída del **34%** en el promedio regional. Se registra **aptitud de suelo MEDIA**
-(UPRA). Si bien la aptitud media constituye una alerta, se mitiga por el comportamiento
-acreditado de resiliencia: la solicitante sostuvo producción donde la región la perdió.
+**Riesgo sectorial y climático.** Durante la ventana de El Niño 2023-24 la serie registra una
+caída de vigor del **18%** —el mayor descenso de los diez años analizados— con recuperación
+completa en los dos ciclos siguientes. Es la única alerta del expediente, y se pondera a la baja
+porque el predio no perdió el ciclo productivo: lo sostuvo con menor vigor.
 
 **Verificaciones de exclusión.** El predio **no figura en el RTDAF** ni registra medida de
 protección vigente en RUPTA. **No presenta restricción ambiental**: no se ubica en Parque
@@ -41,8 +41,8 @@ Nacional Natural, páramo delimitado ni reserva forestal de Ley 2ª de 1959.
 
 ### RECOMENDACIÓN
 
-**Aprobar** por **$8.400.000**, monto ajustado al techo agronómico del cultivo sobre el área
-verificada. Línea de inversión para pequeño productor, con **cobertura FAG del 80%** y plazo de
+**Aprobar** por **$9.000.000** —el monto solicitado completo—. El área declarada coincide con la
+verificada y el monto es proporcional al costo documentado del cultivo. Línea de inversión para pequeño productor, con **cobertura FAG del 80%** y plazo de
 **36 meses**. Desembolso en **dos tramos**, el segundo condicionado a verificación satelital de
 la siembra efectiva.
 
@@ -55,7 +55,7 @@ en cualquiera, el prompt está incompleto.
 
 | # | Propiedad | Cómo se ve |
 |---|---|---|
-| 1 | **Cada afirmación trae su número** | "9 ciclos", "1,42 t/ha frente a 1,14", "cayó 18% frente a 34%". Ningún adjetivo suelto |
+| 1 | **Cada afirmación trae su número** | "9 ciclos", "1,42 t/ha frente a 1,14", "caída de 18%". Ningún adjetivo suelto |
 | 2 | **Sigue el orden del SARC** | Clasificación → activo → capacidad de pago → riesgo sectorial → exclusiones → decisión |
 | 3 | **La alerta se dice aunque se apruebe** | La aptitud MEDIA aparece, se pondera y se explica por qué no bloquea |
 | 4 | **Explica el criterio, no solo el resultado** | *"la constancia del patrón productivo, y no su nivel puntual"* — el dictamen enseña cómo se leyó el dato |
@@ -72,6 +72,7 @@ en cualquiera, el prompt está incompleto.
 - ❌ Confundir la **cobertura FAG (80%)** con el porcentaje desembolsado. El FAG es lo que el
   Estado respalda ante incumplimiento; la solicitante recibe el 100% de lo aprobado
 - ❌ Decir "percentil" cuando es un porcentaje de caída
+- ❌ **Cualquier cifra que no sea oficial o medida por nosotros.** No hay una tercera categoría
 
 ---
 
@@ -93,7 +94,7 @@ en cualquiera, el prompt está incompleto.
    y constante, y no hay evidencia de que no haya producido en los últimos 24 meses.
 
 **En consecuencia**, y al tener un riesgo bajo, se está de acuerdo con otorgar el crédito por
-$8.400.000 en las condiciones detectadas.
+$9.000.000 en las condiciones detectadas.
 
 ---
 
