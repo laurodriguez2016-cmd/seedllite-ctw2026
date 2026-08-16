@@ -149,6 +149,14 @@ a{color:inherit; text-decoration:none}
   font-weight:500; letter-spacing:.06em; text-transform:uppercase; transition:all .3s var(--sal)}
 .pil:hover{border-color:#000; background:#000; color:#fff}
 .pil svg{width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2}
+.cifras-grandes{display:grid; grid-template-columns:repeat(4,1fr); gap:2rem; margin:3rem 0 0;
+  width:100%; max-width:1000px; border-top:1px solid var(--g300); padding-top:2rem}
+.cifras-grandes div{text-align:left}
+.cifras-grandes b{display:block; font-size:2.4rem; line-height:1; letter-spacing:-.03em;
+  font-weight:500; font-variant-numeric:tabular-nums}
+.cifras-grandes b i{font-style:normal; font-size:1.2rem; color:var(--g600)}
+.cifras-grandes span{display:block; margin-top:.7rem; line-height:1.7}
+@media(max-width:900px){.cifras-grandes{grid-template-columns:repeat(2,1fr); gap:1.5rem}}
 .s2-hueco{min-height:220px}
 @media(min-width:768px){.s2-hueco{min-height:430px}}
 .s2-pie{position:absolute; bottom:0; left:0; right:0; display:none; justify-content:space-between;
@@ -314,19 +322,30 @@ a{color:inherit; text-decoration:none}
 </div>
 
 <section class="s2" id="problema">
-  <p class="rot rev">[ 02 ] &nbsp;<b>El requisito que excluye</b></p>
-  <h2 class="s2-tit rev">Para pedir crédito hay que probar que ya se llevaba contabilidad.
-  El satélite la venía llevando.</h2>
-  <p class="s2-pie-txt rev">FINAGRO exige un balance con fecha menor a 90 días. Sin contabilidad
-  formal no existe, y ese solo requisito deja por fuera a cientos de miles. El capital está
-  disponible y la garantía estatal cubre el 80%: lo que falta es una forma barata de evaluar.</p>
+  <p class="rot rev">[ 02 ] &nbsp;<b>El cuello de botella no es el que todos creen</b></p>
+  <h2 class="s2-tit rev">Al campesino no le niegan el crédito.<br>Ni siquiera se presenta.</h2>
+  <p class="s2-pie-txt rev">De los que solicitan crédito agropecuario, se aprueba el
+  <b>89,3%</b>. El problema está antes: <b>el 88,4% de las Unidades de Producción
+  Agropecuaria nunca solicita</b>. El requisito que las frena está escrito en la hoja del
+  Banco Agrario: un balance con fecha no mayor a 90 días. Sin contabilidad formal, no existe.</p>
+
+  <div class="cifras-grandes rev">
+    <div><b>2.370.099</b><span class="rot">UPA en Colombia<br>DANE · CNA 2014</span></div>
+    <div><b>70,4%</b><span class="rot">mide menos de 5 ha<br>Fedesarrollo sobre CNA</span></div>
+    <div><b>88,4%</b><span class="rot">nunca solicitó crédito<br>DANE · CNA 2014</span></div>
+    <div><b>$48,1 <i>bill.</i></b><span class="rot">colocó FINAGRO en 2025<br>395.614 operaciones</span></div>
+  </div>
+
+  <p class="s2-pie-txt rev" style="max-width:700px">Los pequeños productores son el
+  <b>79,3% de las operaciones</b> de FINAGRO y apenas el <b>12,8% del dinero</b>. El capital
+  está, la garantía estatal está: falta una forma barata de evaluar a quien no tiene papeles.</p>
 
   <div class="pildoras rev">
     <span class="pil"><svg viewBox="0 0 16 16"><path d="M2 12l3-6 3 5 3-7 3 8"/></svg>Serie NDVI</span>
     <span class="pil"><svg viewBox="0 0 16 16"><path d="M2 2h12v12H2zM2 6h12M2 10h12M6 2v12M10 2v12"/></svg>Rejilla 4×4</span>
     <span class="pil"><svg viewBox="0 0 16 16"><path d="M8 2a6 6 0 100 12A6 6 0 008 2zM2 8h12"/></svg>Copernicus</span>
     <span class="pil"><svg viewBox="0 0 16 16"><path d="M3 2h7l3 3v9H3zM10 2v3h3"/></svg>Dictamen</span>
-    <span class="pil"><svg viewBox="0 0 16 16"><path d="M8 2l5 3v4c0 3-2 5-5 5S3 12 3 9V5z"/></svg>FAG 80%</span>
+    <span class="pil"><svg viewBox="0 0 16 16"><path d="M8 2l5 3v4c0 3-2 5-5 5S3 12 3 9V5z"/></svg>FAG hasta 80%</span>
   </div>
 
   <div class="s2-hueco"></div>
