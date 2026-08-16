@@ -572,12 +572,34 @@ nadie.
 
 | Predio | Línea FINAGRO | FAG | Plazo | Condición |
 |---|---|---|---|---|
-| `huila-cafe` | Inversión — renovación de perennes · pequeño productor | 80% | 36 m | Dos tramos; el segundo condicionado a verificación satelital de siembra |
-| `tolima-arroz` | Capital de trabajo · pequeño productor | 80% | 12 m | Desembolso único con monitoreo satelital mensual |
-| `boyaca-papa` | Capital de trabajo · pequeño productor | 80% | 12 m | Monto ajustado al área verificada. Dos tramos |
+| `huila-cafe` | **Inversión** · pequeño productor | 80% | 36 m | Dos tramos; el segundo condicionado a verificación satelital de siembra |
+| `tolima-arroz` | **Capital de Trabajo** · pequeño productor | 80% | 12 m | Desembolso único con monitoreo satelital mensual |
+| `boyaca-papa` | **Capital de Trabajo** · pequeño productor | 80% | 12 m | Monto ajustado al área verificada. Dos tramos |
 | `meta-cacao` | — | — | — | Reevaluable si acredita reactivación y se verifica un ciclo completo |
 
-🔍 Verificar denominación oficial de las líneas contra el Manual de Servicios FINAGRO v.26.21.
+### ✅ Denominación de las líneas — verificada 15-ago-2026, 20:05
+
+FINAGRO opera **tres líneas** con estas denominaciones oficiales:
+
+| Línea | Para qué |
+|---|---|
+| **Inversión** | Inversiones que requieren plazo largo para desarrollar el proyecto agropecuario |
+| **Capital de Trabajo** | Costos requeridos para la operación de la unidad productiva |
+| **Normalización de Cartera** | Alternativas para normalizar la situación crediticia del productor |
+
+Operan a través de **Cartera de Redescuento**, **Cartera Sustitutiva** y **Cartera Agropecuaria**.
+Existen además las **Líneas Especiales de Crédito (LEC)**, con tasa subsidiada, que se definen
+por resolución cada año.
+
+**Corrección:** "Inversión — renovación de perennes" no es una denominación oficial. La línea se
+llama simplemente **Inversión**; el destino específico (renovación de cafetal) va como destino
+del crédito conforme a la Resolución 08 de 2023 CNCA, no como nombre de línea.
+
+> ⚠️ **Pendiente de verificar contra el Manual v.26.21:** una fuente indica un tope de
+> **20 SMMLV** en Capital de Trabajo para pequeño productor y 50 SMMLV para mediano. Si ese
+> tope está vigente, hay que contrastarlo con el monto de `tolima-arroz` ($21.280.000). **Laura:
+> esto sí conviene confirmarlo, porque si el tope aplica y lo excedemos, un jurado con
+> experiencia en el sector lo nota.**
 
 ---
 
