@@ -1,15 +1,40 @@
 <div align="center">
 
-<img src="assets/satelite/meta-cacao-2025.svg" width="240" alt="Predio meta-cacao visto por Sentinel-2, con el polígono declarado y la rejilla de medición">
+<img src="assets/satelite/meta-cacao-2025.svg" width="240" alt="Lote meta-cacao visto por Sentinel-2, con el polígono declarado y la rejilla de medición">
 
 # SEEDLLITE
+
+### Originación y monitoreo satelital de crédito agropecuario
 
 **Un campesino sin extractos bancarios sí tiene historia financiera.**
 **Está escrita en nueve años de imágenes satelitales de su lote.**
 
-[**Ver la aplicación**](https://seedllite-motor.vercel.app/app/) · [**Landing**](https://seedllite-motor.vercel.app)
+<br>
 
-`Colombia Tech Week 2026` · `9 predios reales` · `108 meses medidos` · `US$0,18 por dictamen`
+[![Aplicación](https://img.shields.io/badge/Ver_la_aplicación-seedllite--motor.vercel.app-1f5673?style=for-the-badge)](https://seedllite-motor.vercel.app/app/)
+[![Video](https://img.shields.io/badge/Ver_el_video-63_segundos-2b7048?style=for-the-badge)](video/seedllite-demo.mp4)
+
+<br>
+
+![Python](https://img.shields.io/badge/Python-3.9%20·%20solo%20stdlib-1f5673?style=flat-square&logo=python&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-plano%2C%20sin%20framework-1f5673?style=flat-square&logo=javascript&logoColor=white)
+![SVG](https://img.shields.io/badge/Gráficas-SVG%20escrito%20a%20mano-1f5673?style=flat-square)
+![HTML5](https://img.shields.io/badge/HTML-autocontenido-1f5673?style=flat-square&logo=html5&logoColor=white)
+
+![Copernicus](https://img.shields.io/badge/Copernicus-Sentinel--2%20L2A-2b7048?style=flat-square)
+![Statistical API](https://img.shields.io/badge/Sentinel%20Hub-Statistical%20API-2b7048?style=flat-square)
+![Claude](https://img.shields.io/badge/claude--opus--5-structured%20outputs-5980a6?style=flat-square&logo=anthropic&logoColor=white)
+![OpenRouter](https://img.shields.io/badge/OpenRouter-pasarela-5980a6?style=flat-square)
+
+![Dependencias](https://img.shields.io/badge/dependencias-0-2b7048?style=flat-square)
+![Build](https://img.shields.io/badge/build-ninguno-2b7048?style=flat-square)
+![Backend](https://img.shields.io/badge/backend-ninguno-2b7048?style=flat-square)
+![Verificación](https://img.shields.io/badge/verificar.sh-174%20comprobaciones-2b7048?style=flat-square)
+![Pruebas](https://img.shields.io/badge/probar--app.sh-21%20rutas-2b7048?style=flat-square)
+
+![Deploy](https://img.shields.io/badge/deploy-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
+![Licencia](https://img.shields.io/badge/licencia-MIT-4a4a4a?style=flat-square)
+![Track](https://img.shields.io/badge/Colombia%20Tech%20Week%202026-Track%2004-4a4a4a?style=flat-square)
 
 </div>
 
@@ -17,9 +42,33 @@
 
 <div align="center">
 
-## 🎬 El demo
+**9 lotes reales** · **108 meses medidos** · **US$0,18 por dictamen** · **0 dependencias**
 
-### ▶️ **[Ver el video — 1 minuto](video/seedllite-demo.mp4)**
+</div>
+
+---
+
+## Contenido
+
+| | |
+|---|---|
+| [El demo](#el-demo) | Video de 63 segundos y cómo abrirlo tú mismo |
+| [El problema](#el-problema-en-un-párrafo) | Por qué el crédito no llega, y qué ordena la norma |
+| [Cómo funciona](#cómo-funciona) | Del polígono al dictamen, paso a paso |
+| [La lógica de decisión](#la-lógica-de-decisión) | Las causales y por qué el cultivo cambia la regla |
+| [Los nueve predios](#los-nueve-predios) | Puntajes y decisiones reales |
+| [Lo que sabe que no sabe](#lo-que-este-sistema-sabe-que-no-sabe) | Cobertura, intervalos y la decisión que la estadística volteó |
+| [Cómo correrlo](#cómo-correrlo) | Sin instalar nada |
+| [Estructura](#estructura) | Los tres frentes y el contrato de datos |
+| [Trazabilidad](#toda-cifra-es-oficial-o-medida) | Fuentes, licencias y qué es real |
+
+---
+
+## El demo
+
+<div align="center">
+
+### [Ver el video — 63 segundos](video/seedllite-demo.mp4)
 
 *Descárgalo o ábrelo desde el repositorio.*
 
@@ -53,7 +102,7 @@ el 80% al pequeño productor—: lo que falta es una forma barata de **evaluar**
 
 Visitar cada finca no es rentable. El satélite hace esa visita por **US$0,18**.
 
-## 🏆 Y la norma no solo lo permite: lo ordena
+## Y la norma no solo lo permite: lo ordena
 
 > *"En el caso de microcréditos, la entidad debe contar con una metodología que refleje de forma
 > adecuada el riesgo inherente al deudor y **cuyos elementos permitan compensar las deficiencias
@@ -72,16 +121,16 @@ treinta años exigiendo, y que nadie construyó porque la visita a campo no da l
 
 ```mermaid
 flowchart LR
-    A["📍 Coordenadas<br/>del predio"] --> B["🛰️ Copernicus<br/>Sentinel-2 L2A"]
-    B --> C["📈 108 medianas<br/>mensuales de NDVI<br/>2017-2025"]
-    C --> D["🔍 Enmascarado<br/>de nubes SCL"]
-    D --> E["📐 Rejilla 4×4<br/>sobre el polígono"]
-    C --> F["🧮 Forma de la serie<br/>ciclos · amplitud"]
-    E --> G["📊 Área con<br/>actividad agrícola"]
-    F --> H["🤖 claude-opus-5<br/>structured outputs"]
+    A["Coordenadas<br/>del predio"] --> B["Copernicus<br/>Sentinel-2 L2A"]
+    B --> C["108 medianas<br/>mensuales de NDVI<br/>2017-2025"]
+    C --> D["Enmascarado<br/>de nubes SCL"]
+    D --> E["Rejilla 4×4<br/>sobre el polígono"]
+    C --> F["Forma de la serie<br/>ciclos · amplitud"]
+    E --> G["Área con<br/>actividad agrícola"]
+    F --> H["claude-opus-5<br/>structured outputs"]
     G --> H
-    I["📗 EVA · rendimiento<br/>municipal oficial"] --> H
-    H --> J["📄 Dictamen firmable<br/>por un comité"]
+    I["EVA · rendimiento<br/>municipal oficial"] --> H
+    H --> J["Dictamen firmable<br/>por un comité"]
 
     style H fill:#5980a6,color:#fff
     style J fill:#2b7048,color:#fff
@@ -106,17 +155,17 @@ duda del arrozal.
 ```mermaid
 flowchart TD
     A["Predio con serie<br/>de 108 meses"] --> B{"¿12+ meses medidos<br/>en la ventana de 24?"}
-    B -->|No| Z["⏸️ APLAZAR<br/>por verificación<br/><i>no es un rechazo</i>"]
+    B -->|No| Z["APLAZAR<br/>por verificación<br/><i>no es un rechazo</i>"]
     B -->|Sí| C{"¿Área con actividad<br/>&lt; 50% de la declarada,<br/>intervalo incluido?"}
-    C -->|Sí| Y["🔴 RECHAZAR<br/>causal de área"]
+    C -->|Sí| Y["RECHAZAR<br/>causal de área"]
     C -->|No| D{"Tipo de cultivo"}
     D -->|Transitorio| E{"¿Ciclos en<br/>24 meses?"}
     D -->|Perenne| F{"¿Perdió 40%+ de amplitud<br/>Y rinde bajo el municipal?"}
-    E -->|Ninguno| Y2["🔴 RECHAZAR<br/>dejó de producir"]
-    E -->|Al menos uno| G["✅ Evaluar los 4 ejes"]
-    F -->|Ambas| Y3["🔴 RECHAZAR"]
+    E -->|Ninguno| Y2["RECHAZAR<br/>dejó de producir"]
+    E -->|Al menos uno| G["Evaluar los 4 ejes"]
+    F -->|Ambas| Y3["RECHAZAR"]
     F -->|No ambas| G
-    G --> H["📄 Puntaje 0-1000<br/>y condiciones"]
+    G --> H["Puntaje 0-1000<br/>y condiciones"]
 
     style Z fill:#5d5d60,color:#fff
     style Y fill:#a83a2c,color:#fff
@@ -147,11 +196,11 @@ productores son ficticios.
 | `boyaca-papa` | Papa · Ventaquemada | 1,8 → 1,80 ha | **750** | Aprobar con ajuste |
 | `meta-cacao-sin-manejo` | Cacao · Granada | 3,8 → 2,61 ha | **750** | Aprobar con ajuste |
 | `boyaca-papa-media` | Papa · Ventaquemada | 2,1 → 2,10 ha | **730** | Aprobar |
-| `meta-cacao-vigor-bajo` | Cacao · Granada | 4,2 → 1,84 ha | **420** | 🔴 Rechazar ⚠️ |
-| `meta-cacao` | Cacao · Granada | 4,0 → **0,50 ha** | **240** | 🔴 **Rechazar** |
-| `boyaca-papa-nubes` | Papa · Ventaquemada | 1,6 → 1,60 ha | — | ⏸️ **Sin concepto** |
+| `meta-cacao-vigor-bajo` | Cacao · Granada | 4,2 → 1,84 ha | **420** | Rechazar — *pendiente, ver nota* |
+| `meta-cacao` | Cacao · Granada | 4,0 → **0,50 ha** | **240** | **Rechazar** |
+| `boyaca-papa-nubes` | Papa · Ventaquemada | 1,6 → 1,60 ha | — | **Sin concepto** |
 
-> ⚠️ **`meta-cacao-vigor-bajo` está pendiente de regenerar.** El dictamen que hay en el
+> **Nota — `meta-cacao-vigor-bajo` está pendiente de regenerar.** El dictamen que hay en el
 > repositorio lo rechaza, pero la regla de área se endureció después de calcular los intervalos
 > de confianza y **ese rechazo ya no procede** (ver más abajo). El dato se regenera corriendo
 > `scripts/generar_dictamen.py meta-cacao-vigor-bajo`. Se deja visible en vez de corregirlo a
@@ -245,21 +294,21 @@ de armarse, incluida la animación de seis pasos de la pantalla de análisis.
 
 ```mermaid
 flowchart TD
-    subgraph MOTOR["🅱 MOTOR · datos e IA"]
+    subgraph MOTOR["MOTOR · datos e IA"]
         S1["ingesta_sentinel.py<br/>series desde Copernicus"]
         S2["medir_area.py<br/>rejilla 4×4"]
         S3["estadistica.py<br/>intervalos y simulación"]
-        S4["generar_dictamen.py<br/>⭐ el prompt"]
+        S4["generar_dictamen.py<br/>el prompt"]
         S5["capturar_predio.py<br/>imágenes anotadas"]
         S6["empaquetar_datos.py"]
     end
-    subgraph DATOS["📦 Contrato de datos"]
+    subgraph DATOS["Contrato de datos"]
         D1["predios.json"]
         D2["series_ndvi.json"]
         D3["dictamenes.json"]
         D4["datos.js<br/><i>generado</i>"]
     end
-    subgraph APP["🅰 APP · sin dependencias"]
+    subgraph APP["APP · sin dependencias"]
         A1["index.html"]
         A2["10-mapa · 20-gráfica<br/>30-vistas · 40-tooltips · 90-app"]
     end
@@ -317,15 +366,15 @@ Las tres son fallos silenciosos: el archivo queda bien formado y el número se v
 
 ## Qué es real y qué es demostración
 
-| | |
-|---|---|
-| ✅ Series NDVI | **Reales**, descargadas de Copernicus |
-| ✅ Áreas detectadas | **Medidas** con rejilla 4×4 sobre imagen real |
-| ✅ Dictámenes | **Salidas reales** de `claude-opus-5`, commiteadas |
-| ✅ Imágenes satelitales | **Reales**, con la medición dibujada encima |
-| ✅ Rendimientos municipales | **Oficiales**, EVA |
-| ⚠️ Productores y montos | **Ficticios**, construidos para el demo |
-| ❌ Créditos desembolsados | **Ninguno.** Por eso no hay probabilidad de incumplimiento |
+| Elemento | Estado | Detalle |
+|---|---|---|
+| Series NDVI | **Real** | Descargadas de Copernicus Sentinel-2 |
+| Áreas detectadas | **Medido** | Rejilla 4×4 sobre imagen real |
+| Dictámenes | **Real** | Salidas de `claude-opus-5`, commiteadas sin editar |
+| Imágenes satelitales | **Real** | Con la medición dibujada encima |
+| Rendimientos municipales | **Oficial** | EVA · MinAgricultura |
+| Productores y montos | *Ficticio* | Construidos para el demo |
+| Créditos desembolsados | *Ninguno* | Por eso no hay probabilidad de incumplimiento |
 
 No hay un solo crédito desembolsado con este sistema, así que no existe con qué calibrar una
 PD. Cualquier cifra de PD aquí sería inventada, y una cifra inventada en este proyecto no es un
@@ -346,8 +395,9 @@ Declarar los límites es lo que hace creíble el resto.
 
 <div align="center">
 
-**Colombia Tech Week 2026**
+**Colombia Tech Week 2026** · Track 04 · Planeta y Comunidad
 
-Licencia [MIT](LICENSE) · *Contains modified Copernicus Sentinel data 2017-2025*
+[![Licencia](https://img.shields.io/badge/licencia-MIT-4a4a4a?style=flat-square)](LICENSE)
+![Copernicus](https://img.shields.io/badge/Contains%20modified%20Copernicus%20Sentinel%20data-2017--2025-2b7048?style=flat-square)
 
 </div>
