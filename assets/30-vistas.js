@@ -416,61 +416,112 @@
   function dictamen(host, datos, estado) {
     var p = S.estado.predio(estado.predioId);
     if (!p) { return mapa(host, datos, estado); }
+
     var d = S.estado.dictamen(p.id);
     if (!d) {
-      host.innerHTML = '<div class="vacio">Aún no hay dictamen para este predio.</div>';
+      host.innerHTML = '<div class="vacio">A\u00fan no hay dictamen para este predio.</div>';
       return;
     }
 
-    var ejes = d.ejes.map(function (e) {
-      return '<div class="eje">' +
-        '<div class="eje-fila"><span class="eje-nombre">' + esc(e.eje) + "</span>" +
-        '<span class="eje-cifra">' + e.puntaje + " / " + e.peso + "</span></div>" +
-        '<div class="eje-riel"><div class="eje-barra" style="width:' +
-          (e.puntaje / e.peso * 100).toFixed(0) + '%"></div></div></div>';
-    }).join("");
-
-    var evidencia = d.evidencia.map(function (ev) {
-      return '<li class="ev-' + esc(ev.tipo) + '">' +
-        '<span class="glifo">' + (GLIFO[ev.tipo] || "·") + "</span>" +
-        "<span>" + esc(ev.texto) + "</span></li>";
-    }).join("");
-
     var rechazado = d.decision === "rechazar";
 
+    /* Defensas ante el dictamen real. Los que hay ahora son de relleno; entre
+       las 00:30 y las 02:00 los reemplaza la salida del modelo y cualquier
+       campo que no venga como se espera dejaria la pantalla en blanco a las
+       dos de la manana. Se degrada, no se cae. */
+    var losEjes = (d.ejes && d.ejes.length) ? d.ejes : [];
+    var laEvidencia = (d.evidencia && d.evidencia.length) ? d.evidencia : [];
+
+    var ejes = losEjes.map(function (e) {
+      var peso = e.peso || 0;
+      var pct = peso ? Math.max(0, Math.min(100, e.puntaje / peso * 100)) : 0;
+      return '<div class="eje">' +
+        '<div class="eje-fila"><span class="eje-nombre">' + esc(e.eje) + "</span>" +
+        '<span class="eje-cifra">' + esc(e.puntaje) + " / " + esc(peso) + "</span></div>" +
+        '<div class="eje-riel"><div class="eje-barra" style="width:' +
+          pct.toFixed(0) + '%"></div></div></div>';
+    }).join("") ||
+      '<div class="vacio" style="font-size:12px">Ejes de evaluaci\u00f3n pendientes.</div>';
+
+    var evidencia = laEvidencia.map(function (ev) {
+      return '<li class="ev-' + esc(ev.tipo) + '">' +
+        '<span class="glifo">' + (GLIFO[ev.tipo] || "\u00b7") + "</span>" +
+        "<span>" + esc(ev.texto) + "</span></li>";
+    }).join("") ||
+      '<li class="vacio">Evidencia pendiente de generar.</li>';
+
+    /* Monto: el recorte es la historia, no un detalle de formato.
+       boyaca-papa existe en el demo para mostrar que el satelite midio 12%
+       menos area de la declarada y que por eso se recorta el desembolso. Si
+       los dos montos se ven igual de discretos, esa historia no se cuenta. */
+    var solicitado = p.monto_solicitado_cop || 0;
+    var sugerido = d.monto_sugerido_cop || 0;
+    var recorte = (!rechazado && sugerido && solicitado && sugerido !== solicitado)
+                ? solicitado - sugerido : 0;
+    var pctRecorte = (recorte && solicitado)
+                   ? Math.round(Math.abs(recorte) / solicitado * 100) : 0;
+
+    var celdaSugerido;
+    if (rechazado) {
+      celdaSugerido = '<span style="color:var(--critico);font-weight:600">Sin desembolso</span>';
+    } else if (recorte > 0) {
+      celdaSugerido =
+        '<span style="color:var(--alerta);font-weight:600">' + cop(sugerido) + "</span>" +
+        '<span class="delta delta-baja">\u2212' + cop(recorte) +
+          " \u00b7 " + pctRecorte + "% menos</span>";
+    } else {
+      celdaSugerido =
+        '<span style="color:var(--favorable);font-weight:600">' + cop(sugerido) + "</span>" +
+        '<span class="delta delta-igual">Completo, sin recorte</span>';
+    }
+
+    var claseDecision = "decision-" + (rechazado ? "rechazar"
+                      : (d.decision === "aprobar_con_ajuste" ? "ajuste" : "aprobar"));
+
     host.innerHTML =
-      '<div class="migas"><a href="#mapa">← Mapa</a><span>/</span>' +
+      '<div class="migas"><a href="#mapa">\u2190 Mapa</a><span>/</span>' +
         '<a href="#ficha/' + esc(p.id) + '">Ficha</a><span>/</span><span>Dictamen</span></div>' +
 
       '<div class="rejilla">' +
         '<div class="tarjeta">' +
           '<div class="tarjeta-cab"><span class="etiqueta">Puntaje SEEDLLITE</span></div>' +
           '<div class="tarjeta-cuerpo">' +
-            '<div class="puntaje" style="color:' +
-              (rechazado ? "var(--critico)" : "var(--texto)") + '">' + d.puntaje + "</div>" +
-            '<div class="puntaje-sub">de 1000 · riesgo ' + esc(d.banda_riesgo) + "</div>" +
-            '<div style="margin:var(--e3) 0">' + marcaRiesgo(d) + "</div>" +
+
+            /* El puntaje y la banda, juntos y arriba: es lo primero que tiene
+               que leerse en la toma del video. */
+            '<div class="dict-cab">' +
+              "<div>" +
+                '<div class="puntaje" style="color:' +
+                  (rechazado ? "var(--critico)" : "var(--texto)") + '">' +
+                  esc(d.puntaje) + "</div>" +
+                '<div class="puntaje-sub">de 1000</div>' +
+              "</div>" +
+              '<span class="marca-riesgo riesgo-' + esc(d.banda_riesgo) + '">Riesgo ' +
+                esc(d.banda_riesgo) + "</span>" +
+            "</div>" +
+
+            '<div class="decision ' + claseDecision + '">' +
+              esc(TEXTO_DECISION[d.decision] || d.decision) + "</div>" +
+
             ejes +
           "</div>" +
         "</div>" +
 
-        '<div>' +
+        "<div>" +
           '<div class="tarjeta" style="margin-bottom:var(--e3)">' +
             '<div class="tarjeta-cab">' +
               "<h2>" + esc(p.productor) + "</h2>" +
               '<span class="etiqueta" style="margin-left:auto">' +
-                esc(p.cultivo) + " · " + esc(p.municipio) + "</span>" +
+                esc(p.cultivo) + " \u00b7 " + esc(p.municipio) + "</span>" +
             "</div>" +
             '<div class="tarjeta-cuerpo">' +
               '<table class="datos">' +
-                fila("Monto solicitado", cop(p.monto_solicitado_cop)) +
-                fila("Monto sugerido", '<span style="color:' +
-                  (rechazado ? "var(--critico)" : "var(--favorable)") + '">' +
-                  (rechazado ? "—" : cop(d.monto_sugerido_cop)) + "</span>") +
-                fila("Línea FINAGRO", esc(d.linea_finagro) || "No aplica") +
+                fila("Monto solicitado", cop(solicitado)) +
+                fila("Monto sugerido", celdaSugerido) +
+                fila("L\u00ednea FINAGRO", esc(d.linea_finagro) || "No aplica") +
                 fila("Cobertura FAG", d.cobertura_fag_pct ? d.cobertura_fag_pct + "%" : "No aplica") +
                 fila("Plazo", d.plazo_meses ? d.plazo_meses + " meses" : "No aplica") +
-                fila("Desembolso", esc(d.desembolso)) +
+                fila("Desembolso", esc(d.desembolso) || "No aplica") +
               "</table>" +
             "</div>" +
           "</div>" +
@@ -481,18 +532,30 @@
           "</div>" +
 
           '<div class="tarjeta" style="margin-bottom:var(--e3)">' +
-            '<div class="tarjeta-cab"><span class="etiqueta">Memorando al comité de crédito</span></div>' +
-            '<div class="tarjeta-cuerpo"><p style="font-size:13.5px;line-height:1.65">' +
-              esc(d.memorando) + "</p>" +
-              '<p style="font-weight:600;margin-top:var(--e3);margin-bottom:0">' +
-                esc(d.recomendacion) + "</p>" +
+            '<div class="tarjeta-cab">' +
+              '<span class="etiqueta">Memorando al comit\u00e9 de cr\u00e9dito</span>' +
+            "</div>" +
+            '<div class="tarjeta-cuerpo">' +
+              '<p style="font-size:13.5px;line-height:1.65">' +
+                esc(d.memorando || "Memorando pendiente de generar.") + "</p>" +
+              (d.recomendacion
+                ? '<p style="font-weight:600;margin-top:var(--e3);margin-bottom:0">' +
+                    esc(d.recomendacion) + "</p>"
+                : "") +
             "</div>" +
           "</div>" +
 
           '<div class="aviso' + (rechazado ? " aviso-fuerte" : "") + '">' +
-            "SEEDLLITE emite una recomendación de crédito dirigida a un intermediario " +
-            "financiero vigilado. No constituye una oferta de crédito al productor ni " +
-            "asesoría financiera. La decisión final es del comité de crédito." +
+            "SEEDLLITE emite una recomendaci\u00f3n de cr\u00e9dito dirigida a un intermediario " +
+            "financiero vigilado. No constituye una oferta de cr\u00e9dito al productor ni " +
+            "asesor\u00eda financiera. La decisi\u00f3n final es del comit\u00e9 de cr\u00e9dito." +
+          "</div>" +
+
+          /* Salida del callejon: el spec de TAREA 5 la pide y no existia.
+             data-ir basta aqui porque este nodo nace durante el pintado y el
+             router engancha sus manejadores justo despues. */
+          '<div style="margin-top:var(--e3)">' +
+            '<button class="boton boton-primario" data-ir="#mapa">Evaluar otro predio</button>' +
           "</div>" +
         "</div>" +
       "</div>";

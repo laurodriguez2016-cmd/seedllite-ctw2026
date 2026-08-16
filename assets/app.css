@@ -476,3 +476,53 @@ p  { margin: 0 0 var(--e2); }
 @media (prefers-reduced-motion: reduce) {
   .paso-curso .paso-glifo { animation: none; opacity: 0.5; }
 }
+
+/* --------------------------------------------------------------------------
+   PANTALLA 4 — veredicto
+   El puntaje es el elemento más grande de la aplicación (TAREA 5) y la banda
+   de riesgo va a su lado, no debajo: en la toma del video las dos cosas se
+   leen en el mismo golpe de vista.
+   -------------------------------------------------------------------------- */
+
+.dict-cab {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--e2);
+}
+
+.dict-cab .puntaje {
+  font-size: 72px;
+  line-height: 1;
+}
+
+.dict-cab .puntaje-sub { margin-top: var(--e1); }
+
+/* La decisión, en texto grande. Antes era una etiqueta discreta y en 60
+   segundos de video RECHAZAR tiene que leerse sin buscarlo. */
+.decision {
+  margin: var(--e3) 0;
+  padding: var(--e2) var(--e3);
+  border-radius: var(--r);
+  border-left: 3px solid currentColor;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.decision-aprobar  { color: var(--favorable); background: var(--favorable-bg); }
+.decision-ajuste   { color: var(--alerta);    background: var(--alerta-bg); }
+.decision-rechazar { color: var(--critico);   background: var(--critico-bg); }
+
+/* Diferencia entre lo pedido y lo sugerido. El recorte es el argumento del
+   predio de boyaca-papa: el satélite midió menos área de la declarada. */
+.delta {
+  display: block;
+  margin-top: 2px;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.delta-baja  { color: var(--alerta); }
+.delta-igual { color: var(--texto-3); }
