@@ -1,0 +1,2851 @@
+/* ARCHIVO GENERADO por scripts/empaquetar_datos.py — NO EDITAR A MANO.
+   Los datos de verdad viven en data/*.json. Este archivo existe solo
+   porque fetch() no funciona bajo file:// y la app debe abrir con
+   doble clic (constitución V.4). Ver ARQUITECTURA.md §2. */
+window.SEEDLLITE_DATOS = {
+ "predios": {
+  "version": "1.0",
+  "generado": "2026-08-15T16:00:00-05:00",
+  "nota_datos": "Predios y productores FICTICIOS construidos para demostración. Las coordenadas corresponden a zonas productoras reales de cada cultivo; las personas y los montos no existen. Las imagenes satelitales son una secuencia temporal de al menos dos cortes por predio.",
+  "predios": [
+   {
+    "id": "huila-cafe",
+    "productor": "María Ligia Osorio",
+    "tipo_productor": "pequeño",
+    "vereda": "El Carmen",
+    "municipio": "Pitalito",
+    "departamento": "Huila",
+    "coordenadas": {
+     "lat": 1.8534,
+     "lon": -76.0521
+    },
+    "cultivo": "Café",
+    "variedad": "Castillo",
+    "area_declarada_ha": 2.4,
+    "area_detectada_ha": 2.4,
+    "monto_solicitado_cop": 9000000,
+    "destino": "Renovación de cafetal y compra de insumos",
+    "activos_declarados_smmlv": 41,
+    "anos_en_el_predio": 11,
+    "credito_previo": false,
+    "imagenes_satelitales": [
+     {
+      "anio": 2017,
+      "ruta": "assets/satelite/huila-cafe-2017.jpg"
+     },
+     {
+      "anio": 2025,
+      "ruta": "assets/satelite/huila-cafe-2025.jpg"
+     }
+    ]
+   },
+   {
+    "id": "tolima-arroz",
+    "productor": "Hernán Darío Betancourt",
+    "tipo_productor": "pequeño",
+    "vereda": "La Palmita",
+    "municipio": "El Espinal",
+    "departamento": "Tolima",
+    "coordenadas": {
+     "lat": 4.1489,
+     "lon": -74.8836
+    },
+    "cultivo": "Arroz",
+    "variedad": "Fedearroz 67",
+    "area_declarada_ha": 6.1,
+    "area_detectada_ha": 5.9,
+    "monto_solicitado_cop": 22000000,
+    "destino": "Capital de trabajo para siembra semestre B",
+    "activos_declarados_smmlv": 198,
+    "anos_en_el_predio": 8,
+    "credito_previo": true,
+    "imagenes_satelitales": [
+     {
+      "anio": 2017,
+      "ruta": "assets/satelite/tolima-arroz-2017.jpg"
+     },
+     {
+      "anio": 2025,
+      "ruta": "assets/satelite/tolima-arroz-2025.jpg"
+     }
+    ]
+   },
+   {
+    "id": "boyaca-papa",
+    "productor": "Blanca Cecilia Rojas",
+    "tipo_productor": "pequeño",
+    "vereda": "Puente de Boyacá",
+    "municipio": "Ventaquemada",
+    "departamento": "Boyacá",
+    "coordenadas": {
+     "lat": 5.3672,
+     "lon": -73.5218
+    },
+    "cultivo": "Papa",
+    "variedad": "Pastusa Suprema",
+    "area_declarada_ha": 1.8,
+    "area_detectada_ha": 1.58,
+    "monto_solicitado_cop": 7500000,
+    "destino": "Semilla certificada y fertilizantes",
+    "activos_declarados_smmlv": 33,
+    "anos_en_el_predio": 6,
+    "credito_previo": false,
+    "imagenes_satelitales": [
+     {
+      "anio": 2017,
+      "ruta": "assets/satelite/boyaca-papa-2017.jpg"
+     },
+     {
+      "anio": 2025,
+      "ruta": "assets/satelite/boyaca-papa-2025.jpg"
+     }
+    ]
+   },
+   {
+    "id": "meta-cacao",
+    "productor": "Jorge Eliécer Ramírez",
+    "tipo_productor": "pequeño",
+    "vereda": "Los Naranjos",
+    "municipio": "Granada",
+    "departamento": "Meta",
+    "coordenadas": {
+     "lat": 3.5421,
+     "lon": -73.7059
+    },
+    "cultivo": "Cacao",
+    "variedad": "CCN-51",
+    "area_declarada_ha": 4.0,
+    "area_detectada_ha": 0.0,
+    "monto_solicitado_cop": 18000000,
+    "destino": "Mantenimiento de cacaotal establecido",
+    "activos_declarados_smmlv": 112,
+    "anos_en_el_predio": 4,
+    "credito_previo": false,
+    "imagenes_satelitales": [
+     {
+      "anio": 2020,
+      "ruta": "assets/satelite/meta-cacao-2020.jpg"
+     },
+     {
+      "anio": 2025,
+      "ruta": "assets/satelite/meta-cacao-2025.jpg"
+     }
+    ]
+   }
+  ],
+  "eventos_climaticos": [
+   {
+    "nombre": "La Niña 2022",
+    "desde": "2022-01",
+    "hasta": "2022-12",
+    "tipo": "exceso_lluvia"
+   },
+   {
+    "nombre": "El Niño 2023-24",
+    "desde": "2023-06",
+    "hasta": "2024-05",
+    "tipo": "sequia"
+   }
+  ],
+  "fuentes": {
+   "imagenes": "Copernicus Sentinel-2 L2A — licencia abierta, uso comercial permitido",
+   "clima": "IDEAM — series históricas y alertas",
+   "aptitud_suelo": "UPRA — aptitud por cultivo",
+   "marco_credito": "Manual de Servicios FINAGRO v.26.21 (16-04-2026)"
+  }
+ },
+ "series": {
+  "version": "1.0",
+  "fuente": "Copernicus Sentinel-2 L2A",
+  "licencia": "Copernicus open licence — uso comercial permitido",
+  "resolucion_m": 10,
+  "metodo": "Mediana mensual de NDVI sobre el polígono del predio",
+  "nota_datos": "SERIE CALIBRADA sobre fenología documentada de cada cultivo, no descargada. El pipeline real de ingesta Sentinel-2 está en scripts/ingesta_sentinel.py. Generada por scripts/generar_series_ndvi.py con semilla fija (reproducible). El rendimiento estimado es una estimación relativa anclada al rendimiento municipal oficial de EVA; el método está declarado en el mismo script.",
+  "fuente_rendimiento": "Evaluaciones Agropecuarias Municipales (EVA) — UPRA / MinAgricultura",
+  "caida_enso_regional_pct": 15.6,
+  "series": {
+   "huila-cafe": {
+    "desde": "2016-01",
+    "hasta": "2025-12",
+    "puntos": [
+     {
+      "fecha": "2016-01",
+      "ndvi": 0.79,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2016-02",
+      "ndvi": 0.75,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2016-03",
+      "ndvi": 0.66,
+      "nubosidad": 0.39
+     },
+     {
+      "fecha": "2016-04",
+      "ndvi": 0.6,
+      "nubosidad": 0.5
+     },
+     {
+      "fecha": "2016-05",
+      "ndvi": 0.57,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2016-06",
+      "ndvi": 0.6,
+      "nubosidad": 0.37
+     },
+     {
+      "fecha": "2016-07",
+      "ndvi": 0.68,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2016-08",
+      "ndvi": 0.73,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2016-09",
+      "ndvi": 0.78,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2016-10",
+      "ndvi": 0.83,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2016-11",
+      "ndvi": 0.86,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2016-12",
+      "ndvi": 0.87,
+      "nubosidad": 0.51
+     },
+     {
+      "fecha": "2017-01",
+      "ndvi": 0.78,
+      "nubosidad": 0.47
+     },
+     {
+      "fecha": "2017-02",
+      "ndvi": 0.72,
+      "nubosidad": 0.45
+     },
+     {
+      "fecha": "2017-03",
+      "ndvi": 0.67,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2017-04",
+      "ndvi": 0.62,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2017-05",
+      "ndvi": 0.59,
+      "nubosidad": 0.37
+     },
+     {
+      "fecha": "2017-06",
+      "ndvi": 0.6,
+      "nubosidad": 0.52
+     },
+     {
+      "fecha": "2017-07",
+      "ndvi": 0.64,
+      "nubosidad": 0.42
+     },
+     {
+      "fecha": "2017-08",
+      "ndvi": 0.72,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2017-09",
+      "ndvi": 0.79,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2017-10",
+      "ndvi": 0.85,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2017-11",
+      "ndvi": 0.89,
+      "nubosidad": 0.22
+     },
+     {
+      "fecha": "2017-12",
+      "ndvi": 0.83,
+      "nubosidad": 0.49
+     },
+     {
+      "fecha": "2018-01",
+      "ndvi": 0.81,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2018-02",
+      "ndvi": 0.72,
+      "nubosidad": 0.5
+     },
+     {
+      "fecha": "2018-03",
+      "ndvi": 0.67,
+      "nubosidad": 0.21
+     },
+     {
+      "fecha": "2018-04",
+      "ndvi": 0.6,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2018-05",
+      "ndvi": 0.56,
+      "nubosidad": 0.48
+     },
+     {
+      "fecha": "2018-06",
+      "ndvi": 0.59,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2018-07",
+      "ndvi": 0.64,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2018-08",
+      "ndvi": 0.72,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2018-09",
+      "ndvi": 0.79,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2018-10",
+      "ndvi": 0.85,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2018-11",
+      "ndvi": 0.87,
+      "nubosidad": 0.22
+     },
+     {
+      "fecha": "2018-12",
+      "ndvi": 0.85,
+      "nubosidad": 0.51
+     },
+     {
+      "fecha": "2019-01",
+      "ndvi": 0.79,
+      "nubosidad": 0.24
+     },
+     {
+      "fecha": "2019-02",
+      "ndvi": 0.73,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2019-03",
+      "ndvi": 0.66,
+      "nubosidad": 0.45
+     },
+     {
+      "fecha": "2019-04",
+      "ndvi": 0.59,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2019-05",
+      "ndvi": 0.6,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2019-06",
+      "ndvi": 0.58,
+      "nubosidad": 0.22
+     },
+     {
+      "fecha": "2019-07",
+      "ndvi": 0.67,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2019-08",
+      "ndvi": 0.73,
+      "nubosidad": 0.21
+     },
+     {
+      "fecha": "2019-09",
+      "ndvi": 0.82,
+      "nubosidad": 0.28
+     },
+     {
+      "fecha": "2019-10",
+      "ndvi": 0.86,
+      "nubosidad": 0.25
+     },
+     {
+      "fecha": "2019-11",
+      "ndvi": 0.87,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2019-12",
+      "ndvi": 0.84,
+      "nubosidad": 0.48
+     },
+     {
+      "fecha": "2020-01",
+      "ndvi": 0.79,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2020-02",
+      "ndvi": 0.72,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2020-03",
+      "ndvi": 0.66,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2020-04",
+      "ndvi": 0.58,
+      "nubosidad": 0.49
+     },
+     {
+      "fecha": "2020-05",
+      "ndvi": 0.58,
+      "nubosidad": 0.42
+     },
+     {
+      "fecha": "2020-06",
+      "ndvi": 0.61,
+      "nubosidad": 0.4
+     },
+     {
+      "fecha": "2020-07",
+      "ndvi": 0.67,
+      "nubosidad": 0.42
+     },
+     {
+      "fecha": "2020-08",
+      "ndvi": 0.72,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2020-09",
+      "ndvi": 0.78,
+      "nubosidad": 0.39
+     },
+     {
+      "fecha": "2020-10",
+      "ndvi": 0.86,
+      "nubosidad": 0.2
+     },
+     {
+      "fecha": "2020-11",
+      "ndvi": 0.88,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2020-12",
+      "ndvi": 0.85,
+      "nubosidad": 0.51
+     },
+     {
+      "fecha": "2021-01",
+      "ndvi": 0.8,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2021-02",
+      "ndvi": 0.75,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2021-03",
+      "ndvi": 0.66,
+      "nubosidad": 0.5
+     },
+     {
+      "fecha": "2021-04",
+      "ndvi": 0.58,
+      "nubosidad": 0.25
+     },
+     {
+      "fecha": "2021-05",
+      "ndvi": 0.58,
+      "nubosidad": 0.2
+     },
+     {
+      "fecha": "2021-06",
+      "ndvi": 0.58,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2021-07",
+      "ndvi": 0.65,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2021-08",
+      "ndvi": 0.74,
+      "nubosidad": 0.4
+     },
+     {
+      "fecha": "2021-09",
+      "ndvi": 0.78,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2021-10",
+      "ndvi": 0.83,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2021-11",
+      "ndvi": 0.86,
+      "nubosidad": 0.25
+     },
+     {
+      "fecha": "2021-12",
+      "ndvi": 0.85,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2022-01",
+      "ndvi": 0.81,
+      "nubosidad": 0.48
+     },
+     {
+      "fecha": "2022-02",
+      "ndvi": 0.75,
+      "nubosidad": 0.63
+     },
+     {
+      "fecha": "2022-03",
+      "ndvi": 0.68,
+      "nubosidad": 0.59
+     },
+     {
+      "fecha": "2022-04",
+      "ndvi": 0.59,
+      "nubosidad": 0.66
+     },
+     {
+      "fecha": "2022-05",
+      "ndvi": 0.58,
+      "nubosidad": 0.69
+     },
+     {
+      "fecha": "2022-06",
+      "ndvi": 0.63,
+      "nubosidad": 0.69
+     },
+     {
+      "fecha": "2022-07",
+      "ndvi": 0.68,
+      "nubosidad": 0.52
+     },
+     {
+      "fecha": "2022-08",
+      "ndvi": 0.75,
+      "nubosidad": 0.66
+     },
+     {
+      "fecha": "2022-09",
+      "ndvi": 0.82,
+      "nubosidad": 0.68
+     },
+     {
+      "fecha": "2022-10",
+      "ndvi": 0.89,
+      "nubosidad": 0.6
+     },
+     {
+      "fecha": "2022-11",
+      "ndvi": 0.9,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2022-12",
+      "ndvi": 0.87,
+      "nubosidad": 0.64
+     },
+     {
+      "fecha": "2023-01",
+      "ndvi": 0.78,
+      "nubosidad": 0.45
+     },
+     {
+      "fecha": "2023-02",
+      "ndvi": 0.72,
+      "nubosidad": 0.31
+     },
+     {
+      "fecha": "2023-03",
+      "ndvi": 0.63,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2023-04",
+      "ndvi": 0.62,
+      "nubosidad": 0.4
+     },
+     {
+      "fecha": "2023-05",
+      "ndvi": 0.6,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2023-06",
+      "ndvi": 0.56,
+      "nubosidad": 0.19
+     },
+     {
+      "fecha": "2023-07",
+      "ndvi": 0.6,
+      "nubosidad": 0.22
+     },
+     {
+      "fecha": "2023-08",
+      "ndvi": 0.66,
+      "nubosidad": 0.18
+     },
+     {
+      "fecha": "2023-09",
+      "ndvi": 0.7,
+      "nubosidad": 0.25
+     },
+     {
+      "fecha": "2023-10",
+      "ndvi": 0.78,
+      "nubosidad": 0.21
+     },
+     {
+      "fecha": "2023-11",
+      "ndvi": 0.77,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2023-12",
+      "ndvi": 0.78,
+      "nubosidad": 0.16
+     },
+     {
+      "fecha": "2024-01",
+      "ndvi": 0.69,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2024-02",
+      "ndvi": 0.65,
+      "nubosidad": 0.39
+     },
+     {
+      "fecha": "2024-03",
+      "ndvi": 0.58,
+      "nubosidad": 0.28
+     },
+     {
+      "fecha": "2024-04",
+      "ndvi": 0.53,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2024-05",
+      "ndvi": 0.53,
+      "nubosidad": 0.24
+     },
+     {
+      "fecha": "2024-06",
+      "ndvi": 0.58,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2024-07",
+      "ndvi": 0.64,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2024-08",
+      "ndvi": 0.72,
+      "nubosidad": 0.45
+     },
+     {
+      "fecha": "2024-09",
+      "ndvi": 0.8,
+      "nubosidad": 0.37
+     },
+     {
+      "fecha": "2024-10",
+      "ndvi": 0.84,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2024-11",
+      "ndvi": 0.89,
+      "nubosidad": 0.46
+     },
+     {
+      "fecha": "2024-12",
+      "ndvi": 0.86,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2025-01",
+      "ndvi": 0.79,
+      "nubosidad": 0.31
+     },
+     {
+      "fecha": "2025-02",
+      "ndvi": 0.74,
+      "nubosidad": 0.42
+     },
+     {
+      "fecha": "2025-03",
+      "ndvi": 0.63,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2025-04",
+      "ndvi": 0.58,
+      "nubosidad": 0.2
+     },
+     {
+      "fecha": "2025-05",
+      "ndvi": 0.58,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2025-06",
+      "ndvi": 0.6,
+      "nubosidad": 0.25
+     },
+     {
+      "fecha": "2025-07",
+      "ndvi": 0.66,
+      "nubosidad": 0.2
+     },
+     {
+      "fecha": "2025-08",
+      "ndvi": 0.71,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2025-09",
+      "ndvi": 0.79,
+      "nubosidad": 0.37
+     },
+     {
+      "fecha": "2025-10",
+      "ndvi": 0.87,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2025-11",
+      "ndvi": 0.85,
+      "nubosidad": 0.49
+     },
+     {
+      "fecha": "2025-12",
+      "ndvi": 0.85,
+      "nubosidad": 0.22
+     }
+    ],
+    "ciclos_detectados": 10,
+    "ciclos_ultimos_24m": 1,
+    "ndvi_pico_promedio": 0.87,
+    "rendimiento_estimado_t_ha": 1.32,
+    "rendimiento_municipal_eva_t_ha": 1.14,
+    "fuente_referencia": "EVA 2018 — PITALITO, HUILA — CAFE",
+    "caida_enso_pct": 10.0
+   },
+   "tolima-arroz": {
+    "desde": "2016-01",
+    "hasta": "2025-12",
+    "puntos": [
+     {
+      "fecha": "2016-01",
+      "ndvi": 0.85,
+      "nubosidad": 0.4
+     },
+     {
+      "fecha": "2016-02",
+      "ndvi": 0.64,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2016-03",
+      "ndvi": 0.27,
+      "nubosidad": 0.21
+     },
+     {
+      "fecha": "2016-04",
+      "ndvi": 0.19,
+      "nubosidad": 0.16
+     },
+     {
+      "fecha": "2016-05",
+      "ndvi": 0.26,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2016-06",
+      "ndvi": 0.65,
+      "nubosidad": 0.39
+     },
+     {
+      "fecha": "2016-07",
+      "ndvi": 0.89,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2016-08",
+      "ndvi": 0.64,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2016-09",
+      "ndvi": 0.25,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2016-10",
+      "ndvi": 0.19,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2016-11",
+      "ndvi": 0.24,
+      "nubosidad": 0.28
+     },
+     {
+      "fecha": "2016-12",
+      "ndvi": 0.62,
+      "nubosidad": 0.21
+     },
+     {
+      "fecha": "2017-01",
+      "ndvi": 0.88,
+      "nubosidad": 0.14
+     },
+     {
+      "fecha": "2017-02",
+      "ndvi": 0.64,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2017-03",
+      "ndvi": 0.24,
+      "nubosidad": 0.24
+     },
+     {
+      "fecha": "2017-04",
+      "ndvi": 0.2,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2017-05",
+      "ndvi": 0.24,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2017-06",
+      "ndvi": 0.63,
+      "nubosidad": 0.4
+     },
+     {
+      "fecha": "2017-07",
+      "ndvi": 0.86,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2017-08",
+      "ndvi": 0.64,
+      "nubosidad": 0.28
+     },
+     {
+      "fecha": "2017-09",
+      "ndvi": 0.24,
+      "nubosidad": 0.22
+     },
+     {
+      "fecha": "2017-10",
+      "ndvi": 0.17,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2017-11",
+      "ndvi": 0.28,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2017-12",
+      "ndvi": 0.63,
+      "nubosidad": 0.17
+     },
+     {
+      "fecha": "2018-01",
+      "ndvi": 0.86,
+      "nubosidad": 0.18
+     },
+     {
+      "fecha": "2018-02",
+      "ndvi": 0.63,
+      "nubosidad": 0.25
+     },
+     {
+      "fecha": "2018-03",
+      "ndvi": 0.27,
+      "nubosidad": 0.21
+     },
+     {
+      "fecha": "2018-04",
+      "ndvi": 0.21,
+      "nubosidad": 0.28
+     },
+     {
+      "fecha": "2018-05",
+      "ndvi": 0.27,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2018-06",
+      "ndvi": 0.6,
+      "nubosidad": 0.22
+     },
+     {
+      "fecha": "2018-07",
+      "ndvi": 0.88,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2018-08",
+      "ndvi": 0.63,
+      "nubosidad": 0.24
+     },
+     {
+      "fecha": "2018-09",
+      "ndvi": 0.28,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2018-10",
+      "ndvi": 0.17,
+      "nubosidad": 0.17
+     },
+     {
+      "fecha": "2018-11",
+      "ndvi": 0.27,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2018-12",
+      "ndvi": 0.64,
+      "nubosidad": 0.25
+     },
+     {
+      "fecha": "2019-01",
+      "ndvi": 0.88,
+      "nubosidad": 0.16
+     },
+     {
+      "fecha": "2019-02",
+      "ndvi": 0.61,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2019-03",
+      "ndvi": 0.27,
+      "nubosidad": 0.13
+     },
+     {
+      "fecha": "2019-04",
+      "ndvi": 0.18,
+      "nubosidad": 0.22
+     },
+     {
+      "fecha": "2019-05",
+      "ndvi": 0.27,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2019-06",
+      "ndvi": 0.61,
+      "nubosidad": 0.24
+     },
+     {
+      "fecha": "2019-07",
+      "ndvi": 0.88,
+      "nubosidad": 0.13
+     },
+     {
+      "fecha": "2019-08",
+      "ndvi": 0.63,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2019-09",
+      "ndvi": 0.27,
+      "nubosidad": 0.37
+     },
+     {
+      "fecha": "2019-10",
+      "ndvi": 0.17,
+      "nubosidad": 0.15
+     },
+     {
+      "fecha": "2019-11",
+      "ndvi": 0.24,
+      "nubosidad": 0.16
+     },
+     {
+      "fecha": "2019-12",
+      "ndvi": 0.61,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2020-01",
+      "ndvi": 0.86,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2020-02",
+      "ndvi": 0.64,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2020-03",
+      "ndvi": 0.24,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2020-04",
+      "ndvi": 0.2,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2020-05",
+      "ndvi": 0.27,
+      "nubosidad": 0.24
+     },
+     {
+      "fecha": "2020-06",
+      "ndvi": 0.61,
+      "nubosidad": 0.18
+     },
+     {
+      "fecha": "2020-07",
+      "ndvi": 0.85,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2020-08",
+      "ndvi": 0.62,
+      "nubosidad": 0.13
+     },
+     {
+      "fecha": "2020-09",
+      "ndvi": 0.27,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2020-10",
+      "ndvi": 0.21,
+      "nubosidad": 0.14
+     },
+     {
+      "fecha": "2020-11",
+      "ndvi": 0.27,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2020-12",
+      "ndvi": 0.63,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2021-01",
+      "ndvi": 0.88,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2021-02",
+      "ndvi": 0.64,
+      "nubosidad": 0.17
+     },
+     {
+      "fecha": "2021-03",
+      "ndvi": 0.28,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2021-04",
+      "ndvi": 0.16,
+      "nubosidad": 0.15
+     },
+     {
+      "fecha": "2021-05",
+      "ndvi": 0.28,
+      "nubosidad": 0.12
+     },
+     {
+      "fecha": "2021-06",
+      "ndvi": 0.6,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2021-07",
+      "ndvi": 0.88,
+      "nubosidad": 0.14
+     },
+     {
+      "fecha": "2021-08",
+      "ndvi": 0.62,
+      "nubosidad": 0.17
+     },
+     {
+      "fecha": "2021-09",
+      "ndvi": 0.24,
+      "nubosidad": 0.4
+     },
+     {
+      "fecha": "2021-10",
+      "ndvi": 0.17,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2021-11",
+      "ndvi": 0.24,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2021-12",
+      "ndvi": 0.6,
+      "nubosidad": 0.15
+     },
+     {
+      "fecha": "2022-01",
+      "ndvi": 0.88,
+      "nubosidad": 0.62
+     },
+     {
+      "fecha": "2022-02",
+      "ndvi": 0.61,
+      "nubosidad": 0.6
+     },
+     {
+      "fecha": "2022-03",
+      "ndvi": 0.25,
+      "nubosidad": 0.58
+     },
+     {
+      "fecha": "2022-04",
+      "ndvi": 0.21,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2022-05",
+      "ndvi": 0.28,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2022-06",
+      "ndvi": 0.67,
+      "nubosidad": 0.5
+     },
+     {
+      "fecha": "2022-07",
+      "ndvi": 0.89,
+      "nubosidad": 0.49
+     },
+     {
+      "fecha": "2022-08",
+      "ndvi": 0.63,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2022-09",
+      "ndvi": 0.28,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2022-10",
+      "ndvi": 0.2,
+      "nubosidad": 0.54
+     },
+     {
+      "fecha": "2022-11",
+      "ndvi": 0.26,
+      "nubosidad": 0.55
+     },
+     {
+      "fecha": "2022-12",
+      "ndvi": 0.66,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2023-01",
+      "ndvi": 0.85,
+      "nubosidad": 0.18
+     },
+     {
+      "fecha": "2023-02",
+      "ndvi": 0.62,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2023-03",
+      "ndvi": 0.27,
+      "nubosidad": 0.44
+     },
+     {
+      "fecha": "2023-04",
+      "ndvi": 0.2,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2023-05",
+      "ndvi": 0.26,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2023-06",
+      "ndvi": 0.47,
+      "nubosidad": 0.24
+     },
+     {
+      "fecha": "2023-07",
+      "ndvi": 0.64,
+      "nubosidad": 0.17
+     },
+     {
+      "fecha": "2023-08",
+      "ndvi": 0.46,
+      "nubosidad": 0.18
+     },
+     {
+      "fecha": "2023-09",
+      "ndvi": 0.18,
+      "nubosidad": 0.2
+     },
+     {
+      "fecha": "2023-10",
+      "ndvi": 0.15,
+      "nubosidad": 0.19
+     },
+     {
+      "fecha": "2023-11",
+      "ndvi": 0.18,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2023-12",
+      "ndvi": 0.44,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2024-01",
+      "ndvi": 0.68,
+      "nubosidad": 0.07
+     },
+     {
+      "fecha": "2024-02",
+      "ndvi": 0.44,
+      "nubosidad": 0.14
+     },
+     {
+      "fecha": "2024-03",
+      "ndvi": 0.2,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2024-04",
+      "ndvi": 0.12,
+      "nubosidad": 0.22
+     },
+     {
+      "fecha": "2024-05",
+      "ndvi": 0.21,
+      "nubosidad": 0.13
+     },
+     {
+      "fecha": "2024-06",
+      "ndvi": 0.62,
+      "nubosidad": 0.28
+     },
+     {
+      "fecha": "2024-07",
+      "ndvi": 0.9,
+      "nubosidad": 0.4
+     },
+     {
+      "fecha": "2024-08",
+      "ndvi": 0.62,
+      "nubosidad": 0.17
+     },
+     {
+      "fecha": "2024-09",
+      "ndvi": 0.27,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2024-10",
+      "ndvi": 0.21,
+      "nubosidad": 0.18
+     },
+     {
+      "fecha": "2024-11",
+      "ndvi": 0.28,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2024-12",
+      "ndvi": 0.62,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2025-01",
+      "ndvi": 0.87,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2025-02",
+      "ndvi": 0.63,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2025-03",
+      "ndvi": 0.26,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2025-04",
+      "ndvi": 0.18,
+      "nubosidad": 0.25
+     },
+     {
+      "fecha": "2025-05",
+      "ndvi": 0.25,
+      "nubosidad": 0.28
+     },
+     {
+      "fecha": "2025-06",
+      "ndvi": 0.63,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2025-07",
+      "ndvi": 0.89,
+      "nubosidad": 0.19
+     },
+     {
+      "fecha": "2025-08",
+      "ndvi": 0.61,
+      "nubosidad": 0.13
+     },
+     {
+      "fecha": "2025-09",
+      "ndvi": 0.27,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2025-10",
+      "ndvi": 0.21,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2025-11",
+      "ndvi": 0.23,
+      "nubosidad": 0.2
+     },
+     {
+      "fecha": "2025-12",
+      "ndvi": 0.61,
+      "nubosidad": 0.38
+     }
+    ],
+    "ciclos_detectados": 19,
+    "ciclos_ultimos_24m": 4,
+    "ndvi_pico_promedio": 0.88,
+    "rendimiento_estimado_t_ha": 7.85,
+    "rendimiento_municipal_eva_t_ha": 7.69,
+    "fuente_referencia": "EVA 2018 — ESPINAL, TOLIMA — ARROZ",
+    "caida_enso_pct": 26.3
+   },
+   "boyaca-papa": {
+    "desde": "2016-01",
+    "hasta": "2025-12",
+    "puntos": [
+     {
+      "fecha": "2016-01",
+      "ndvi": 0.48,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2016-02",
+      "ndvi": 0.24,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2016-03",
+      "ndvi": 0.2,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2016-04",
+      "ndvi": 0.22,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2016-05",
+      "ndvi": 0.5,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2016-06",
+      "ndvi": 0.71,
+      "nubosidad": 0.46
+     },
+     {
+      "fecha": "2016-07",
+      "ndvi": 0.5,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2016-08",
+      "ndvi": 0.27,
+      "nubosidad": 0.28
+     },
+     {
+      "fecha": "2016-09",
+      "ndvi": 0.19,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2016-10",
+      "ndvi": 0.24,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2016-11",
+      "ndvi": 0.49,
+      "nubosidad": 0.39
+     },
+     {
+      "fecha": "2016-12",
+      "ndvi": 0.72,
+      "nubosidad": 0.22
+     },
+     {
+      "fecha": "2017-01",
+      "ndvi": 0.48,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2017-02",
+      "ndvi": 0.24,
+      "nubosidad": 0.47
+     },
+     {
+      "fecha": "2017-03",
+      "ndvi": 0.18,
+      "nubosidad": 0.19
+     },
+     {
+      "fecha": "2017-04",
+      "ndvi": 0.26,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2017-05",
+      "ndvi": 0.51,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2017-06",
+      "ndvi": 0.71,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2017-07",
+      "ndvi": 0.52,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2017-08",
+      "ndvi": 0.22,
+      "nubosidad": 0.47
+     },
+     {
+      "fecha": "2017-09",
+      "ndvi": 0.18,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2017-10",
+      "ndvi": 0.22,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2017-11",
+      "ndvi": 0.52,
+      "nubosidad": 0.19
+     },
+     {
+      "fecha": "2017-12",
+      "ndvi": 0.72,
+      "nubosidad": 0.31
+     },
+     {
+      "fecha": "2018-01",
+      "ndvi": 0.51,
+      "nubosidad": 0.25
+     },
+     {
+      "fecha": "2018-02",
+      "ndvi": 0.22,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2018-03",
+      "ndvi": 0.21,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2018-04",
+      "ndvi": 0.25,
+      "nubosidad": 0.18
+     },
+     {
+      "fecha": "2018-05",
+      "ndvi": 0.5,
+      "nubosidad": 0.37
+     },
+     {
+      "fecha": "2018-06",
+      "ndvi": 0.68,
+      "nubosidad": 0.39
+     },
+     {
+      "fecha": "2018-07",
+      "ndvi": 0.51,
+      "nubosidad": 0.18
+     },
+     {
+      "fecha": "2018-08",
+      "ndvi": 0.26,
+      "nubosidad": 0.19
+     },
+     {
+      "fecha": "2018-09",
+      "ndvi": 0.19,
+      "nubosidad": 0.37
+     },
+     {
+      "fecha": "2018-10",
+      "ndvi": 0.26,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2018-11",
+      "ndvi": 0.48,
+      "nubosidad": 0.42
+     },
+     {
+      "fecha": "2018-12",
+      "ndvi": 0.69,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2019-01",
+      "ndvi": 0.49,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2019-02",
+      "ndvi": 0.22,
+      "nubosidad": 0.45
+     },
+     {
+      "fecha": "2019-03",
+      "ndvi": 0.17,
+      "nubosidad": 0.17
+     },
+     {
+      "fecha": "2019-04",
+      "ndvi": 0.25,
+      "nubosidad": 0.31
+     },
+     {
+      "fecha": "2019-05",
+      "ndvi": 0.52,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2019-06",
+      "ndvi": 0.71,
+      "nubosidad": 0.21
+     },
+     {
+      "fecha": "2019-07",
+      "ndvi": 0.5,
+      "nubosidad": 0.44
+     },
+     {
+      "fecha": "2019-08",
+      "ndvi": 0.27,
+      "nubosidad": 0.45
+     },
+     {
+      "fecha": "2019-09",
+      "ndvi": 0.21,
+      "nubosidad": 0.19
+     },
+     {
+      "fecha": "2019-10",
+      "ndvi": 0.22,
+      "nubosidad": 0.42
+     },
+     {
+      "fecha": "2019-11",
+      "ndvi": 0.5,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2019-12",
+      "ndvi": 0.69,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2020-01",
+      "ndvi": 0.51,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2020-02",
+      "ndvi": 0.26,
+      "nubosidad": 0.2
+     },
+     {
+      "fecha": "2020-03",
+      "ndvi": 0.2,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2020-04",
+      "ndvi": 0.24,
+      "nubosidad": 0.18
+     },
+     {
+      "fecha": "2020-05",
+      "ndvi": 0.51,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2020-06",
+      "ndvi": 0.7,
+      "nubosidad": 0.19
+     },
+     {
+      "fecha": "2020-07",
+      "ndvi": 0.5,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2020-08",
+      "ndvi": 0.26,
+      "nubosidad": 0.28
+     },
+     {
+      "fecha": "2020-09",
+      "ndvi": 0.17,
+      "nubosidad": 0.2
+     },
+     {
+      "fecha": "2020-10",
+      "ndvi": 0.24,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2020-11",
+      "ndvi": 0.52,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2020-12",
+      "ndvi": 0.68,
+      "nubosidad": 0.22
+     },
+     {
+      "fecha": "2021-01",
+      "ndvi": 0.52,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2021-02",
+      "ndvi": 0.23,
+      "nubosidad": 0.39
+     },
+     {
+      "fecha": "2021-03",
+      "ndvi": 0.21,
+      "nubosidad": 0.37
+     },
+     {
+      "fecha": "2021-04",
+      "ndvi": 0.25,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2021-05",
+      "ndvi": 0.48,
+      "nubosidad": 0.46
+     },
+     {
+      "fecha": "2021-06",
+      "ndvi": 0.71,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2021-07",
+      "ndvi": 0.52,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2021-08",
+      "ndvi": 0.23,
+      "nubosidad": 0.17
+     },
+     {
+      "fecha": "2021-09",
+      "ndvi": 0.21,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2021-10",
+      "ndvi": 0.26,
+      "nubosidad": 0.28
+     },
+     {
+      "fecha": "2021-11",
+      "ndvi": 0.5,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2021-12",
+      "ndvi": 0.7,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2022-01",
+      "ndvi": 0.52,
+      "nubosidad": 0.66
+     },
+     {
+      "fecha": "2022-02",
+      "ndvi": 0.24,
+      "nubosidad": 0.52
+     },
+     {
+      "fecha": "2022-03",
+      "ndvi": 0.19,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2022-04",
+      "ndvi": 0.22,
+      "nubosidad": 0.64
+     },
+     {
+      "fecha": "2022-05",
+      "ndvi": 0.51,
+      "nubosidad": 0.63
+     },
+     {
+      "fecha": "2022-06",
+      "ndvi": 0.71,
+      "nubosidad": 0.59
+     },
+     {
+      "fecha": "2022-07",
+      "ndvi": 0.49,
+      "nubosidad": 0.64
+     },
+     {
+      "fecha": "2022-08",
+      "ndvi": 0.24,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2022-09",
+      "ndvi": 0.16,
+      "nubosidad": 0.64
+     },
+     {
+      "fecha": "2022-10",
+      "ndvi": 0.23,
+      "nubosidad": 0.63
+     },
+     {
+      "fecha": "2022-11",
+      "ndvi": 0.5,
+      "nubosidad": 0.53
+     },
+     {
+      "fecha": "2022-12",
+      "ndvi": 0.68,
+      "nubosidad": 0.61
+     },
+     {
+      "fecha": "2023-01",
+      "ndvi": 0.52,
+      "nubosidad": 0.19
+     },
+     {
+      "fecha": "2023-02",
+      "ndvi": 0.24,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2023-03",
+      "ndvi": 0.2,
+      "nubosidad": 0.47
+     },
+     {
+      "fecha": "2023-04",
+      "ndvi": 0.27,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2023-05",
+      "ndvi": 0.48,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2023-06",
+      "ndvi": 0.56,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2023-07",
+      "ndvi": 0.43,
+      "nubosidad": 0.13
+     },
+     {
+      "fecha": "2023-08",
+      "ndvi": 0.2,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2023-09",
+      "ndvi": 0.16,
+      "nubosidad": 0.31
+     },
+     {
+      "fecha": "2023-10",
+      "ndvi": 0.21,
+      "nubosidad": 0.17
+     },
+     {
+      "fecha": "2023-11",
+      "ndvi": 0.41,
+      "nubosidad": 0.17
+     },
+     {
+      "fecha": "2023-12",
+      "ndvi": 0.57,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2024-01",
+      "ndvi": 0.38,
+      "nubosidad": 0.13
+     },
+     {
+      "fecha": "2024-02",
+      "ndvi": 0.18,
+      "nubosidad": 0.31
+     },
+     {
+      "fecha": "2024-03",
+      "ndvi": 0.14,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2024-04",
+      "ndvi": 0.18,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2024-05",
+      "ndvi": 0.42,
+      "nubosidad": 0.15
+     },
+     {
+      "fecha": "2024-06",
+      "ndvi": 0.68,
+      "nubosidad": 0.17
+     },
+     {
+      "fecha": "2024-07",
+      "ndvi": 0.53,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2024-08",
+      "ndvi": 0.23,
+      "nubosidad": 0.21
+     },
+     {
+      "fecha": "2024-09",
+      "ndvi": 0.19,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2024-10",
+      "ndvi": 0.23,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2024-11",
+      "ndvi": 0.5,
+      "nubosidad": 0.2
+     },
+     {
+      "fecha": "2024-12",
+      "ndvi": 0.72,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2025-01",
+      "ndvi": 0.52,
+      "nubosidad": 0.23
+     },
+     {
+      "fecha": "2025-02",
+      "ndvi": 0.26,
+      "nubosidad": 0.45
+     },
+     {
+      "fecha": "2025-03",
+      "ndvi": 0.17,
+      "nubosidad": 0.16
+     },
+     {
+      "fecha": "2025-04",
+      "ndvi": 0.27,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2025-05",
+      "ndvi": 0.52,
+      "nubosidad": 0.18
+     },
+     {
+      "fecha": "2025-06",
+      "ndvi": 0.68,
+      "nubosidad": 0.37
+     },
+     {
+      "fecha": "2025-07",
+      "ndvi": 0.52,
+      "nubosidad": 0.44
+     },
+     {
+      "fecha": "2025-08",
+      "ndvi": 0.24,
+      "nubosidad": 0.31
+     },
+     {
+      "fecha": "2025-09",
+      "ndvi": 0.2,
+      "nubosidad": 0.26
+     },
+     {
+      "fecha": "2025-10",
+      "ndvi": 0.23,
+      "nubosidad": 0.46
+     },
+     {
+      "fecha": "2025-11",
+      "ndvi": 0.49,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2025-12",
+      "ndvi": 0.71,
+      "nubosidad": 0.21
+     }
+    ],
+    "ciclos_detectados": 19,
+    "ciclos_ultimos_24m": 3,
+    "ndvi_pico_promedio": 0.7,
+    "rendimiento_estimado_t_ha": 24.79,
+    "rendimiento_municipal_eva_t_ha": 30.0,
+    "fuente_referencia": "EVA 2018 — VENTAQUEMADA, BOYACA — PAPA",
+    "caida_enso_pct": 18.7
+   },
+   "meta-cacao": {
+    "desde": "2016-01",
+    "hasta": "2025-12",
+    "puntos": [
+     {
+      "fecha": "2016-01",
+      "ndvi": 0.64,
+      "nubosidad": 0.48
+     },
+     {
+      "fecha": "2016-02",
+      "ndvi": 0.62,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2016-03",
+      "ndvi": 0.6,
+      "nubosidad": 0.31
+     },
+     {
+      "fecha": "2016-04",
+      "ndvi": 0.52,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2016-05",
+      "ndvi": 0.5,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2016-06",
+      "ndvi": 0.52,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2016-07",
+      "ndvi": 0.5,
+      "nubosidad": 0.44
+     },
+     {
+      "fecha": "2016-08",
+      "ndvi": 0.55,
+      "nubosidad": 0.56
+     },
+     {
+      "fecha": "2016-09",
+      "ndvi": 0.6,
+      "nubosidad": 0.56
+     },
+     {
+      "fecha": "2016-10",
+      "ndvi": 0.61,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2016-11",
+      "ndvi": 0.62,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2016-12",
+      "ndvi": 0.66,
+      "nubosidad": 0.56
+     },
+     {
+      "fecha": "2017-01",
+      "ndvi": 0.64,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2017-02",
+      "ndvi": 0.6,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2017-03",
+      "ndvi": 0.58,
+      "nubosidad": 0.58
+     },
+     {
+      "fecha": "2017-04",
+      "ndvi": 0.53,
+      "nubosidad": 0.44
+     },
+     {
+      "fecha": "2017-05",
+      "ndvi": 0.54,
+      "nubosidad": 0.45
+     },
+     {
+      "fecha": "2017-06",
+      "ndvi": 0.53,
+      "nubosidad": 0.53
+     },
+     {
+      "fecha": "2017-07",
+      "ndvi": 0.53,
+      "nubosidad": 0.57
+     },
+     {
+      "fecha": "2017-08",
+      "ndvi": 0.57,
+      "nubosidad": 0.48
+     },
+     {
+      "fecha": "2017-09",
+      "ndvi": 0.58,
+      "nubosidad": 0.45
+     },
+     {
+      "fecha": "2017-10",
+      "ndvi": 0.6,
+      "nubosidad": 0.42
+     },
+     {
+      "fecha": "2017-11",
+      "ndvi": 0.66,
+      "nubosidad": 0.31
+     },
+     {
+      "fecha": "2017-12",
+      "ndvi": 0.66,
+      "nubosidad": 0.51
+     },
+     {
+      "fecha": "2018-01",
+      "ndvi": 0.63,
+      "nubosidad": 0.46
+     },
+     {
+      "fecha": "2018-02",
+      "ndvi": 0.64,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2018-03",
+      "ndvi": 0.58,
+      "nubosidad": 0.56
+     },
+     {
+      "fecha": "2018-04",
+      "ndvi": 0.54,
+      "nubosidad": 0.56
+     },
+     {
+      "fecha": "2018-05",
+      "ndvi": 0.51,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2018-06",
+      "ndvi": 0.5,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2018-07",
+      "ndvi": 0.53,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2018-08",
+      "ndvi": 0.53,
+      "nubosidad": 0.47
+     },
+     {
+      "fecha": "2018-09",
+      "ndvi": 0.58,
+      "nubosidad": 0.28
+     },
+     {
+      "fecha": "2018-10",
+      "ndvi": 0.64,
+      "nubosidad": 0.49
+     },
+     {
+      "fecha": "2018-11",
+      "ndvi": 0.64,
+      "nubosidad": 0.31
+     },
+     {
+      "fecha": "2018-12",
+      "ndvi": 0.65,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2019-01",
+      "ndvi": 0.65,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2019-02",
+      "ndvi": 0.63,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2019-03",
+      "ndvi": 0.58,
+      "nubosidad": 0.5
+     },
+     {
+      "fecha": "2019-04",
+      "ndvi": 0.55,
+      "nubosidad": 0.46
+     },
+     {
+      "fecha": "2019-05",
+      "ndvi": 0.54,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2019-06",
+      "ndvi": 0.5,
+      "nubosidad": 0.58
+     },
+     {
+      "fecha": "2019-07",
+      "ndvi": 0.51,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2019-08",
+      "ndvi": 0.54,
+      "nubosidad": 0.49
+     },
+     {
+      "fecha": "2019-09",
+      "ndvi": 0.61,
+      "nubosidad": 0.47
+     },
+     {
+      "fecha": "2019-10",
+      "ndvi": 0.64,
+      "nubosidad": 0.58
+     },
+     {
+      "fecha": "2019-11",
+      "ndvi": 0.64,
+      "nubosidad": 0.6
+     },
+     {
+      "fecha": "2019-12",
+      "ndvi": 0.65,
+      "nubosidad": 0.46
+     },
+     {
+      "fecha": "2020-01",
+      "ndvi": 0.62,
+      "nubosidad": 0.41
+     },
+     {
+      "fecha": "2020-02",
+      "ndvi": 0.61,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2020-03",
+      "ndvi": 0.59,
+      "nubosidad": 0.42
+     },
+     {
+      "fecha": "2020-04",
+      "ndvi": 0.55,
+      "nubosidad": 0.46
+     },
+     {
+      "fecha": "2020-05",
+      "ndvi": 0.53,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2020-06",
+      "ndvi": 0.51,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2020-07",
+      "ndvi": 0.52,
+      "nubosidad": 0.45
+     },
+     {
+      "fecha": "2020-08",
+      "ndvi": 0.54,
+      "nubosidad": 0.55
+     },
+     {
+      "fecha": "2020-09",
+      "ndvi": 0.59,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2020-10",
+      "ndvi": 0.64,
+      "nubosidad": 0.46
+     },
+     {
+      "fecha": "2020-11",
+      "ndvi": 0.66,
+      "nubosidad": 0.56
+     },
+     {
+      "fecha": "2020-12",
+      "ndvi": 0.66,
+      "nubosidad": 0.55
+     },
+     {
+      "fecha": "2021-01",
+      "ndvi": 0.66,
+      "nubosidad": 0.4
+     },
+     {
+      "fecha": "2021-02",
+      "ndvi": 0.61,
+      "nubosidad": 0.51
+     },
+     {
+      "fecha": "2021-03",
+      "ndvi": 0.57,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2021-04",
+      "ndvi": 0.54,
+      "nubosidad": 0.53
+     },
+     {
+      "fecha": "2021-05",
+      "ndvi": 0.54,
+      "nubosidad": 0.44
+     },
+     {
+      "fecha": "2021-06",
+      "ndvi": 0.49,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2021-07",
+      "ndvi": 0.53,
+      "nubosidad": 0.33
+     },
+     {
+      "fecha": "2021-08",
+      "ndvi": 0.57,
+      "nubosidad": 0.58
+     },
+     {
+      "fecha": "2021-09",
+      "ndvi": 0.59,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2021-10",
+      "ndvi": 0.63,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2021-11",
+      "ndvi": 0.66,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2021-12",
+      "ndvi": 0.65,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2022-01",
+      "ndvi": 0.62,
+      "nubosidad": 0.6
+     },
+     {
+      "fecha": "2022-02",
+      "ndvi": 0.66,
+      "nubosidad": 0.67
+     },
+     {
+      "fecha": "2022-03",
+      "ndvi": 0.62,
+      "nubosidad": 0.53
+     },
+     {
+      "fecha": "2022-04",
+      "ndvi": 0.55,
+      "nubosidad": 0.61
+     },
+     {
+      "fecha": "2022-05",
+      "ndvi": 0.54,
+      "nubosidad": 0.66
+     },
+     {
+      "fecha": "2022-06",
+      "ndvi": 0.56,
+      "nubosidad": 0.56
+     },
+     {
+      "fecha": "2022-07",
+      "ndvi": 0.56,
+      "nubosidad": 0.58
+     },
+     {
+      "fecha": "2022-08",
+      "ndvi": 0.58,
+      "nubosidad": 0.72
+     },
+     {
+      "fecha": "2022-09",
+      "ndvi": 0.6,
+      "nubosidad": 0.75
+     },
+     {
+      "fecha": "2022-10",
+      "ndvi": 0.66,
+      "nubosidad": 0.51
+     },
+     {
+      "fecha": "2022-11",
+      "ndvi": 0.64,
+      "nubosidad": 0.73
+     },
+     {
+      "fecha": "2022-12",
+      "ndvi": 0.65,
+      "nubosidad": 0.79
+     },
+     {
+      "fecha": "2023-01",
+      "ndvi": 0.65,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2023-02",
+      "ndvi": 0.6,
+      "nubosidad": 0.56
+     },
+     {
+      "fecha": "2023-03",
+      "ndvi": 0.57,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2023-04",
+      "ndvi": 0.52,
+      "nubosidad": 0.51
+     },
+     {
+      "fecha": "2023-05",
+      "ndvi": 0.54,
+      "nubosidad": 0.37
+     },
+     {
+      "fecha": "2023-06",
+      "ndvi": 0.46,
+      "nubosidad": 0.44
+     },
+     {
+      "fecha": "2023-07",
+      "ndvi": 0.44,
+      "nubosidad": 0.4
+     },
+     {
+      "fecha": "2023-08",
+      "ndvi": 0.49,
+      "nubosidad": 0.27
+     },
+     {
+      "fecha": "2023-09",
+      "ndvi": 0.52,
+      "nubosidad": 0.4
+     },
+     {
+      "fecha": "2023-10",
+      "ndvi": 0.55,
+      "nubosidad": 0.29
+     },
+     {
+      "fecha": "2023-11",
+      "ndvi": 0.56,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2023-12",
+      "ndvi": 0.58,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2024-01",
+      "ndvi": 0.59,
+      "nubosidad": 0.25
+     },
+     {
+      "fecha": "2024-02",
+      "ndvi": 0.58,
+      "nubosidad": 0.51
+     },
+     {
+      "fecha": "2024-03",
+      "ndvi": 0.59,
+      "nubosidad": 0.36
+     },
+     {
+      "fecha": "2024-04",
+      "ndvi": 0.56,
+      "nubosidad": 0.51
+     },
+     {
+      "fecha": "2024-05",
+      "ndvi": 0.59,
+      "nubosidad": 0.3
+     },
+     {
+      "fecha": "2024-06",
+      "ndvi": 0.63,
+      "nubosidad": 0.34
+     },
+     {
+      "fecha": "2024-07",
+      "ndvi": 0.58,
+      "nubosidad": 0.54
+     },
+     {
+      "fecha": "2024-08",
+      "ndvi": 0.59,
+      "nubosidad": 0.58
+     },
+     {
+      "fecha": "2024-09",
+      "ndvi": 0.6,
+      "nubosidad": 0.55
+     },
+     {
+      "fecha": "2024-10",
+      "ndvi": 0.59,
+      "nubosidad": 0.54
+     },
+     {
+      "fecha": "2024-11",
+      "ndvi": 0.63,
+      "nubosidad": 0.57
+     },
+     {
+      "fecha": "2024-12",
+      "ndvi": 0.67,
+      "nubosidad": 0.48
+     },
+     {
+      "fecha": "2025-01",
+      "ndvi": 0.6,
+      "nubosidad": 0.38
+     },
+     {
+      "fecha": "2025-02",
+      "ndvi": 0.64,
+      "nubosidad": 0.48
+     },
+     {
+      "fecha": "2025-03",
+      "ndvi": 0.58,
+      "nubosidad": 0.43
+     },
+     {
+      "fecha": "2025-04",
+      "ndvi": 0.65,
+      "nubosidad": 0.32
+     },
+     {
+      "fecha": "2025-05",
+      "ndvi": 0.65,
+      "nubosidad": 0.39
+     },
+     {
+      "fecha": "2025-06",
+      "ndvi": 0.6,
+      "nubosidad": 0.35
+     },
+     {
+      "fecha": "2025-07",
+      "ndvi": 0.59,
+      "nubosidad": 0.51
+     },
+     {
+      "fecha": "2025-08",
+      "ndvi": 0.67,
+      "nubosidad": 0.4
+     },
+     {
+      "fecha": "2025-09",
+      "ndvi": 0.65,
+      "nubosidad": 0.59
+     },
+     {
+      "fecha": "2025-10",
+      "ndvi": 0.61,
+      "nubosidad": 0.55
+     },
+     {
+      "fecha": "2025-11",
+      "ndvi": 0.59,
+      "nubosidad": 0.46
+     },
+     {
+      "fecha": "2025-12",
+      "ndvi": 0.62,
+      "nubosidad": 0.39
+     }
+    ],
+    "ciclos_detectados": 8,
+    "ciclos_ultimos_24m": 0,
+    "ndvi_pico_promedio": 0.66,
+    "rendimiento_estimado_t_ha": 0.54,
+    "rendimiento_municipal_eva_t_ha": 0.6,
+    "fuente_referencia": "EVA 2018 — GRANADA, META — CACAO",
+    "caida_enso_pct": 7.4
+   }
+  },
+  "eventos_climaticos": [
+   {
+    "nombre": "La Niña 2022",
+    "desde": "2022-01",
+    "hasta": "2022-12",
+    "tipo": "exceso_lluvia"
+   },
+   {
+    "nombre": "El Niño 2023-24",
+    "desde": "2023-06",
+    "hasta": "2024-05",
+    "tipo": "sequia"
+   }
+  ]
+ },
+ "dictamenes": {
+  "version": "1.0",
+  "modelo": "NINGUNO — placeholder",
+  "nota_ia": "⚠️ PLACEHOLDER. Texto de relleno escrito a mano para desbloquear al frente APP antes de que MOTOR corra el generador. NO son salidas de IA y no deben mostrarse como tales ni aparecer en el video. Se reemplazan por completo al correr `python3 scripts/generar_dictamen.py`, que sobrescribe data/dictamenes.json con salidas reales de Claude.",
+  "es_placeholder": true,
+  "dictamenes": {
+   "huila-cafe": {
+    "puntaje": 780,
+    "banda_riesgo": "bajo",
+    "decision": "aprobar",
+    "monto_sugerido_cop": 8400000,
+    "linea_finagro": "Capital de trabajo — pequeño productor",
+    "cobertura_fag_pct": 80,
+    "plazo_meses": 24,
+    "desembolso": "Dos tramos, el segundo condicionado a verificación satelital de siembra",
+    "ejes": [
+     {
+      "eje": "Capacidad de pago proyectada",
+      "peso": 40,
+      "puntaje": 38
+     },
+     {
+      "eje": "Verificación del activo productivo",
+      "peso": 20,
+      "puntaje": 18
+     },
+     {
+      "eje": "Riesgo sectorial y climático",
+      "peso": 25,
+      "puntaje": 19
+     },
+     {
+      "eje": "Coherencia del destino del crédito",
+      "peso": 15,
+      "puntaje": 12
+     }
+    ],
+    "evidencia": [
+     {
+      "tipo": "favorable",
+      "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+     },
+     {
+      "tipo": "favorable",
+      "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+     },
+     {
+      "tipo": "alerta",
+      "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+     },
+     {
+      "tipo": "favorable",
+      "texto": "PLACEHOLDER — verificación RTDAF/RUPTA, pendiente de generación por el modelo."
+     }
+    ],
+    "memorando": "PLACEHOLDER. Este bloque se reemplaza por el memorando real que genera Claude a partir de la serie satelital. Existe únicamente para que el frente APP pueda maquetar la pantalla del dictamen y la animación de escritura antes de que el motor de IA esté listo.",
+    "recomendacion": "PLACEHOLDER — pendiente de generación por el modelo."
+   },
+   "tolima-arroz": {
+    "puntaje": 640,
+    "banda_riesgo": "medio",
+    "decision": "aprobar",
+    "monto_sugerido_cop": 20000000,
+    "linea_finagro": "Capital de trabajo — pequeño productor",
+    "cobertura_fag_pct": 80,
+    "plazo_meses": 18,
+    "desembolso": "Tramo único",
+    "ejes": [
+     {
+      "eje": "Capacidad de pago proyectada",
+      "peso": 40,
+      "puntaje": 36
+     },
+     {
+      "eje": "Verificación del activo productivo",
+      "peso": 20,
+      "puntaje": 17
+     },
+     {
+      "eje": "Riesgo sectorial y climático",
+      "peso": 25,
+      "puntaje": 12
+     },
+     {
+      "eje": "Coherencia del destino del crédito",
+      "peso": 15,
+      "puntaje": 11
+     }
+    ],
+    "evidencia": [
+     {
+      "tipo": "favorable",
+      "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+     },
+     {
+      "tipo": "alerta",
+      "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+     },
+     {
+      "tipo": "alerta",
+      "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+     },
+     {
+      "tipo": "favorable",
+      "texto": "PLACEHOLDER — verificación RTDAF/RUPTA, pendiente de generación por el modelo."
+     }
+    ],
+    "memorando": "PLACEHOLDER. Se reemplaza por la salida real del modelo.",
+    "recomendacion": "PLACEHOLDER — pendiente de generación por el modelo."
+   },
+   "boyaca-papa": {
+    "puntaje": 590,
+    "banda_riesgo": "medio",
+    "decision": "aprobar_con_ajuste",
+    "monto_sugerido_cop": 6600000,
+    "linea_finagro": "Capital de trabajo — pequeño productor",
+    "cobertura_fag_pct": 80,
+    "plazo_meses": 12,
+    "desembolso": "Dos tramos, el segundo condicionado a verificación satelital de siembra",
+    "ejes": [
+     {
+      "eje": "Capacidad de pago proyectada",
+      "peso": 40,
+      "puntaje": 28
+     },
+     {
+      "eje": "Verificación del activo productivo",
+      "peso": 20,
+      "puntaje": 15
+     },
+     {
+      "eje": "Riesgo sectorial y climático",
+      "peso": 25,
+      "puntaje": 16
+     },
+     {
+      "eje": "Coherencia del destino del crédito",
+      "peso": 15,
+      "puntaje": 10
+     }
+    ],
+    "evidencia": [
+     {
+      "tipo": "favorable",
+      "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+     },
+     {
+      "tipo": "alerta",
+      "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+     },
+     {
+      "tipo": "alerta",
+      "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+     },
+     {
+      "tipo": "favorable",
+      "texto": "PLACEHOLDER — verificación RTDAF/RUPTA, pendiente de generación por el modelo."
+     }
+    ],
+    "memorando": "PLACEHOLDER. Se reemplaza por la salida real del modelo.",
+    "recomendacion": "PLACEHOLDER — pendiente de generación por el modelo."
+   },
+   "meta-cacao": {
+    "puntaje": 310,
+    "banda_riesgo": "rechazo",
+    "decision": "rechazar",
+    "monto_sugerido_cop": 0,
+    "linea_finagro": "",
+    "cobertura_fag_pct": 0,
+    "plazo_meses": 0,
+    "desembolso": "No aplica",
+    "ejes": [
+     {
+      "eje": "Capacidad de pago proyectada",
+      "peso": 40,
+      "puntaje": 12
+     },
+     {
+      "eje": "Verificación del activo productivo",
+      "peso": 20,
+      "puntaje": 5
+     },
+     {
+      "eje": "Riesgo sectorial y climático",
+      "peso": 25,
+      "puntaje": 12
+     },
+     {
+      "eje": "Coherencia del destino del crédito",
+      "peso": 15,
+      "puntaje": 3
+     }
+    ],
+    "evidencia": [
+     {
+      "tipo": "critico",
+      "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+     },
+     {
+      "tipo": "critico",
+      "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+     },
+     {
+      "tipo": "alerta",
+      "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+     },
+     {
+      "tipo": "favorable",
+      "texto": "PLACEHOLDER — verificación RTDAF/RUPTA, pendiente de generación por el modelo."
+     }
+    ],
+    "memorando": "PLACEHOLDER. Se reemplaza por la salida real del modelo.",
+    "recomendacion": "PLACEHOLDER — pendiente de generación por el modelo."
+   }
+  }
+ }
+};

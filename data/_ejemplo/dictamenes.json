@@ -1,0 +1,216 @@
+{
+  "version": "1.0",
+  "modelo": "NINGUNO — placeholder",
+  "nota_ia": "⚠️ PLACEHOLDER. Texto de relleno escrito a mano para desbloquear al frente APP antes de que MOTOR corra el generador. NO son salidas de IA y no deben mostrarse como tales ni aparecer en el video. Se reemplazan por completo al correr `python3 scripts/generar_dictamen.py`, que sobrescribe data/dictamenes.json con salidas reales de Claude.",
+  "es_placeholder": true,
+  "dictamenes": {
+    "huila-cafe": {
+      "puntaje": 780,
+      "banda_riesgo": "bajo",
+      "decision": "aprobar",
+      "monto_sugerido_cop": 8400000,
+      "linea_finagro": "Capital de trabajo — pequeño productor",
+      "cobertura_fag_pct": 80,
+      "plazo_meses": 24,
+      "desembolso": "Dos tramos, el segundo condicionado a verificación satelital de siembra",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 38
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 18
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 19
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 12
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "favorable",
+          "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "PLACEHOLDER — verificación RTDAF/RUPTA, pendiente de generación por el modelo."
+        }
+      ],
+      "memorando": "PLACEHOLDER. Este bloque se reemplaza por el memorando real que genera Claude a partir de la serie satelital. Existe únicamente para que el frente APP pueda maquetar la pantalla del dictamen y la animación de escritura antes de que el motor de IA esté listo.",
+      "recomendacion": "PLACEHOLDER — pendiente de generación por el modelo."
+    },
+    "tolima-arroz": {
+      "puntaje": 640,
+      "banda_riesgo": "medio",
+      "decision": "aprobar",
+      "monto_sugerido_cop": 20000000,
+      "linea_finagro": "Capital de trabajo — pequeño productor",
+      "cobertura_fag_pct": 80,
+      "plazo_meses": 18,
+      "desembolso": "Tramo único",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 36
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 17
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 12
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 11
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "favorable",
+          "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "PLACEHOLDER — verificación RTDAF/RUPTA, pendiente de generación por el modelo."
+        }
+      ],
+      "memorando": "PLACEHOLDER. Se reemplaza por la salida real del modelo.",
+      "recomendacion": "PLACEHOLDER — pendiente de generación por el modelo."
+    },
+    "boyaca-papa": {
+      "puntaje": 590,
+      "banda_riesgo": "medio",
+      "decision": "aprobar_con_ajuste",
+      "monto_sugerido_cop": 6600000,
+      "linea_finagro": "Capital de trabajo — pequeño productor",
+      "cobertura_fag_pct": 80,
+      "plazo_meses": 12,
+      "desembolso": "Dos tramos, el segundo condicionado a verificación satelital de siembra",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 28
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 15
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 16
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 10
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "favorable",
+          "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "PLACEHOLDER — verificación RTDAF/RUPTA, pendiente de generación por el modelo."
+        }
+      ],
+      "memorando": "PLACEHOLDER. Se reemplaza por la salida real del modelo.",
+      "recomendacion": "PLACEHOLDER — pendiente de generación por el modelo."
+    },
+    "meta-cacao": {
+      "puntaje": 310,
+      "banda_riesgo": "rechazo",
+      "decision": "rechazar",
+      "monto_sugerido_cop": 0,
+      "linea_finagro": "",
+      "cobertura_fag_pct": 0,
+      "plazo_meses": 0,
+      "desembolso": "No aplica",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 12
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 5
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 12
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 3
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "critico",
+          "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+        },
+        {
+          "tipo": "critico",
+          "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "PLACEHOLDER — pendiente de generación por el modelo."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "PLACEHOLDER — verificación RTDAF/RUPTA, pendiente de generación por el modelo."
+        }
+      ],
+      "memorando": "PLACEHOLDER. Se reemplaza por la salida real del modelo.",
+      "recomendacion": "PLACEHOLDER — pendiente de generación por el modelo."
+    }
+  }
+}
