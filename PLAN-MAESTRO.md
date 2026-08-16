@@ -210,7 +210,7 @@ git add . && git commit -m "app: <qué hiciste> — <por qué>" && git push -u o
 **Para hacerlo público al entregar:**
 
 ```bash
-~/bin/gh repo edit laurodriguez2016-cmd/seedllite-ctw2026 --visibility public --accept-visibility-change-consequences
+gh repo edit laurodriguez2016-cmd/seedllite-ctw2026 --visibility public --accept-visibility-change-consequences
 ```
 
 ---

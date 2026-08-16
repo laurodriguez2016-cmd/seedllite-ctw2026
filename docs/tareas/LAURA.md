@@ -140,7 +140,7 @@ Manda la lista a Piedrahita. **Sus correcciones van antes que cualquier pulido.*
 # 08:00 — SUBIDA
 
 ```bash
-~/bin/gh repo edit laurodriguez2016-cmd/seedllite-ctw2026 --visibility public --accept-visibility-change-consequences
+gh repo edit laurodriguez2016-cmd/seedllite-ctw2026 --visibility public --accept-visibility-change-consequences
 ```
 
 Después: subir al repositorio oficial del hackathon según diga `#entregas` en Discord.
