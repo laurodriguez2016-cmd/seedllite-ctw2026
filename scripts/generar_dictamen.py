@@ -22,13 +22,18 @@ y a la vista.
 
 DECISIONES TECNICAS (ver ARQUITECTURA.md §5)
 --------------------------------------------
-- urllib, no el SDK de anthropic: la constitucion prohibe dependencias, y ademas
-  el jurado puede ver exactamente que se manda por el cable.
-- claude-opus-5: son 4 llamadas. El costo del proyecto entero es del orden de un
-  dolar. La calidad del dictamen es lo unico que se optimiza.
-- STRUCTURED OUTPUTS: la API garantiza que la salida cumple el esquema del
-  contrato de datos. Sin esto, un JSON malformado a las 2am rompe la app.
-- La clave sale de la variable de entorno ANTHROPIC_API_KEY. Nunca se commitea.
+- urllib, no un SDK: la constitucion prohibe dependencias, y ademas el jurado
+  puede ver exactamente que se manda por el cable.
+- OpenRouter como pasarela hacia claude-opus-5. La tarifa es la misma que
+  contra la API directa (US$5 por millon de entrada, US$25 de salida), asi que
+  la eleccion no cambia el costo: son 4 llamadas, el orden de magnitud del
+  proyecto entero es un dolar. Se usa el modelo mas capaz porque la calidad del
+  dictamen es lo unico que se optimiza aqui.
+- STRUCTURED OUTPUTS (`response_format` con `strict: true`): la API garantiza
+  que la salida cumple el esquema del contrato de datos. Sin esto, un JSON
+  malformado a las 2am rompe la app. Es la practica actual para forzar la forma
+  de una salida y elimina de raiz esa clase de fallo.
+- La clave sale de la variable de entorno OPENROUTER_API_KEY. Nunca se commitea.
 
 Solo biblioteca estandar (Python 3.9).
 """
@@ -43,12 +48,11 @@ RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(RAIZ, "data")
 SALIDA = os.path.join(DATA, "dictamenes.json")
 
-API_URL = "https://api.anthropic.com/v1/messages"
-MODELO = "claude-opus-5"
-VERSION_API = "2023-06-01"
+API_URL = "https://openrouter.ai/api/v1/chat/completions"
+MODELO = "anthropic/claude-opus-5"
 
-# Thinking esta activo por defecto en Opus 5 y consume del mismo max_tokens que
-# la respuesta. Con holgura para que el razonamiento no trunque el dictamen.
+# El razonamiento del modelo consume del mismo presupuesto que la respuesta.
+# Con holgura para que no trunque el dictamen a mitad de una frase.
 MAX_TOKENS = 16000
 
 SMMLV_2026 = 1_623_500     # SUPUESTO: verificar contra decreto de salarios 2026
@@ -229,6 +233,20 @@ REGLAS DE REDACCIÓN — no negociables
 """
 
 
+def cargar_env():
+    """Lee .env si existe. El entorno real siempre gana sobre el archivo."""
+    ruta = os.path.join(RAIZ, ".env")
+    if not os.path.exists(ruta):
+        return
+    with open(ruta, "r", encoding="utf-8") as f:
+        for linea in f:
+            linea = linea.strip()
+            if not linea or linea.startswith("#") or "=" not in linea:
+                continue
+            clave, valor = linea.split("=", 1)
+            os.environ.setdefault(clave.strip(), valor.strip())
+
+
 def formato_pesos(n):
     return "$" + "{:,}".format(int(n)).replace(",", ".")
 
@@ -347,15 +365,25 @@ Emite el dictamen de crédito.""".format(
 
 
 def llamar_api(prompt_usuario, api_key):
-    """Llamada a la API de Claude con urllib. Sin dependencias."""
+    """Llamada al modelo con urllib. Sin dependencias, sin SDK."""
     cuerpo = {
         "model": MODELO,
         "max_tokens": MAX_TOKENS,
-        "system": SISTEMA,
-        "messages": [{"role": "user", "content": prompt_usuario}],
+        "messages": [
+            {"role": "system", "content": SISTEMA},
+            {"role": "user", "content": prompt_usuario},
+        ],
         # Fuerza la forma de la salida contra el contrato de datos.
-        "output_config": {
-            "format": {"type": "json_schema", "schema": ESQUEMA_DICTAMEN}
+        # strict: true obliga a que el JSON valide contra el esquema completo;
+        # por eso ESQUEMA_DICTAMEN lleva additionalProperties:false y required
+        # exhaustivo en todos sus niveles.
+        "response_format": {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "dictamen_credito",
+                "strict": True,
+                "schema": ESQUEMA_DICTAMEN,
+            },
         },
     }
 
@@ -363,9 +391,11 @@ def llamar_api(prompt_usuario, api_key):
         API_URL,
         data=json.dumps(cuerpo).encode("utf-8"),
         headers={
-            "content-type": "application/json",
-            "x-api-key": api_key,
-            "anthropic-version": VERSION_API,
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + api_key,
+            # OpenRouter usa estos dos para atribuir la llamada. No son secretos.
+            "HTTP-Referer": "https://github.com/laurodriguez2016-cmd/seedllite-ctw2026",
+            "X-Title": "SEEDLLITE",
         },
         method="POST",
     )
@@ -379,15 +409,25 @@ def llamar_api(prompt_usuario, api_key):
     except urllib.error.URLError as e:
         raise SystemExit("ERROR de red: %s" % e.reason)
 
-    if respuesta.get("stop_reason") == "refusal":
-        raise SystemExit("El modelo declinó la solicitud: %s" % respuesta.get("stop_details"))
+    if "error" in respuesta and not respuesta.get("choices"):
+        raise SystemExit("La API devolvió un error:\n%s"
+                         % json.dumps(respuesta["error"], ensure_ascii=False))
 
-    # El texto del primer bloque de tipo "text" es el JSON validado contra el esquema.
-    for bloque in respuesta["content"]:
-        if bloque.get("type") == "text":
-            return json.loads(bloque["text"]), respuesta["usage"]
+    eleccion = respuesta["choices"][0]
+    if eleccion.get("finish_reason") == "length":
+        raise SystemExit("La respuesta se truncó por MAX_TOKENS. Súbelo y reintenta.")
 
-    raise SystemExit("La respuesta no trajo ningún bloque de texto:\n%s" % respuesta)
+    contenido = eleccion["message"]["content"]
+    try:
+        dictamen = json.loads(contenido)
+    except ValueError:
+        raise SystemExit("La salida no era JSON pese al esquema:\n%s" % contenido[:800])
+
+    uso = respuesta.get("usage", {})
+    return dictamen, {
+        "input_tokens": uso.get("prompt_tokens", 0),
+        "output_tokens": uso.get("completion_tokens", 0),
+    }
 
 
 def main():
@@ -413,11 +453,12 @@ def main():
             print()
         return
 
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    cargar_env()
+    api_key = os.environ.get("OPENROUTER_API_KEY")
     if not api_key:
         raise SystemExit(
-            "Falta ANTHROPIC_API_KEY en el entorno.\n"
-            "  export ANTHROPIC_API_KEY='...'   (nunca lo commitees)\n"
+            "Falta OPENROUTER_API_KEY en el entorno o en .env.\n"
+            "  export OPENROUTER_API_KEY='sk-or-v1-...'   (nunca lo commitees)\n"
             "Para revisar el prompt sin llamar a la API: --dry-run"
         )
 
@@ -445,10 +486,12 @@ def main():
     salida = {
         "version": "1.0",
         "modelo": MODELO,
+        "pasarela": "OpenRouter",
         "nota_ia": (
             "Salidas reales del modelo, generadas por scripts/generar_dictamen.py y "
             "commiteadas. El demo las reproduce cacheadas; el prompt completo está "
-            "en ese mismo archivo y es legible."
+            "en ese mismo archivo y es legible. La forma del JSON está garantizada "
+            "por structured outputs contra el esquema del contrato de datos."
         ),
         "dictamenes": dictamenes,
     }

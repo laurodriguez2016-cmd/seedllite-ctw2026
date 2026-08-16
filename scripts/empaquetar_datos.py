@@ -31,6 +31,9 @@ import json
 import os
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import validar_contrato
+
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(RAIZ, "data")
 SALIDA = os.path.join(DATA, "datos.js")
@@ -63,6 +66,22 @@ def cargar(nombre_archivo, obligatorio):
 
 
 def main():
+    # PUERTA DE CALIDAD. El contrato se valida ANTES de emitir nada.
+    #
+    # Sin esto, un JSON que ya no cumple el contrato se empaqueta igual, la app
+    # pinta 'undefined' y no hay ni un error en consola que lo delate. Pasó una
+    # vez con el cambio v1.0 -> v1.1. Aquí se acaba: si el contrato no se
+    # cumple, datos.js NO se regenera y la app sigue mostrando lo último bueno.
+    fallos = validar_contrato.validar()
+    if fallos and "--forzar" not in sys.argv:
+        sys.stderr.write(
+            "\nNo se generó data/datos.js. Corrige los problemas de arriba y "
+            "vuelve a correr.\n(Si sabes lo que haces: --forzar)\n")
+        sys.exit(1)
+    if fallos:
+        print("\n! Empaquetando IGUAL por --forzar, con %d problema(s) sin "
+              "resolver.\n" % len(fallos))
+
     paquete = {}
     reporte = []
 
