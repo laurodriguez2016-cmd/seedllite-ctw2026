@@ -79,7 +79,11 @@ ESQUEMA_DICTAMEN = {
     "properties": {
         "puntaje": {
             "type": "integer",
-            "description": "Puntaje SEEDLLITE de 0 a 1000. Es la suma ponderada de los 4 ejes, escalada a 1000.",
+            "description": (
+                "Puntaje SEEDLLITE de 0 a 1000. NO es un juicio aparte: es exactamente "
+                "la suma de los puntajes de los 4 ejes multiplicada por 10. Si los ejes "
+                "puntúan 36+19+23+13 = 91, el puntaje es 910. Debe cuadrar con los ejes."
+            ),
         },
         "banda_riesgo": {"type": "string", "enum": ["bajo", "medio", "alto", "rechazo"]},
         "decision": {"type": "string", "enum": ["aprobar", "aprobar_con_ajuste", "rechazar"]},
@@ -89,7 +93,14 @@ ESQUEMA_DICTAMEN = {
         },
         "linea_finagro": {
             "type": "string",
-            "description": "Línea FINAGRO aplicable, p.ej. 'Capital de trabajo — pequeño productor'. Cadena vacía si se rechaza.",
+            "description": (
+                "Denominación OFICIAL de la línea FINAGRO más el tipo de productor, y nada más: "
+                "'Inversión — pequeño productor', 'Capital de Trabajo — pequeño productor' o "
+                "'Normalización de Cartera — pequeño productor'. Son las tres únicas líneas que "
+                "existen. NO inventes subdenominaciones como 'Inversión — renovación de perennes': "
+                "el destino específico del crédito no es parte del nombre de la línea, va aparte "
+                "conforme a la Resolución 08 de 2023 CNCA. Cadena vacía si se rechaza."
+            ),
         },
         "cobertura_fag_pct": {
             "type": "integer",
@@ -123,7 +134,15 @@ ESQUEMA_DICTAMEN = {
                         ],
                     },
                     "peso": {"type": "integer"},
-                    "puntaje": {"type": "integer"},
+                    "puntaje": {
+                        "type": "integer",
+                        "description": (
+                            "Puntos OBTENIDOS en este eje, sobre el peso del eje — NO sobre 100. "
+                            "Si el peso es 40, el puntaje va de 0 a 40. Un eje evaluado en 90% "
+                            "con peso 40 puntúa 36, nunca 90. La app dibuja la barra como "
+                            "puntaje/peso: un puntaje mayor que el peso desborda la pantalla."
+                        ),
+                    },
                 },
             },
         },
@@ -505,6 +524,71 @@ def llamar_api(prompt_usuario, api_key):
     }
 
 
+LINEAS_OFICIALES = ("Inversión", "Capital de Trabajo", "Normalización de Cartera")
+
+
+def incoherencias(d, predio):
+    """
+    Lo que structured outputs NO puede garantizar: que las cifras cuadren entre si.
+
+    El esquema asegura tipos y enums. No asegura que el puntaje de un eje quepa
+    dentro de su peso, que el total se derive de los ejes, ni que no se sugiera
+    mas plata de la solicitada. Todo eso son invariantes del contrato que se
+    comprueban aqui, y cuyo incumplimiento dispara un reintento.
+    """
+    fallas = []
+
+    for e in d.get("ejes", []):
+        if e["puntaje"] > e["peso"]:
+            fallas.append(
+                "el eje «%s» puntúa %d sobre un peso de %d: el puntaje del eje va de 0 a "
+                "su peso, no sobre 100" % (e["eje"], e["puntaje"], e["peso"]))
+
+    suma = sum(e["puntaje"] for e in d.get("ejes", []))
+    if d.get("ejes") and abs(d["puntaje"] - suma * 10) > 5:
+        fallas.append(
+            "el puntaje total es %d pero los ejes suman %d, que escalado a 1000 da %d"
+            % (d["puntaje"], suma, suma * 10))
+
+    # La banda no es un juicio: es un tramo de la escala de criterios-de-credito §5.
+    # Un dictamen que dice 780 y lo llama "medio" se contradice en la misma pantalla,
+    # porque la app pinta el numero al lado de la etiqueta.
+    escala = [(700, "bajo"), (550, "medio"), (400, "alto"), (0, "rechazo")]
+    esperada = next(nombre for piso, nombre in escala if d.get("puntaje", 0) >= piso)
+    if d.get("banda_riesgo") != esperada:
+        fallas.append(
+            "con puntaje %d la banda es «%s», no «%s» (escala: 700+ bajo · 550-699 medio · "
+            "400-549 alto · 0-399 rechazo)"
+            % (d["puntaje"], esperada, d.get("banda_riesgo")))
+
+    solicitado = predio["monto_solicitado_cop"]
+    if d.get("monto_sugerido_cop", 0) > solicitado:
+        fallas.append("el monto sugerido (%d) supera al solicitado (%d)"
+                      % (d["monto_sugerido_cop"], solicitado))
+
+    if d.get("decision") == "rechazar" and d.get("monto_sugerido_cop", 0) != 0:
+        fallas.append("la decisión es rechazar pero el monto sugerido no es 0")
+
+    linea = d.get("linea_finagro", "")
+    if linea and not any(linea.startswith(x) for x in LINEAS_OFICIALES):
+        fallas.append(
+            "«%s» no es una denominación oficial de línea FINAGRO; las únicas son %s"
+            % (linea, ", ".join(LINEAS_OFICIALES)))
+
+    if predio["tipo_cultivo"] == "perenne":
+        texto = " ".join([d.get("memorando", ""), d.get("recomendacion", "")] +
+                         [e.get("texto", "") for e in d.get("evidencia", [])]).lower()
+        for frase in ("no se detectan ciclos", "sin ciclos de cosecha detectables",
+                      "ausencia de ciclos de cosecha constituye"):
+            if frase in texto:
+                fallas.append(
+                    "en un cultivo perenne no se puede presentar la ausencia de ciclos "
+                    "como hallazgo negativo: es el comportamiento normal del cultivo")
+                break
+
+    return fallas
+
+
 def main():
     argv = [a for a in sys.argv[1:] if not a.startswith("--")]
     dry_run = "--dry-run" in sys.argv
@@ -550,11 +634,33 @@ def main():
         sys.stdout.flush()
 
         prompt = construir_prompt(predio, series_doc["series"][pid], caida_regional)
-        dictamen, uso = llamar_api(prompt, api_key)
-        dictamenes[pid] = dictamen
+        # Structured outputs garantiza la FORMA del JSON, no su coherencia
+        # aritmetica. En la primera corrida el modelo puntuo los ejes sobre 100
+        # (78 sobre un peso de 40) y emitio un total que no se derivaba de sus
+        # propios ejes. El esquema lo acepto: es JSON valido. La app no: dibuja
+        # la barra como puntaje/peso y 78/40 se sale de la pantalla.
+        # Por eso se reintenta con el defecto senalado en vez de escribirlo.
+        for intento in range(1, 4):
+            dictamen, uso = llamar_api(prompt, api_key)
+            total_in += uso.get("input_tokens", 0)
+            total_out += uso.get("output_tokens", 0)
 
-        total_in += uso.get("input_tokens", 0)
-        total_out += uso.get("output_tokens", 0)
+            fallas = incoherencias(dictamen, predio)
+            if not fallas:
+                break
+            print("\n    intento %d rechazado: %s" % (intento, "; ".join(fallas)))
+            prompt = (construir_prompt(predio, series_doc["series"][pid], caida_regional)
+                      + "\n\nCORRECCIÓN OBLIGATORIA — la salida anterior tuvo estos defectos:\n"
+                      + "\n".join("- " + f for f in fallas))
+            sys.stdout.write("· %-14s reintentando ... " % pid)
+            sys.stdout.flush()
+        else:
+            raise SystemExit(
+                "%s: 3 intentos y la salida sigue siendo incoherente. No se escribe "
+                "nada: es preferible quedarse con el dictamen anterior que publicar "
+                "uno que se contradice." % pid)
+
+        dictamenes[pid] = dictamen
         print("%s · puntaje %d · %s" % (
             dictamen["decision"].upper(), dictamen["puntaje"], dictamen["banda_riesgo"]))
 

@@ -482,6 +482,18 @@ def main():
         valores_medidos = [p["ndvi"] if not p["interpolado"] else None for p in puntos]
         recientes = [p for p in puntos if p["fecha"] >= "2024-01"]
 
+        # Los interpolados se enmascaran TAMBIEN en la ventana de 24 meses.
+        # Antes esta linea pasaba p["ndvi"] de todos los puntos, interpolados
+        # incluidos, mientras `ciclos_detectados` si los excluia. La incoherencia
+        # no era cosmetica: `ciclos_ultimos_24m` es la metrica que dispara la
+        # causal de rechazo automatico, y en una ventana con mucha nube la
+        # interpolacion aplana la serie, mata los cruces de umbral y devuelve 0.
+        # Es decir: se rechazaba a un productor porque estuvo nublado sobre su
+        # parcela. En un sistema que decide sobre credito eso no es un bug de
+        # calculo, es una negacion de credito sin causa.
+        valores_24m = [p["ndvi"] if not p["interpolado"] else None for p in recientes]
+        medidos_24m = sum(1 for p in recientes if not p["interpolado"])
+
         referencia = eva["referencias"][pid]
         caidas[pid] = caida_enso(puntos)
         perdida, a_hist, a_rec = perdida_amplitud(puntos)
@@ -493,7 +505,9 @@ def main():
             "cobertura_meses_medidos": medidos,
             "cobertura_meses_totales": len(puntos),
             "ciclos_detectados": contar_ciclos(valores_medidos),
-            "ciclos_ultimos_24m": contar_ciclos([p["ndvi"] for p in recientes], minimo=6),
+            "ciclos_ultimos_24m": contar_ciclos(valores_24m, minimo=6),
+            "cobertura_24m_medidos": medidos_24m,
+            "cobertura_24m_totales": len(recientes),
             "ndvi_pico_promedio": pico_promedio(puntos),
             "rendimiento_estimado_t_ha": rendimiento_estimado(puntos, referencia),
             "rendimiento_municipal_eva_t_ha": referencia["rendimiento_municipal_t_ha"],

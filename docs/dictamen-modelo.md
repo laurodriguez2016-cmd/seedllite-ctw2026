@@ -19,19 +19,24 @@ dentro del límite de 284 SMMLV. La operación es elegible para recursos FINAGRO
 del Fondo Agropecuario de Garantías.
 
 **Verificación del activo productivo.** El predio existe y presenta actividad agrícola continua.
-No se trata de un predio fantasma. El área detectada por análisis satelital —2,4 ha— coincide
-con el área declarada, sin inconsistencias frente a la información catastral disponible.
+No se trata de un predio fantasma. La medición satelital detecta **2,25 ha con actividad
+agrícola de las 2,4 ha declaradas —el 94%—**, sin inconsistencias frente a la información
+catastral disponible.
 
-**Capacidad de pago.** Se detectan **9 ciclos de cosecha completos en 10 años**, con rendimiento
-estimado de **1,42 t/ha** frente a **1,14 t/ha** del promedio municipal de Pitalito reportado
-en EVA 2018. Es la constancia del patrón productivo —y no su nivel puntual— la que sustenta la
-proyección de flujo. La solicitante acredita capacidad y solvencia para responder por la
-obligación.
+**Capacidad de pago.** Tratándose de un **cultivo perenne**, la evaluación no se apoya en el
+conteo de cosechas: el café no las dibuja en la serie satelital. Se apoya en el vigor sostenido
+y en el ritmo de manejo. El predio registra **NDVI pico promedio de 0,79 a lo largo de nueve
+años** y un rendimiento estimado de **1,23 t/ha** frente a **1,14 t/ha** del promedio municipal
+de Pitalito reportado en EVA 2018. La solicitante acredita capacidad y solvencia para responder
+por la obligación.
 
-**Riesgo sectorial y climático.** Durante la ventana de El Niño 2023-24 la serie registra una
-caída de vigor del **18%** —el mayor descenso de los diez años analizados— con recuperación
-completa en los dos ciclos siguientes. Es la única alerta del expediente, y se pondera a la baja
-porque el predio no perdió el ciclo productivo: lo sostuvo con menor vigor.
+**Riesgo sectorial y climático.** La serie **no registra caída de vigor atribuible a El Niño
+2023-24**: el predio sostuvo su nivel durante la ventana del evento. La única alerta del
+expediente es distinta: la amplitud de los últimos 24 meses cae **27,6%** frente a la histórica
+del propio predio. Se pondera a la baja porque en un perenne la amplitud refleja el ritmo de
+manejo y no la cosecha, y porque el rendimiento estimado sigue por encima del municipal —el
+patrón compatible con una **renovación por zoca** en curso, que es precisamente el destino
+declarado del crédito.
 
 **Verificaciones de exclusión.** El predio **no figura en el RTDAF** ni registra medida de
 protección vigente en RUPTA. **No presenta restricción ambiental**: no se ubica en Parque
@@ -50,15 +55,25 @@ la siembra efectiva.
 
 ## 2. Por qué este dictamen sirve — para calibrar el prompt
 
-Torres: estas son las siete propiedades que hay que reproducir. Si una salida del modelo falla
-en cualquiera, el prompt está incompleto.
+Torres: estas son las **nueve** propiedades que hay que reproducir. Si una salida del modelo
+falla en cualquiera, el prompt está incompleto. Las dos últimas se agregaron al corregir la
+regla de perenne vs. transitorio.
+
+> ⚠️ **Actualizado 15-ago-2026, 23:05 contra la serie real.** La versión original de este
+> dictamen citaba 1,42 t/ha, "9 ciclos en 10 años" y una caída del 18% en El Niño. Esas cifras
+> venían de la serie calibrada. Corrida la serie real de Copernicus, el rendimiento es 1,23 t/ha,
+> la ventana es de nueve años y **la caída ENSO del café es 0,0%**. Iterar el prompt contra la
+> vara vieja habría empujado al modelo a inventar la cifra que la vara pedía y su propio insumo
+> no contenía. El criterio de Laura no cambió; cambiaron los números a los que se aplica.
 
 | # | Propiedad | Cómo se ve |
 |---|---|---|
-| 1 | **Cada afirmación trae su número** | "9 ciclos", "1,42 t/ha frente a 1,14", "caída de 18%". Ningún adjetivo suelto |
+| 1 | **Cada afirmación trae su número** | "NDVI pico 0,79", "1,23 t/ha frente a 1,14", "amplitud cae 27,6%". Ningún adjetivo suelto |
 | 2 | **Sigue el orden del SARC** | Clasificación → activo → capacidad de pago → riesgo sectorial → exclusiones → decisión |
-| 3 | **La alerta se dice aunque se apruebe** | La caída del 18% en El Niño aparece, se pondera y se explica por qué no bloquea |
-| 4 | **Explica el criterio, no solo el resultado** | *"la constancia del patrón productivo, y no su nivel puntual"* — el dictamen enseña cómo se leyó el dato |
+| 3 | **La alerta se dice aunque se apruebe** | La pérdida de amplitud del 27,6% aparece, se pondera y se explica por qué no bloquea |
+| 4 | **Explica el criterio, no solo el resultado** | *"tratándose de un cultivo perenne, la evaluación no se apoya en el conteo de cosechas"* — el dictamen enseña cómo se leyó el dato |
+| 8 | **Distingue perenne de transitorio** | En un perenne no se cita "0 ciclos" como defecto: es el comportamiento normal del cultivo. Citarlo delata que el modelo no entiende lo que mide |
+| 9 | **Declara la cobertura del dato** | Cuántos de los 108 meses son medición y cuántos relleno. Un dictamen que no dice cuánto vio no se puede auditar |
 | 5 | **Deja constancia de lo verificado aunque salga favorable** | RTDAF, RUPTA y ambiental se mencionan incluso estando limpias |
 | 6 | **Tono de memorando interno** | Sin "excelente", sin "muy buena productora", sin signos de admiración |
 | 7 | **La recomendación es operativa** | Monto, línea, cobertura, plazo y condición de desembolso. Un comité puede firmar sobre esto |

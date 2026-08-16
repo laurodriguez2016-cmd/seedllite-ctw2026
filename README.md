@@ -7,7 +7,7 @@
 **Hackathon Colombia Tech Week 2026 · Track 04 — Planeta y Comunidad · Resiliencia**
 
 *Un pequeño productor sin extractos bancarios sí tiene historia financiera:*
-*está escrita en diez años de imágenes satelitales de su parcela.*
+*está escrita en nueve años de imágenes satelitales de su parcela.*
 
 </div>
 
@@ -38,8 +38,8 @@ satelital que no puede falsificar**.
 
 ```mermaid
 flowchart LR
-    A[Coordenadas<br/>del predio] --> B[Sentinel-2<br/>2016-2025]
-    B --> C[Serie NDVI<br/>120 puntos]
+    A[Coordenadas<br/>del predio] --> B[Sentinel-2<br/>2017-2025]
+    B --> C[Serie NDVI<br/>108 puntos]
     C --> D{Análisis}
     D --> E[Ciclos de<br/>cosecha]
     D --> F[Respuesta<br/>climática]
@@ -52,10 +52,10 @@ flowchart LR
 
 ### La idea en una gráfica
 
-Cuando se grafica el NDVI de una parcela mes a mes durante diez años, aparecen **dientes de
+Cuando se grafica el NDVI de una parcela mes a mes durante nueve años, aparecen **dientes de
 sierra**: sube durante el desarrollo del cultivo, cae en la cosecha, vuelve a subir.
 
-**Cada diente es una cosecha terminada.** Y haber terminado nueve cosechas en diez años dice
+**Cada diente es una cosecha terminada.** Y haber terminado catorce cosechas en nueve años dice
 más sobre la capacidad de pago de un campesino que cualquier balance que pudiera firmar.
 
 ---
@@ -71,7 +71,7 @@ por medio.**
 
 | Sin IA | Con IA |
 |---|---|
-| `ndvi_pico = 0.78` | *"9 ciclos de cosecha completos entre 2016 y 2025, con rendimiento estimado de 1,42 t/ha frente a 1,14 t/ha del promedio municipal. La constancia del patrón productivo —y no su nivel puntual— sustenta la proyección de flujo."* |
+| `ndvi_pico = 0.78` | *"14 ciclos de cosecha completos entre 2017 y 2025, con rendimiento estimado de 8,91 t/ha frente a 7,69 t/ha del promedio municipal de Espinal (EVA 2018). La constancia del patrón productivo —y no su nivel puntual— sustenta la proyección de flujo."* |
 | Un número | Una decisión que un analista puede firmar y un productor puede apelar |
 
 Si se le quita la IA a SEEDLLITE, no queda producto: queda una gráfica que nadie sabe leer.
@@ -166,7 +166,7 @@ Declarar los límites es lo que hace creíble el resto.
 
 | # | Estudio | Método | Límite declarado |
 |---|---|---|---|
-| 1 | Serie NDVI de 10 años | `(B08−B04)/(B08+B04)`, mediana mensual | Sentinel-2 existe desde 2015 |
+| 1 | Serie NDVI de 9 años | `(B08−B04)/(B08+B04)`, mediana mensual | Sentinel-2 existe desde 2015 |
 | 2 | Detección de ciclos | Conteo de picos y valles con umbral de amplitud | En perennes el ciclo es menos marcado |
 | 3 | Área efectivamente cultivada | Fracción del polígono con estacionalidad de cultivo | 10 m: no distingue predios < 0,5 ha |
 | 4 | Respuesta a estrés climático | Caída de vigor vs. el municipio | Correlación, no causalidad |
@@ -208,7 +208,7 @@ garantía distinto que este modelo no aborda.
 > Colombia: su licencia autoriza el uso únicamente para el "Propósito NICFI" y **no con ánimo
 > de lucro**. Usarlos en un producto de crédito sería violación de licencia.
 >
-> *Contiene datos Copernicus Sentinel modificados, 2016–2025.*
+> *Contiene datos Copernicus Sentinel modificados, 2017–2025.*
 
 ---
 
@@ -302,7 +302,7 @@ seedllite-ctw2026/
 │   └── generar_dictamen.py         ⭐ El prompt del dictamen
 ├── data/
 │   ├── predios.json                Los 4 predios del demo
-│   ├── series_ndvi.json            120 puntos mensuales por predio
+│   ├── series_ndvi.json            108 puntos mensuales por predio
 │   ├── dictamenes.json             Salidas reales de Claude
 │   └── CONTRATO-DATOS.md           Esquemas acordados entre frentes
 └── docs/

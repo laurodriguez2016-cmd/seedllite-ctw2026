@@ -159,6 +159,25 @@ regla del arroz es un error de categoría.
 **Rechazo automático — transitorio:** sin ciclo de cosecha detectable en los últimos
 **24 meses** (`ciclos_ultimos_24m == 0`).
 
+#### La causal no opera con cobertura insuficiente
+
+**Ninguna causal del EJE A se activa si la ventana de 24 meses tiene menos de 12 meses
+con observación óptica utilizable** (`cobertura_24m_medidos < 12`). En ese caso el
+dictamen declara la limitación y remite a visita técnica.
+
+Esto no es una excepción de conveniencia, es la corrección de un fallo real que se
+encontró midiendo. En el trópico andino la nubosidad borra entre 19 y 33 de los 108
+meses, y no se reparte pareja: hay parcelas con la mitad de los últimos dos años sin
+una sola observación. Sobre una ventana así, la interpolación aplana la serie, los
+cruces de umbral desaparecen y el detector devuelve cero ciclos — **exactamente el
+mismo resultado que produce un predio abandonado.**
+
+> **Un predio nublado y un predio abandonado no se pueden distinguir, y el sistema no
+> puede fingir que sí.** Rechazar un crédito porque estuvo nublado sobre la parcela es
+> el peor error que este producto puede cometer: es invisible, se ve técnico, y le
+> cae encima al productor que menos capacidad tiene de apelarlo. Cuando el dato no
+> alcanza, la respuesta correcta no es "no" — es "no sé, vaya y mire".
+
 **Rechazo automático — perenne:** requiere que se cumplan **las dos** condiciones, porque
 ninguna sola distingue un cafetal en manejo de uno abandonado:
 

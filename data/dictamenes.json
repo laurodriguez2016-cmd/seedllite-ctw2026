@@ -1,0 +1,176 @@
+{
+  "version": "1.0",
+  "modelo": "anthropic/claude-opus-5",
+  "pasarela": "OpenRouter",
+  "nota_ia": "Salidas reales del modelo, generadas por scripts/generar_dictamen.py y commiteadas. El demo las reproduce cacheadas; el prompt completo está en ese mismo archivo y es legible. La forma del JSON está garantizada por structured outputs contra el esquema del contrato de datos.",
+  "dictamenes": {
+    "huila-cafe": {
+      "puntaje": 870,
+      "banda_riesgo": "bajo",
+      "decision": "aprobar_con_ajuste",
+      "monto_sugerido_cop": 8437500,
+      "linea_finagro": "Inversión — pequeño productor",
+      "cobertura_fag_pct": 80,
+      "plazo_meses": 84,
+      "desembolso": "Dos tramos: 70% ($5.906.250) al perfeccionamiento de la garantía FAG, destinado a material vegetal y labores de renovación; 30% ($2.531.250) a los 12 meses, condicionado a que la serie NDVI del polígono muestre recuperación de vigor en las celdas renovadas (pico ≥ 0,75) y no registre reducción del área con actividad agrícola por debajo de 2,10 ha.",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 33
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 18
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 23
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 13
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "favorable",
+          "texto": "Rendimiento estimado del predio de 1,23 t/ha frente a 1,14 t/ha del municipal oficial (EVA 2018 — PITALITO, HUILA — CAFE), es decir 7,9% por encima de la referencia. La cifra del predio es una estimación derivada del vigor satelital, no producción medida."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Resiliencia climática verificada: caída de vigor de 0,0% durante El Niño 2023-24 contra una caída promedio regional de 2,0%, con NDVI pico promedio de 0,79 y pico de 0,84 en 2025, el más alto de los nueve años de serie."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Control anti-despojo RTDAF/RUPTA (Ley 1448 de 2011): sin coincidencias, el predio no figura en el registro ni tiene medida de protección vigente. Verificación ambiental del polígono sin superposición con áreas protegidas ni frontera agrícola excluida."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "Área con actividad agrícola detectada de 2,25 ha frente a 2,4 ha declaradas (desvío -6,2%); el monto se ajusta en esa misma proporción, de $9.000.000 a $8.437.500, para que la exposición corresponda al área efectivamente verificada."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "Cobertura óptica de 75 de 108 meses (69%); años clave como 2018 (4/12 meses medidos) y 2023 (6/12) sostienen la lectura con información parcial, lo que amplía el intervalo de incertidumbre de la amplitud histórica de 0,123."
+        }
+      ],
+      "memorando": "Se trata de un cultivo perenne (café Castillo) con once años de tenencia y sin historial de crédito formal, por lo que la capacidad de pago se sustenta enteramente en la evidencia satelital. Ninguna causal de rechazo se activa: la pérdida de amplitud contra su propia historia es de 27,6% (0,123 a 0,089), por debajo del umbral de 40%, y el rendimiento estimado de 1,23 t/ha supera el municipal oficial de 1,14 t/ha (EVA 2018 — Pitalito, Huila — Café). Al ser perenne, la baja amplitud reciente refleja ritmo de manejo y es compatible con el destino declarado de renovación; no constituye defecto. El vigor sostenido lo confirma: pico de 0,84 en 2025 y ausencia total de caída durante El Niño 2023-24 frente a 2,0% regional. La limitación del dictamen es la cobertura del dato: 75 de 108 meses con observación utilizable, con 2018 y 2023 medidos apenas en 4 y 6 meses; los meses interpolados no entran en ningún indicador. El área detectada de 2,25 ha obliga a ajustar el monto en proporción. SEEDLLITE no evalúa centrales de riesgo, garantías adicionales ni endeudamiento con otras entidades; esa verificación queda en cabeza del intermediario antes del desembolso.",
+      "recomendacion": "Aprobar con ajuste por $8.437.500 bajo línea de Inversión para pequeño productor con cobertura FAG del 80%, condicionando el segundo tramo a la verificación satelital de recuperación de vigor en las celdas renovadas a los 12 meses."
+    },
+    "tolima-arroz": {
+      "puntaje": 850,
+      "banda_riesgo": "bajo",
+      "decision": "aprobar",
+      "monto_sugerido_cop": 22000000,
+      "linea_finagro": "Capital de Trabajo — pequeño productor",
+      "cobertura_fag_pct": 80,
+      "plazo_meses": 12,
+      "desembolso": "Tramo único, contra verificación de destino para siembra del semestre B",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 36
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 19
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 16
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 14
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "favorable",
+          "texto": "14 ciclos completos de siembra-cosecha detectados entre 2017 y 2025, con 3 ciclos en los últimos 24 meses: patrón de diente de sierra continuo, consistente con doble campaña de arroz bajo riego."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Pérdida de amplitud contra su propia historia de apenas 1,3% (histórica 0,756 frente a 0,746 en los últimos 24 meses); ninguna causal de rechazo por colapso del ciclo se activa."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Área con actividad agrícola detectada por Sentinel-2 de 6,1 ha sobre 6,1 ha declaradas (desvío +0,0%); el monto solicitado de $22.000.000 equivale a $3.606.557 por hectárea verificada, proporcional a capital de trabajo de un ciclo de arroz."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "Caída de vigor durante El Niño 2023-24 de 8,1% frente a 2,0% del promedio regional, con amplitud de 2024 en 0,54 —la más baja de la serie— lo que indica sensibilidad a restricción hídrica por encima de sus pares del distrito."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Control anti-despojo RTDAF/RUPTA (Ley 1448 de 2011): sin coincidencias ni medida de protección vigente. Verificación ambiental sin superposición con áreas protegidas ni frontera agrícola excluida."
+        }
+      ],
+      "memorando": "Se somete a consideración del comité la solicitud de $22.000.000 de capital de trabajo para siembra de semestre B sobre 6,1 hectáreas en la vereda La Palmita, El Espinal. La serie NDVI de Copernicus Sentinel-2 (2017-01 a 2025-12; 87 de 108 meses con observación óptica utilizable, 21 interpolados y excluidos de los indicadores) muestra un patrón cíclico ininterrumpido: 14 ciclos completos en nueve años, 3 de ellos en los últimos 24 meses, con amplitud actual de 0,746 frente a 0,756 histórica, es decir 1,3% de pérdida. En un cultivo transitorio esa continuidad es el mejor predictor disponible de repago y sustituye razonablemente la ausencia de estados financieros. El rendimiento estimado a partir del vigor satelital es de 8,91 t/ha, por encima de las 7,69 t/ha del dato oficial EVA 2018 — ESPINAL, TOLIMA — ARROZ. El área verificada coincide exactamente con la declarada, de modo que no procede ajuste del monto. La reserva es climática: la caída de vigor de 8,1% durante El Niño 2023-24 cuadruplica el 2,0% regional. El expediente carece de información sobre centrales de riesgo, garantías y endeudamiento con otras entidades; esa verificación corresponde al intermediario.",
+      "recomendacion": "Aprobar $22.000.000 en línea de Capital de Trabajo a 12 meses con cobertura FAG del 80%, condicionado a que el intermediario ajuste el calendario de amortización al cierre del ciclo del semestre B y consulte centrales de riesgo antes del desembolso."
+    },
+    "boyaca-papa": {
+      "puntaje": 750,
+      "banda_riesgo": "bajo",
+      "decision": "aprobar_con_ajuste",
+      "monto_sugerido_cop": 6000000,
+      "linea_finagro": "Capital de Trabajo — pequeño productor",
+      "cobertura_fag_pct": 80,
+      "plazo_meses": 12,
+      "desembolso": "Dos tramos: 60% ($3.600.000) contra desembolso inicial para compra de semilla certificada y fertilizantes; 40% ($2.400.000) a los 90 días, condicionado a verificación satelital de emergencia del cultivo (recuperación de amplitud NDVI ≥ 0,20 en el ciclo en curso).",
+      "ejes": [
+        {
+          "eje": "Capacidad de pago proyectada",
+          "peso": 40,
+          "puntaje": 23
+        },
+        {
+          "eje": "Verificación del activo productivo",
+          "peso": 20,
+          "puntaje": 18
+        },
+        {
+          "eje": "Riesgo sectorial y climático",
+          "peso": 25,
+          "puntaje": 22
+        },
+        {
+          "eje": "Coherencia del destino del crédito",
+          "peso": 15,
+          "puntaje": 12
+        }
+      ],
+      "evidencia": [
+        {
+          "tipo": "favorable",
+          "texto": "8 ciclos completos de siembra-cosecha detectados en los 9 años de serie (2017-2025), con amplitud histórica de 0,341: patrón de diente de sierra propio de un transitorio efectivamente sembrado."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "Solo 1 ciclo completo en los últimos 24 meses y amplitud 2025 de 0,09 frente a 0,25-0,26 en 2023-2024; la pérdida de amplitud contra su propia historia es de 39,0%, por debajo del umbral de rechazo de 40% pero indicativa de una reducción de la intensidad de siembra."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Caída de vigor durante El Niño 2023-24 de 0,0% frente a 2,0% de caída promedio regional; el año 2023 registró pico 0,72, el segundo más alto de la serie: resiliencia verificada bajo estrés hídrico."
+        },
+        {
+          "tipo": "alerta",
+          "texto": "Rendimiento estimado del predio 25,48 t/ha frente a 30,0 t/ha municipales (EVA 2018 — VENTAQUEMADA, BOYACA — PAPA): 85% del referente oficial. Es estimación derivada del vigor satelital, no producción medida."
+        },
+        {
+          "tipo": "favorable",
+          "texto": "Controles de originación en firme: RTDAF/RUPTA (Ley 1448 de 2011) sin coincidencias ni medida de protección vigente, y polígono sin superposición con áreas protegidas ni frontera agrícola excluida. Área declarada 1,8 ha frente a 1,8 ha con actividad detectada (desvío +0,0%)."
+        }
+      ],
+      "memorando": "Se somete a consideración del comité la solicitud de Blanca Cecilia Rojas por $7.500.000 sobre 1,8 ha de papa Pastusa Suprema en Ventaquemada, Boyacá. La serie Sentinel-2 confirma un predio en producción: 8 ciclos completos entre 2017 y 2025, área con actividad agrícola coincidente al 100% con la declarada y NDVI pico promedio de 0,64. El comportamiento climático es el punto más sólido del expediente: cero caída de vigor durante El Niño 2023-24 contra 2,0% de caída regional. La reserva es la dinámica reciente: un solo ciclo en 24 meses, amplitud 2025 de 0,09 y pérdida de 39,0% frente a su propia historia. No se activa causal de rechazo —hay ciclo detectable y el área coincide—, pero la intensidad de siembra observada sostiene aproximadamente un ciclo anual, no dos, y el rendimiento estimado equivale al 85% del municipal de EVA 2018. Por ello se recomienda ajustar el monto a $6.000.000 y desembolsar en dos tramos. Limitación del dictamen: 22 de 108 meses fueron interpolados por nubosidad y no alimentan los indicadores; la cobertura efectiva de 86 meses es suficiente pero no plena. SEEDLLITE no evalúa centrales de riesgo, garantías ni endeudamiento con otras entidades: corresponde al intermediario.",
+      "recomendacion": "Aprobar con ajuste a $6.000.000 en línea de Capital de Trabajo — pequeño productor con FAG 80%, condicionando el segundo tramo del 40% a la verificación satelital de emergencia del cultivo a los 90 días."
+    }
+  }
+}
