@@ -128,7 +128,7 @@ resuelto lo que hoy no puede resolver — la capacidad de pago de alguien sin es
 
 | Variable | Qué prueba |
 |---|---|
-| **Ciclos de cosecha completados** en 10 años | No basta sembrar: hay que llegar a cosecha. Es el flujo de caja real |
+| **Ciclos de cosecha completados** en 9 años | No basta sembrar: hay que llegar a cosecha. Es el flujo de caja real |
 | **Continuidad del patrón cíclico** | Un predio abandonado pierde la forma de diente de sierra aunque conserve verde |
 | Rendimiento estimado vs. rendimiento municipal del cultivo | **Fuente: EVA — Evaluaciones Agropecuarias Municipales** |
 | Consistencia interanual | Volatilidad alta = flujo impredecible |
@@ -137,7 +137,50 @@ resuelto lo que hoy no puede resolver — la capacidad de pago de alguien sin es
 > predio abandonado se llena de rastrojo y mantiene NDVI medio. Lo que desaparece es el ciclo.
 > Un modelo que mire solo el nivel de verde aprueba un crédito sobre un predio abandonado.
 
-**Rechazo automático:** sin ciclo de cosecha detectable en los últimos **24 meses**.
+#### 🔄 CAMBIO 15-ago-2026, 23:00 — la regla se vuelve consciente del cultivo
+
+> **Laura: esto toca tu documento y necesita tu visto bueno.** Se cambia porque, corrida contra
+> la serie real de Copernicus, la regla anterior **rechazaba a `huila-cafe`**, que es el caso
+> insignia de aprobación. No es un ajuste cosmético: la regla estaba mal, y estaba mal por una
+> razón agronómica que vale la pena que quede escrita.
+
+El café dio **0 ciclos detectables en los últimos 24 meses**. No porque haya dejado de producir,
+sino porque **el café es perenne y no dibuja cosechas en NDVI**: la planta permanece, el follaje
+no desaparece entre cosechas, y la recolección manual no deja huella espectral. Aplicarle la
+regla del arroz es un error de categoría.
+
+**Ausencia de ciclo significa cosas opuestas según el cultivo:**
+
+| Tipo | Cultivos | Qué significa que no haya ciclo | Cuál es la señal real |
+|---|---|---|---|
+| **Transitorio** | Arroz, papa, maíz, hortalizas | **No se está produciendo.** El suelo queda desnudo entre siembras: si no hay diente de sierra, no hubo siembra | El ciclo mismo |
+| **Perenne** | Café, cacao, caña, frutales | **Nada.** Es el comportamiento normal del cultivo | El **vigor sostenido** y la conservación del ritmo de manejo |
+
+**Rechazo automático — transitorio:** sin ciclo de cosecha detectable en los últimos
+**24 meses** (`ciclos_ultimos_24m == 0`).
+
+**Rechazo automático — perenne:** requiere que se cumplan **las dos** condiciones, porque
+ninguna sola distingue un cafetal en manejo de uno abandonado:
+
+1. `perdida_amplitud_pct >= 40` — el predio perdió el ritmo de su propio manejo (poda,
+   renovación, recolección) frente a su historia previa. **No se compara contra otros predios,
+   se compara contra sí mismo**, que es lo único honesto cuando cada parcela tiene su altitud,
+   su variedad y su sombrío.
+2. `rendimiento_estimado_t_ha < rendimiento_municipal_eva_t_ha` — y además rinde por debajo de
+   su municipio según la cifra oficial de EVA.
+
+Exigir las dos evita el falso positivo obvio: un cafetal en **renovación por zoca** pierde
+amplitud a propósito durante dos años y sigue siendo un buen sujeto de crédito. Si rinde sobre
+el promedio municipal, no se rechaza — se aprueba y se anota la alerta.
+
+> **Por qué esto mejora el dictamen y no lo debilita.** El párrafo de capacidad de pago deja de
+> decir "9 ciclos de cosecha" para un cultivo que no cosecha en ciclos visibles, y pasa a decir
+> lo que de verdad se midió: vigor sostenido y ritmo de manejo conservado. Es **más correcto**,
+> y es el tipo de distinción que un evaluador del sector agropecuario reconoce de inmediato.
+
+**Consecuencia para los datos:** `predios.json` gana el campo `tipo_cultivo`
+(`"transitorio"` | `"perenne"`), porque la regla no se puede aplicar sin él y derivarlo del
+nombre del cultivo dentro del prompt sería pedirle al modelo que adivine algo que es un hecho.
 
 ---
 
@@ -350,7 +393,9 @@ Declarar una exclusión razonada puntúa. Un modelo que pretende servir para tod
 
 Operan **con independencia del puntaje**. Basta una.
 
-1. Sin ciclo de cosecha detectable en los últimos **24 meses**
+1. **Cultivo transitorio** sin ciclo de cosecha detectable en los últimos **24 meses**.
+   En **cultivo perenne** la causal exige las dos condiciones del EJE A: pérdida de amplitud
+   ≥ 40% **y** rendimiento por debajo del municipal de EVA
 2. Área detectada menor al **50%** del área declarada
 3. Cultivo detectado no corresponde al declarado
 4. **Predio dentro de PNN o páramo delimitado** (Ley 1930 de 2018)

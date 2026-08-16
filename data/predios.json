@@ -15,6 +15,7 @@
         "lon": -76.0621
       },
       "cultivo": "Café",
+      "tipo_cultivo": "perenne",
       "variedad": "Castillo",
       "area_declarada_ha": 2.4,
       "area_detectada_ha": 2.4,
@@ -46,6 +47,7 @@
         "lon": -74.8836
       },
       "cultivo": "Arroz",
+      "tipo_cultivo": "transitorio",
       "variedad": "Fedearroz 67",
       "area_declarada_ha": 6.1,
       "area_detectada_ha": 5.9,
@@ -77,6 +79,7 @@
         "lon": -73.4918
       },
       "cultivo": "Papa",
+      "tipo_cultivo": "transitorio",
       "variedad": "Pastusa Suprema",
       "area_declarada_ha": 1.8,
       "area_detectada_ha": 1.58,
@@ -108,6 +111,7 @@
         "lon": -73.6859
       },
       "cultivo": "Cacao",
+      "tipo_cultivo": "perenne",
       "variedad": "CCN-51",
       "area_declarada_ha": 4.0,
       "area_detectada_ha": 0.0,

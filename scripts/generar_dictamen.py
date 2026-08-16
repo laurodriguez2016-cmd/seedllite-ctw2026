@@ -45,6 +45,12 @@ import urllib.error
 import urllib.request
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# La amplitud se calcula con la funcion del pipeline, no con una copia: si el
+# detector cambia de metodo, el prompt cambia con el. Una segunda implementacion
+# aqui es como se producen dos cifras distintas para la misma magnitud.
+sys.path.insert(0, os.path.join(RAIZ, "scripts"))
+from ingesta_sentinel import amplitud as amplitud_serie      # noqa: E402
 DATA = os.path.join(RAIZ, "data")
 SALIDA = os.path.join(DATA, "dictamenes.json")
 
@@ -192,10 +198,19 @@ D. Coherencia del destino del crédito — 15 (Resolución 08 de 2023 CNCA). ¿E
    pedido es proporcional al área real verificada? ¿El destino declarado coincide \
    con lo que se observa en el predio?
 
-DOS REGLAS DE RECHAZO AUTOMÁTICO — no admiten compensación entre ejes
-- Sin ciclo de cosecha detectable en los últimos 24 meses → rechazar.
+REGLAS DE RECHAZO AUTOMÁTICO — no admiten compensación entre ejes
+- CULTIVO TRANSITORIO (arroz, papa, maíz, hortalizas) sin ciclo de cosecha \
+  detectable en los últimos 24 meses → rechazar. En un transitorio el suelo queda \
+  desnudo entre siembras: si no hay diente de sierra, no hubo siembra.
+- CULTIVO PERENNE (café, cacao, caña, frutales): la ausencia de ciclo NO es causal \
+  y no se puede citar como defecto. La planta permanece todo el año y la cosecha no \
+  deja huella espectral. Aquí el rechazo exige LAS DOS condiciones juntas: pérdida \
+  de amplitud ≥ 40% frente a la historia del propio predio Y rendimiento estimado \
+  por debajo del municipal de EVA. Exigir las dos evita castigar a un cafetal en \
+  renovación por zoca, que pierde amplitud a propósito y sigue siendo buen sujeto.
 - Área detectada menor al 50% de la declarada → rechazar.
 Cuando una de estas se activa, el dictamen la nombra como la causa, con su cifra.
+Cuando NINGUNA se activa, no se insinúa que casi se activó.
 
 CONTROLES OBLIGATORIOS QUE SIEMPRE SE REPORTAN
 - Verificación RTDAF/RUPTA (Registro de Tierras Despojadas y Abandonadas \
@@ -210,12 +225,33 @@ El error de un modelo ingenuo es mirar el NIVEL del NDVI. Un predio abandonado N
 tiene NDVI bajo: se llena de rastrojo y maleza, y el verde se mantiene alto. Lo que \
 desaparece es el PATRÓN CÍCLICO de siembra y cosecha. La serie se APLANA.
 Por eso el dato decisivo no es cuánto verde hay, sino si ese verde SUBE Y BAJA con \
-el calendario del cultivo. Un predio sin ciclos detectables en los últimos 24 meses \
-no está produciendo, por alto que esté su NDVI.
+el calendario del cultivo.
+
+La medida de esa forma es la AMPLITUD (percentil 90 menos percentil 10 de la serie \
+suavizada). Se te entregan tres cifras que hay que leer juntas:
+- amplitud histórica: cuánto subía y bajaba el predio antes.
+- amplitud de los últimos 24 meses: cuánto sube y baja ahora.
+- pérdida de amplitud: cuánto de su PROPIO ritmo perdió. No se compara contra otros \
+  predios, porque cada parcela tiene su altitud, su variedad y su sombrío; \
+  compararla contra sí misma es lo único honesto.
+
+Y la lectura cambia según el tipo de cultivo:
+- TRANSITORIO: la amplitud ES el ciclo. Amplitud que colapsa = predio que dejó de \
+  sembrarse, por alto que esté su NDVI.
+- PERENNE: la amplitud refleja el ritmo de MANEJO (poda, renovación, recolección), \
+  no la cosecha. Una amplitud baja en un perenne es normal. Lo que importa es el \
+  vigor sostenido y el rendimiento contra el municipio.
+
+HONESTIDAD SOBRE LA COBERTURA DEL DATO
+Se te dice cuántos de los meses de la serie son medición real y cuántos son relleno \
+por nubosidad. En el trópico andino entre 19 y 33 de 108 meses no tienen observación \
+óptica utilizable. Los meses interpolados NO entran en ningún indicador. Si la \
+cobertura del predio es baja, dilo en el memorando: es una limitación del dictamen, \
+no un defecto que se esconde.
 
 REGLAS DE REDACCIÓN — no negociables
 - Cada ítem de evidencia CITA UNA CIFRA de los datos que recibes. "Buen historial" \
-  no es evidencia; "9 ciclos completos entre 2016 y 2025" sí lo es.
+  no es evidencia; "9 ciclos completos entre 2017 y 2025" sí lo es.
 - Cuando cites rendimiento, cita SIEMPRE la fuente y su año tal como viene en los \
   datos (p. ej. "EVA 2018 — Pitalito, Huila — Café"). El rendimiento del predio es \
   una ESTIMACIÓN derivada del vigor satelital: nómbrala como estimación, nunca como \
@@ -225,8 +261,14 @@ REGLAS DE REDACCIÓN — no negociables
   riesgo: no los tienes.
 - Si el área detectada es menor que la declarada, el monto se ajusta a la baja en \
   proporción al área real y se dice explícitamente por qué.
-- Si no hay ciclos en los últimos 24 meses, la decisión es rechazar, con el motivo \
-  satelital exacto. Un modelo que solo aprueba no es un modelo de riesgo.
+- Si se activa una causal de rechazo, la decisión es rechazar, con el motivo \
+  satelital exacto. Un modelo que solo aprueba no es un modelo de riesgo. Pero \
+  tampoco se fabrica un rechazo: si la evidencia no lo sostiene, se aprueba y las \
+  alertas se dicen igual.
+- En un cultivo PERENNE está prohibido escribir que "no se detectan ciclos de \
+  cosecha" como si fuera un hallazgo negativo. Es el comportamiento esperado del \
+  cultivo y presentarlo como defecto es un error de criterio agronómico que un \
+  evaluador del sector detecta de inmediato.
 - El memorando va dirigido al comité, entre 120 y 200 palabras, sin viñetas ni \
   encabezados. Prosa continua.
 - Español de Colombia. Cifras en pesos con separador de miles.
@@ -265,17 +307,27 @@ def construir_prompt(predio, serie, caida_regional):
     tope_smmlv = predio["activos_declarados_smmlv"] * 0.70
     tope_cop = tope_smmlv * SMMLV_2026
 
-    # Muestra anual de la serie: el modelo no necesita los 120 puntos crudos para
+    # Muestra anual de la serie: el modelo no necesita los 108 puntos crudos para
     # razonar sobre la forma, pero si necesita ver la trayectoria completa.
+    # La amplitud anual se calcula con la MISMA funcion que el indicador agregado
+    # (p90-p10 sobre la serie suavizada, solo meses medidos). Antes usaba max-min
+    # crudo sobre todos los meses, y daba cifras hasta cuatro veces mayores: el
+    # modelo veia "amplitud 0,53" en la trayectoria y "amplitud historica 0,123"
+    # en los indicadores, y citaba las dos en el mismo dictamen.
     resumen_anual = []
-    for anio in range(2016, 2026):
+    for anio in range(2017, 2026):
         del_anio = [p for p in puntos if p["fecha"].startswith(str(anio))]
         if not del_anio:
             continue
-        vals = [p["ndvi"] for p in del_anio]
+        medidos_anio = [p["ndvi"] if not p["interpolado"] else None for p in del_anio]
+        vals = [v for v in medidos_anio if v is not None]
+        if not vals:
+            resumen_anual.append("  %d: sin observacion optica utilizable" % anio)
+            continue
         resumen_anual.append(
-            "  %d: pico %.2f · valle %.2f · amplitud %.2f"
-            % (anio, max(vals), min(vals), max(vals) - min(vals))
+            "  %d: pico %.2f · valle %.2f · amplitud %.2f · %d/%d meses medidos"
+            % (anio, max(vals), min(vals), amplitud_serie(medidos_anio),
+               len(vals), len(del_anio))
         )
 
     recientes = [p for p in puntos if p["fecha"] >= "2025-01"]
@@ -285,7 +337,7 @@ def construir_prompt(predio, serie, caida_regional):
 
 Productor:            {productor} ({tipo})
 Predio:               vereda {vereda}, {municipio}, {departamento}
-Cultivo:              {cultivo} ({variedad})
+Cultivo:              {cultivo} ({variedad}) — CULTIVO {tipo_cultivo_may}
 Años en el predio:    {anios}
 Crédito previo:       {previo}
 Activos declarados:   {activos} SMMLV  (tope de crédito ≈ {tope})
@@ -294,12 +346,19 @@ Destino:              {destino}
 
 VERIFICACIÓN SATELITAL DEL ÁREA
 Área declarada por el productor:                    {a_dec} ha
-Área con patrón de cultivo activo (Sentinel-2):     {a_det} ha   (desvío {desvio:+.1f}%)
+Área con actividad agrícola detectada (Sentinel-2): {a_det} ha   (desvío {desvio:+.1f}%)
 
-Nota de lectura: el área activa mide superficie con ciclo de cultivo detectable.
-Un predio cubierto de rastrojo tiene cobertura vegetal pero 0 ha activas.
+Nota de lectura: la medición parte el polígono declarado en una rejilla de 4x4 y
+descarga la serie NDVI de cada celda. Cuenta como agrícola la celda que está
+vegetada (mediana ≥ 0,30) Y tiene dinámica de manejo (amplitud ≥ 0,12). Una celda
+de bosque o rastrojo está verde pero no se mueve, y no cuenta. Es una estimación de
+PROPORCIÓN del predio con actividad, no una delimitación de linderos: eso le
+corresponde al IGAC, no a un satélite.
 
 SERIE NDVI — Copernicus Sentinel-2, mediana mensual, {desde} a {hasta} ({n} observaciones)
+Cobertura del dato: {medidos} de {totales} meses con observación óptica utilizable.
+Los {interpolados} meses restantes se interpolaron por nubosidad y NO entran en
+ninguno de los indicadores de abajo.
 
 Trayectoria anual (pico, valle y amplitud de cada año):
 {anual}
@@ -307,10 +366,19 @@ Trayectoria anual (pico, valle y amplitud de cada año):
 Últimos 12 meses, mes a mes:
 {reciente}
 
-INDICADORES CALCULADOS SOBRE LA SERIE
-- Ciclos de cosecha completos detectados en la década: {ciclos}
+INDICADORES CALCULADOS SOBRE LA SERIE (solo sobre meses medidos)
+
+Forma de la serie — cómo se mueve:
+- Ciclos completos detectados en los 9 años:           {ciclos}
 - Ciclos completos en los últimos 24 meses:            {ciclos24}
+- Amplitud histórica:                                  {amp_hist}
+- Amplitud de los últimos 24 meses:                    {amp_rec}
+- Pérdida de amplitud contra su propia historia:       {perdida}%
+
+Nivel de la serie — cuánto verde hay:
 - NDVI pico promedio:                                  {pico}
+
+Comportamiento climático:
 - Caída de vigor durante El Niño 2023-24:              {caida}%
 - Caída promedio regional en el mismo evento:          {caida_reg}%
 
@@ -330,6 +398,7 @@ Emite el dictamen de crédito.""".format(
         municipio=predio["municipio"],
         departamento=predio["departamento"],
         cultivo=predio["cultivo"],
+        tipo_cultivo_may=predio["tipo_cultivo"].upper(),
         variedad=predio.get("variedad", "no declarada"),
         anios=predio.get("anos_en_el_predio", "no declarado"),
         previo="sí" if predio.get("credito_previo") else "no (primer crédito formal)",
@@ -343,10 +412,16 @@ Emite el dictamen de crédito.""".format(
         desde=serie["desde"],
         hasta=serie["hasta"],
         n=len(puntos),
+        medidos=serie["cobertura_meses_medidos"],
+        totales=serie["cobertura_meses_totales"],
+        interpolados=serie["cobertura_meses_totales"] - serie["cobertura_meses_medidos"],
         anual="\n".join(resumen_anual),
         reciente=serie_reciente,
         ciclos=serie["ciclos_detectados"],
         ciclos24=serie["ciclos_ultimos_24m"],
+        amp_hist=serie["amplitud_historica"],
+        amp_rec=serie["amplitud_reciente_24m"],
+        perdida=serie["perdida_amplitud_pct"],
         pico=serie["ndvi_pico_promedio"],
         caida=serie["caida_enso_pct"],
         caida_reg=caida_regional,

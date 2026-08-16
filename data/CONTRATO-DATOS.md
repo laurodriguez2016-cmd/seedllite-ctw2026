@@ -37,13 +37,14 @@ Identidad y contexto de cada predio del demo. **4 predios.**
       "departamento": "Huila",
       "coordenadas": { "lat": 1.8534, "lon": -76.0521 },
       "cultivo": "Café",
+      "tipo_cultivo": "perenne",             // "transitorio" | "perenne" — v1.2
       "area_declarada_ha": 2.4,              // number — lo que declara el productor
       "area_detectada_ha": 2.4,              // number — lo que ve el satélite
       "monto_solicitado_cop": 9000000,       // integer
       "destino": "Renovación de cafetal y compra de insumos",
       "activos_declarados_smmlv": 41,        // integer — para clasificar productor
       "imagenes_satelitales": [                // SECUENCIA temporal, minimo 2 cortes
-        { "anio": 2016, "ruta": "assets/satelite/huila-cafe-2016.jpg" },
+        { "anio": 2017, "ruta": "assets/satelite/huila-cafe-2017.jpg" },
         { "anio": 2025, "ruta": "assets/satelite/huila-cafe-2025.jpg" }
       ]
     }
@@ -54,6 +55,10 @@ Identidad y contexto de cada predio del demo. **4 predios.**
 ### Reglas
 - `id` es la llave primaria. Aparece igual en los tres archivos.
 - `tipo_productor` se deriva de `activos_declarados_smmlv`: **pequeño ≤ 284 SMMLV**.
+- **`tipo_cultivo`** (v1.2) es `"transitorio"` | `"perenne"`. No es decorativo: **la causal de
+  rechazo automático del EJE A es distinta según su valor.** En transitorio, la ausencia de
+  ciclo significa que no se está produciendo; en perenne no significa nada, porque la planta
+  permanece. Ver `docs/criterios-de-credito.md` §3, EJE A.
 - Las coordenadas son reales (ubicaciones plausibles); los productores son **ficticios**.
 - `imagenes_satelitales` es una **secuencia**, no una imagen. Mínimo dos cortes (uno temprano,
   uno reciente) para que el cambio del predio se vea a simple vista. **En `meta-cacao` es
@@ -72,21 +77,34 @@ La serie temporal satelital. **El corazón del producto.**
   "licencia": "Copernicus open licence — uso comercial permitido",
   "resolucion_m": 10,
   "metodo": "Mediana mensual de NDVI sobre el polígono del predio",
-  "nota_datos": "SERIE CALIBRADA sobre fenología documentada del cultivo. El pipeline real de ingesta está en scripts/ingesta_sentinel.py.",
+  "nota_datos": "SERIE REAL descargada de Copernicus por scripts/ingesta_sentinel.py. …",
   "series": {
     "huila-cafe": {
-      "desde": "2016-01",
+      "desde": "2017-01",
       "hasta": "2025-12",
       "puntos": [
-        { "fecha": "2016-01", "ndvi": 0.71, "nubosidad": 0.12 },
-        { "fecha": "2016-02", "ndvi": 0.74, "nubosidad": 0.08 }
-        // ... 120 puntos mensuales
+        { "fecha": "2017-01", "ndvi": 0.71, "nubosidad": 0.12, "interpolado": false },
+        { "fecha": "2017-02", "ndvi": 0.74, "nubosidad": 1.0,  "interpolado": true  }
+        // ... 108 puntos mensuales
       ],
+
+      // Cobertura — cuánto de la serie es medición y cuánto es relleno
+      "cobertura_meses_medidos": 75,
+      "cobertura_meses_totales": 108,
+
+      // La FORMA de la serie: el corazón del producto
       "ciclos_detectados": 9,
-      "ndvi_pico_promedio": 0.78,
-      "rendimiento_estimado_t_ha": 1.42,
+      "ciclos_ultimos_24m": 0,
+      "amplitud_historica": 0.123,
+      "amplitud_reciente_24m": 0.089,
+      "perdida_amplitud_pct": 27.6,
+
+      // El NIVEL de la serie, y el contraste contra la cifra oficial
+      "ndvi_pico_promedio": 0.79,
+      "rendimiento_estimado_t_ha": 1.23,
       "rendimiento_municipal_eva_t_ha": 1.14,
-      "fuente_referencia": "EVA 2018 — Pitalito, Huila — Café"
+      "fuente_referencia": "EVA 2018 — PITALITO, HUILA — CAFE",
+      "caida_enso_pct": 0.0
     }
   },
   "eventos_climaticos": [
@@ -98,10 +116,35 @@ La serie temporal satelital. **El corazón del producto.**
 
 ### Reglas
 - `ndvi` es un número entre **0 y 1**, con 2 decimales.
-- Serie **mensual**, de `2016-01` a `2025-12` → **120 puntos por predio**.
+- Serie **mensual**, de `2017-01` a `2025-12` → **108 puntos por predio**.
+  Nueve años, no diez: Sentinel-2 L2A solo tiene cobertura global sistemática
+  desde enero de 2017. Pedir 2016 devolvería huecos que no son nubes sino
+  ausencia de producto.
 - `nubosidad` de 0 a 1. Por encima de **0,6** la APP dibuja el punto atenuado
   (así se ve que el dato satelital es real y tiene ruido — eso da credibilidad).
+- **`interpolado: true`** marca los meses sin observación óptica utilizable. Van
+  con `nubosidad: 1.0`, se rellenan por interpolación lineal para que la línea de
+  la gráfica no se corte, y **quedan fuera de todos los agregados**. Entre 19 y 33
+  de los 108 meses son interpolados según el predio: en el trópico andino eso no
+  es un defecto del dato, es el dato. **La APP debe distinguirlos en pantalla.**
 - `eventos_climaticos` es global, no por predio. La APP los pinta como bandas de fondo.
+
+### Los agregados, y qué mide cada uno
+
+Se calculan **solo sobre meses medidos**. La distinción que importa:
+
+| Grupo | Campos | Qué responde |
+|---|---|---|
+| **Forma** | `ciclos_detectados`, `ciclos_ultimos_24m`, `amplitud_historica`, `amplitud_reciente_24m`, `perdida_amplitud_pct` | ¿El predio sigue el ritmo de siembra y cosecha que tenía? |
+| **Nivel** | `ndvi_pico_promedio` | ¿Cuánto verde hay? |
+| **Contraste oficial** | `rendimiento_estimado_t_ha` vs `rendimiento_municipal_eva_t_ha` | ¿Rinde más o menos que su municipio? |
+| **Clima** | `caida_enso_pct` | ¿Cómo se comportó en El Niño 2023-24? |
+| **Honestidad** | `cobertura_meses_medidos` / `cobertura_meses_totales` | ¿Cuánto de esto es medición? |
+
+> **Forma contra nivel es la tesis del producto.** Un predio abandonado se llena de
+> rastrojo y conserva el nivel; lo que pierde es la forma. Un modelo que mire solo
+> `ndvi_pico_promedio` aprueba un crédito sobre un predio que no produce. Por eso
+> `perdida_amplitud_pct` importa más que cualquier otro número del archivo.
 
 ---
 
@@ -112,7 +155,7 @@ La serie temporal satelital. **El corazón del producto.**
 ```jsonc
 {
   "version": "1.0",
-  "modelo": "claude-sonnet-5",
+  "modelo": "claude-opus-5",
   "generado": "2026-08-15T22:00:00-05:00",
   "nota_ia": "Salidas reales del modelo. El prompt está en scripts/generar_dictamen.py.",
   "dictamenes": {
@@ -134,10 +177,10 @@ La serie temporal satelital. **El corazón del producto.**
       ],
 
       "evidencia": [                          // lo que sustenta la decisión
-        { "tipo": "favorable", "texto": "9 ciclos de cosecha completos detectados entre 2016 y 2025" },
-        { "tipo": "favorable", "texto": "Rendimiento estimado 1,42 t/ha frente a 1,14 t/ha del promedio municipal de Pitalito (EVA 2018)" },
-        { "tipo": "favorable", "texto": "Caída de vigor de 18% en la ventana de El Niño 2023-24, con recuperación completa en los dos ciclos siguientes" },
-        { "tipo": "alerta",    "texto": "La caída de vigor de 18% durante El Niño 2023-24 es el mayor descenso de la serie de 10 años" },
+        { "tipo": "favorable", "texto": "9 ciclos productivos completos detectados entre 2017 y 2025" },
+        { "tipo": "favorable", "texto": "Rendimiento estimado 1,23 t/ha frente a 1,14 t/ha del promedio municipal de Pitalito (EVA 2018)" },
+        { "tipo": "favorable", "texto": "Sin caída de vigor atribuible a El Niño 2023-24: el predio sostuvo su nivel durante la ventana del evento" },
+        { "tipo": "alerta",    "texto": "La amplitud de los últimos 24 meses cae 27,6% frente a la histórica del propio predio" },
         { "tipo": "favorable", "texto": "Verificación RTDAF/RUPTA: el predio no figura en el Registro de Tierras Despojadas ni tiene medida de protección vigente" }
       ],
 
@@ -206,4 +249,27 @@ rendimiento por municipio y cultivo. Justificación completa en
 
 ---
 
-*Versión 1.1 · 15-ago-2026*
+### Cambio v1.2 — 15-ago-2026, 22:55 · **documental, no rompe nada**
+
+La v1.1 se escribió cuando la serie era calibrada sobre fenología. Al pasar el pipeline a
+descarga real de Copernicus, el archivo emitido ganó campos que este documento no describía y
+perdió una ventana temporal que sí describía. **No se eliminó ni se renombró ningún campo: todo
+lo que la APP ya consumía sigue existiendo igual.** Lo que cambia es que el contrato ahora dice
+la verdad sobre lo que hay en el archivo.
+
+| Qué | Antes decía | Ahora |
+|---|---|---|
+| Ventana | `2016-01` a `2025-12`, 120 puntos | **`2017-01` a `2025-12`, 108 puntos** — L2A no tiene cobertura sistemática antes de 2017 |
+| Naturaleza | "SERIE CALIBRADA sobre fenología" | **Serie real descargada de Copernicus** |
+| Meses sin dato | no se mencionaban | **`interpolado: true`**, fuera de todos los agregados |
+| Agregados | 4 campos | **12 campos**, agrupados en forma / nivel / contraste oficial / clima / cobertura |
+| Modelo | `claude-sonnet-5` | **`claude-opus-5`** |
+
+Los campos nuevos —`ciclos_ultimos_24m`, `amplitud_historica`, `amplitud_reciente_24m`,
+`perdida_amplitud_pct`, `cobertura_meses_medidos`, `cobertura_meses_totales`, `caida_enso_pct`—
+**ya estaban en `data/series_ndvi.json` desde el commit `11684eb`.** Este cambio los documenta;
+no los introduce. Son la evidencia de la tesis del producto y la pantalla 3 debe mostrarlos.
+
+---
+
+*Versión 1.2 · 15-ago-2026*
