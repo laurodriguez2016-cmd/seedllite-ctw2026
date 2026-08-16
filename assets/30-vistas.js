@@ -483,6 +483,12 @@
 
     var contenido = dictamen.memorando;
     var posicion = 0;
+    var duracionObjetivo = Math.max(3600, Math.min(6000, contenido.length * 5));
+    var intervaloBase = 18;
+    var ciclosObjetivo = Math.max(1, Math.floor(duracionObjetivo / intervaloBase));
+    var salto = Math.max(1, Math.ceil(contenido.length / ciclosObjetivo));
+    var ciclosReales = Math.max(1, Math.ceil(contenido.length / salto));
+    var intervalo = Math.max(12, Math.round(duracionObjetivo / ciclosReales));
 
     function completar() {
       if (!host.isConnected) return;
@@ -502,8 +508,8 @@
       if (!host.isConnected) return;
       if (posicion <= contenido.length) {
         destino.textContent = contenido.slice(0, posicion);
-        posicion += 3;
-        global.setTimeout(teclear, 15);
+        posicion += salto;
+        global.setTimeout(teclear, intervalo);
         return;
       }
       completar();
